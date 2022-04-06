@@ -1,39 +1,57 @@
 package com.netology.nework.entity
 
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.netology.nework.dto.Coordinates
 import com.netology.nework.dto.Post
 import java.time.Instant
-import java.util.*
 
 @Entity
 data class PostEntity(
     @PrimaryKey(autoGenerate = true)
-    val id: Long,
-    val authorId: Long,
-    val author: String,
-//    val authorAvatar: String?,
-    val content: String,
-    val published: String,
-//    val published: Instant,
-    val likedByMe: Boolean,
+    var id: Long,
+    var authorId: Long,
+    var author: String,
+    var authorAvatar: String,
+    var content: String,
+    var published: String,
+//    var coords: Coordinates? = null,
+//    var link: String? = null,
+//    var likedByMe: Boolean = false,
+//    @Embedded
+//    var attachment: AttachmentEmbeddable? = null,
 ) {
-    fun toDto() = Post(id,
+    fun toDto() = Post(
+        id,
         authorId,
         author,
-//        authorAvatar,
+        authorAvatar,
         content,
         published,
-        likedByMe)
+//        coords,
+//        link,
+//        likedByMe,
+//        attachment?.toDto()
+    )
+
 
     companion object {
         fun fromDto(dto: Post) =
-            PostEntity(dto.id,
-                dto.authorId,
-                dto.author,
-//                dto.authorAvatar!!,
-                dto.content,
-                dto.published,
-                dto.likedByMe)
+            PostEntity(
+            id = dto.id,
+            authorId = dto.authorId,
+            author = dto.author,
+            authorAvatar = dto.authorAvatar!!,
+            content = dto.content,
+            published = dto.published,
+//            coords = dto.coords,
+//            link = dto.link,
+//            likedByMe = dto.likedByMe,
+//            attachment = AttachmentEmbeddable.fromDto(dto.attachment),
+        )
     }
 }
+
+fun List<PostEntity>.toDto(): List<Post> = map(PostEntity::toDto)
+fun List<Post>.toEntity(): List<PostEntity> = map(PostEntity::fromDto)

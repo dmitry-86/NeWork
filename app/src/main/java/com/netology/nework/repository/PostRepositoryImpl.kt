@@ -1,29 +1,68 @@
 package com.netology.nework.repository
 
 import android.util.Log
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.*
+import com.netology.nework.api.*
 import com.netology.nework.dao.PostDao
 import com.netology.nework.dto.Post
 import com.netology.nework.entity.PostEntity
+import com.netology.nework.entity.toDto
+import com.netology.nework.entity.toEntity
+import com.netology.nework.error.ApiError
+import com.netology.nework.error.AppError
+import com.netology.nework.error.NetworkError
+import com.netology.nework.error.UnknownError
+import java.io.IOException
 
-class PostRepositoryImpl(
-    private val dao: PostDao,
-) : PostRepository {
-    override fun getAll() = Transformations.map(dao.getAll()) { list ->
-        list.map {
-            it.toDto()
+class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
+    override val data = dao.getAll().map(List<PostEntity>::toDto)
+
+    override suspend fun getAll() {
+        try {
+            val response = PostsApi.service.getAll()
+            if (!response.isSuccessful) {
+                throw ApiError(response.code(), response.message())
+            }
+            val body = response.body() ?: throw ApiError(response.code(), response.message())
+            dao.insert(body.toEntity())
+        } catch (e: IOException) {
+            throw NetworkError
+        }catch (e: Exception) {
+            throw UnknownError
         }
     }
 
-    override fun save(post: Post) {
-        dao.save(PostEntity.fromDto(post))
+    override suspend fun save(post: Post) {
+        try {
+            val response = PostsApi.service.save(post)
+            Log.i("tag", response.toString())
+            if (!response.isSuccessful) {
+                throw ApiError(response.code(), response.message())
+            }
+            val data = response.body() ?: throw ApiError(response.code(), response.message())
+            dao.insert(PostEntity.fromDto(data))
+        } catch (e: IOException) {
+            throw NetworkError
+        } catch (e: Exception) {
+            throw UnknownError
+        }
     }
 
-    override fun removeById(id: Long) {
-        dao.removeById(id)
+    override suspend fun removeById(id: Long) {
+        try {
+            val response = PostsApi.service.removeById(id)
+            if (!response.isSuccessful) {
+                throw ApiError(response.code(), response.message())
+            }
+            dao.removeById(id)
+        } catch (e: IOException) {
+            throw NetworkError
+        } catch (e: Exception) {
+            throw UnknownError
+        }
     }
 
-    //    override fun likeById(id: Long) {
-//        dao.likeById(id)
+//    override suspend fun likeById(id: Long) {
+//        TODO("Not yet implemented")
 //    }
 }

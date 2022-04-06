@@ -31,14 +31,20 @@ class NewPostFragment: Fragment() {
 
         val binding = FragmentNewPostBinding.inflate(inflater, container, false)
 
-        binding.edit.setText(arguments?.getString("content"))
-        binding.edit.requestFocus()
+//        binding.edit.setText(arguments?.getString("content"))
+//        binding.edit.requestFocus()
+
+        arguments?.textArg
+            ?.let(binding.edit::setText)
 
         binding.ok.setOnClickListener {
             viewModel.changeContent(binding.edit.text.toString())
             viewModel.save()
             AndroidUtils.hideKeyboard(requireView())
-            findNavController().popBackStack()
+        }
+
+        viewModel.postCreated.observe(viewLifecycleOwner) {
+            findNavController().navigateUp()
         }
 
         return binding.root

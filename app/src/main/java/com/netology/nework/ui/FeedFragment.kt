@@ -10,9 +10,11 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import com.netology.nework.R
 import com.netology.nework.adapter.OnInteractionListener
 import com.netology.nework.adapter.PostsAdapter
@@ -52,9 +54,24 @@ class FeedFragment : Fragment() {
         })
 
         binding.list.adapter = adapter
-        viewModel.data.observe(viewLifecycleOwner){ posts ->
-            adapter.submitList(posts)
+        viewModel.dataState.observe(viewLifecycleOwner) { state ->
+            binding.progress.isVisible = state.loading
+            binding.swiperefresh.isRefreshing = state.refreshing
+            if (state.error) {
+                Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_LONG)
+                    .setAction(R.string.retry_loading) { viewModel.loadPosts() }
+                    .show()
+            }
         }
+
+        viewModel.data.observe(viewLifecycleOwner){ state ->
+            adapter.submitList(state.posts)
+        }
+
+        binding.swiperefresh.setOnRefreshListener {
+            viewModel.refreshPosts()
+        }
+
 
         binding.fab.setOnClickListener {
             findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)

@@ -2,10 +2,12 @@ package com.netology.nework.repository
 
 import androidx.lifecycle.LiveData
 import com.netology.nework.dto.Post
+import kotlinx.coroutines.flow.Flow
 
 interface PostRepository {
-    fun getAll(): LiveData<List<Post>>
-    fun save(post: Post)
-    fun removeById(id: Long)
-    //    fun likeById(id: Long)
+    val data: LiveData<List<Post>>
+    suspend fun getAll()
+    suspend fun save(post: Post)
+    suspend fun removeById(id: Long)
+//    suspend fun likeById(id: Long)
 }

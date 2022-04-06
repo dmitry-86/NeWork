@@ -9,4 +9,7 @@
     <string name="enter_new_content">введите новое сообщение</string>
     <string name="cancel">отмена</string>
     <string name="ok">ok</string>
+    <string name="retry_loading">Повторить</string>
+    <string name="empty_posts">Постов нет.\nЕсли создадите новый пост, то он появится здесь</string>
+    <string name="error_loading">Не удалось загрузить данные</string>
 </resources>
