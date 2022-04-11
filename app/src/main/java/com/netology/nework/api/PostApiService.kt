@@ -1,7 +1,10 @@
 package com.netology.nework.api
 
 import com.netology.nework.BuildConfig
+import com.netology.nework.auth.AppAuth
 import com.netology.nework.dto.Post
+import com.netology.nework.dto.User
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
@@ -20,6 +23,15 @@ private val logging = HttpLoggingInterceptor().apply {
 
 private val okhttp = OkHttpClient.Builder()
     .addInterceptor(logging)
+    .addInterceptor { chain ->
+        AppAuth.getInstance().authStateFlow.value.token?.let { token ->
+            val newRequest = chain.request().newBuilder()
+                .addHeader("Authorization", token)
+                .build()
+            return@addInterceptor chain.proceed(newRequest)
+        }
+        chain.proceed(chain.request())
+    }
     .build()
 
 private val retrofit = Retrofit.Builder()
@@ -30,17 +42,29 @@ private val retrofit = Retrofit.Builder()
 
 interface PostApiService {
 
-        @GET("posts")
-        suspend fun getAll(): Response<List<Post>>
+    @GET("posts")
+    suspend fun getAll(): Response<List<Post>>
 
-        @GET("posts/{id}")
-        suspend fun getById(@Path("id") id: Long): Response<Post>
+    @GET("posts/{id}")
+    suspend fun getById(@Path("id") id: Long): Response<Post>
 
-        @POST("posts")
-        suspend fun save(@Body post: Post): Response<Post>
+    @POST("posts")
+    suspend fun save(@Body post: Post): Response<Post>
 
-        @DELETE("posts/{id}")
-        suspend fun removeById(@Path("id") id: Long): Response<Unit>
+    @DELETE("posts/{id}")
+    suspend fun removeById(@Path("id") id: Long): Response<Unit>
+
+    @FormUrlEncoded
+    @POST("users/authentication")
+    suspend fun authUser(@Field("login") login: String, @Field("pass") pass: String): Response<User>
+
+    @FormUrlEncoded
+    @POST("users/registration")
+    suspend fun registerUser(
+        @Field("login") login: String,
+        @Field("pass") pass: String,
+        @Field("name") name: String
+    ): Response<User>
 
 }
 

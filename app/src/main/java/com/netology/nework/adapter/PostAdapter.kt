@@ -1,15 +1,18 @@
 package com.netology.nework.adapter
 
-import android.util.Log
+import android.annotation.SuppressLint
+import android.os.Build
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import android.widget.PopupMenu
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.netology.nework.R
 import com.netology.nework.databinding.CardPostBinding
 import com.netology.nework.dto.Post
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 interface OnInteractionListener {
     fun onEdit(post: Post) {}
@@ -26,6 +29,7 @@ class PostsAdapter(
         return PostViewHolder(binding, onInteractionListener)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         val post = getItem(position)
         holder.bind(post)
@@ -37,11 +41,21 @@ class PostViewHolder(
     private val onInteractionListener: OnInteractionListener,
 ) : RecyclerView.ViewHolder(binding.root) {
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    @SuppressLint("SimpleDateFormat")
     fun bind(post: Post) {
         binding.apply {
             textViewUserName.text = post.author
-            textViewPublished.text = post.published.toString()
+            textViewPublished.text = post.published
+
             textViewContent.text = post.content
+
+            val parsedDate = LocalDateTime.parse(post.published, DateTimeFormatter.ISO_DATE_TIME)
+            val formattedDate = parsedDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
+            textViewPublished.text = formattedDate
+
+            delete.visibility = if (post.ownedByMe) View.VISIBLE else View.INVISIBLE
+            edit.visibility = if (post.ownedByMe) View.VISIBLE else View.INVISIBLE
 
             delete.setOnClickListener{
                 onInteractionListener.onRemove(post)

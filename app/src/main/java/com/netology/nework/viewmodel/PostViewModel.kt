@@ -3,6 +3,7 @@ package com.netology.nework.viewmodel
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
+import com.netology.nework.auth.AppAuth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -13,6 +14,8 @@ import com.netology.nework.model.FeedModelState
 import com.netology.nework.repository.PostRepository
 import com.netology.nework.repository.PostRepositoryImpl
 import com.netology.nework.util.SingleLiveEvent
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flatMapLatest
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.util.Calendar
@@ -24,7 +27,7 @@ private val empty = Post(
     author = "Dima",
     authorAvatar = "",
     content = "New Post",
-    published = "\"2021-08-17T16:46:58.887547Z\"",
+    published = "2021-08-17T16:46:58.887547Z"
 //    published = SimpleDateFormat("dd.MM, HH:mm").format(Calendar.getInstance().getTime()),
 //    coords = null,
 //    link = null,
@@ -32,18 +35,33 @@ private val empty = Post(
 //    attachment = null
 )
 
+@ExperimentalCoroutinesApi
 class PostViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: PostRepository =
         PostRepositoryImpl(AppDb.getInstance(context = application).postDao())
-    val data: LiveData<FeedModel> = repository.data.map(::FeedModel)
+
+    val data: LiveData<FeedModel> = AppAuth.getInstance()
+        .authStateFlow
+        .flatMapLatest { (myId, _) ->
+            repository.data
+                .map { posts ->
+                    FeedModel(
+                        posts.map { it.copy(ownedByMe = it.authorId == myId) },
+                        posts.isEmpty()
+                    )
+                }
+        }.asLiveData(Dispatchers.Default)
+
     private val _dataState = MutableLiveData<FeedModelState>()
     val dataState: LiveData<FeedModelState>
         get() = _dataState
-    val edited = MutableLiveData(empty)
+
+    private val edited = MutableLiveData(empty)
     private val _postCreated = SingleLiveEvent<Unit>()
     val postCreated: LiveData<Unit>
         get() = _postCreated
+
     init {
         loadPosts()
     }
@@ -57,15 +75,18 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             _dataState.value = FeedModelState(error = true)
         }
     }
+
     fun refreshPosts() = viewModelScope.launch {
         try {
             _dataState.value = FeedModelState(refreshing = true)
             repository.getAll()
             _dataState.value = FeedModelState()
-        } catch (e: Exception) {
+        }
+        catch (e: Exception) {
             _dataState.value = FeedModelState(error = true)
         }
     }
+
     fun save() {
         edited.value?.let {
             _postCreated.value = Unit

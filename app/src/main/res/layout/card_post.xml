@@ -5,6 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+<!--    <com.google.android.material.button.MaterialButton-->
+<!--        android:id="@+id/menu"-->
+<!--        style="@style/Widget.AppTheme.BasicGrayButton"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:background="@android:color/transparent"-->
+<!--        app:icon="@drawable/ic_baseline_more_vert_24"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:srcCompat="@drawable/ic_baseline_more_vert_24" />-->
+
+
     <ImageView
         android:id="@+id/imageViewAvatar"
         android:layout_width="85dp"
@@ -62,4 +74,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_baseline_clear_24" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

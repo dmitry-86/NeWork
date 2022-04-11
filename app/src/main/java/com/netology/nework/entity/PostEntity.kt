@@ -1,11 +1,8 @@
 package com.netology.nework.entity
 
-import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.netology.nework.dto.Coordinates
 import com.netology.nework.dto.Post
-import java.time.Instant
 
 @Entity
 data class PostEntity(
@@ -13,7 +10,7 @@ data class PostEntity(
     var id: Long,
     var authorId: Long,
     var author: String,
-    var authorAvatar: String,
+    var authorAvatar: String?,
     var content: String,
     var published: String,
 //    var coords: Coordinates? = null,
@@ -42,7 +39,7 @@ data class PostEntity(
             id = dto.id,
             authorId = dto.authorId,
             author = dto.author,
-            authorAvatar = dto.authorAvatar!!,
+            authorAvatar = dto.authorAvatar,
             content = dto.content,
             published = dto.published,
 //            coords = dto.coords,

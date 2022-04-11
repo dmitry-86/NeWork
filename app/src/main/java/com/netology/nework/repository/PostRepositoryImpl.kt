@@ -12,10 +12,16 @@ import com.netology.nework.error.ApiError
 import com.netology.nework.error.AppError
 import com.netology.nework.error.NetworkError
 import com.netology.nework.error.UnknownError
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import java.io.IOException
 
 class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
-    override val data = dao.getAll().map(List<PostEntity>::toDto)
+
+    override val data = dao.getAll()
+        .map(List<PostEntity>::toDto)
+        .flowOn(Dispatchers.Default)
 
     override suspend fun getAll() {
         try {
@@ -27,7 +33,7 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
             dao.insert(body.toEntity())
         } catch (e: IOException) {
             throw NetworkError
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             throw UnknownError
         }
     }
@@ -39,8 +45,8 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
-            val data = response.body() ?: throw ApiError(response.code(), response.message())
-            dao.insert(PostEntity.fromDto(data))
+            val body = response.body() ?: throw ApiError(response.code(), response.message())
+            dao.insert(PostEntity.fromDto(body))
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {
@@ -50,11 +56,11 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
 
     override suspend fun removeById(id: Long) {
         try {
+            dao.removeById(id)
             val response = PostsApi.service.removeById(id)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
-            dao.removeById(id)
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {

@@ -9,11 +9,14 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
+        android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
         android:theme="@style/Theme.NeWork"
-        android:usesCleartextTraffic="${usesCleartextTraffic}">
+        android:usesCleartextTraffic="${usesCleartextTraffic}"
+        android:name=".application.NeWork" >
         <activity
             android:name=".ui.AppActivity"
+            android:requestLegacyExternalStorage="true"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

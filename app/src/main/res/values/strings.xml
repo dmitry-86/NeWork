@@ -2,14 +2,26 @@
     <string name="app_name">NeWork</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="description_post_save">Сохранить</string>
-    <string name="menu_remove">удалить</string>
-    <string name="menu_edit">редактировать</string>
-    <string name="edit">редактировать</string>
-    <string name="enter_new_content">введите новое сообщение</string>
-    <string name="cancel">отмена</string>
-    <string name="ok">ok</string>
-    <string name="retry_loading">Повторить</string>
+    <string name="description_post_save">Save</string>
+    <string name="menu_remove">Remove</string>
+    <string name="menu_edit">Edit</string>
+    <string name="edit">Edit</string>
+    <string name="enter_new_content">Enter new message</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">Ok</string>
+    <string name="retry_loading">Repeat</string>
     <string name="empty_posts">Постов нет.\nЕсли создадите новый пост, то он появится здесь</string>
     <string name="error_loading">Не удалось загрузить данные</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="enter_your_login">Введите имя пользователя</string>
+    <string name="enter_your_password">Введите пароль</string>
+    <string name="error_auth">Неверное имя пользователя или пароль</string>
+    <string name="name">Username</string>
+    <string name="repeat_your_password">Repeat yout password</string>
+    <string name="password_repeat">Repeat your password</string>
+    <string name="enter_your_name">Enter your name</string>
 </resources>

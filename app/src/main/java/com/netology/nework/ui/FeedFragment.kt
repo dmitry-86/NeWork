@@ -1,7 +1,9 @@
 package com.netology.nework.ui
 
+import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
+import android.text.InputType
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -20,6 +22,8 @@ import com.netology.nework.adapter.OnInteractionListener
 import com.netology.nework.adapter.PostsAdapter
 import com.netology.nework.databinding.FragmentFeedBinding
 import com.netology.nework.dto.Post
+import com.netology.nework.dto.User
+import com.netology.nework.viewmodel.AuthViewModel
 import com.netology.nework.viewmodel.PostViewModel
 
 class FeedFragment : Fragment() {
@@ -27,6 +31,8 @@ class FeedFragment : Fragment() {
     private val viewModel: PostViewModel by viewModels(
         ownerProducer = ::requireParentFragment
     )
+
+    private val authViewModel: AuthViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,6 +46,19 @@ class FeedFragment : Fragment() {
         )
 
 
+
+        //Заполняем данные пользователя
+//        fun bind(post: Post) {
+//            binding.apply {
+//                tvName.text = post.author
+//            }
+//        }
+
+        binding.ivAvatar.setImageResource(R.drawable.avatar)
+        binding.tvName.text = "Dima"
+        binding.tvLogin.text = "dima"
+
+
         val adapter = PostsAdapter(object : OnInteractionListener {
 
             override fun onRemove(post: Post) {
@@ -47,7 +66,7 @@ class FeedFragment : Fragment() {
             }
 
             override fun onEdit(post: Post) {
-                showAlertDialog()
+                showAlertDialog(post.content)
                 viewModel.edit(post)
             }
 
@@ -66,6 +85,7 @@ class FeedFragment : Fragment() {
 
         viewModel.data.observe(viewLifecycleOwner){ state ->
             adapter.submitList(state.posts)
+            binding.emptyText.isVisible = state.empty
         }
 
         binding.swiperefresh.setOnRefreshListener {
@@ -74,16 +94,24 @@ class FeedFragment : Fragment() {
 
 
         binding.fab.setOnClickListener {
-            findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
+            if(authViewModel.authenticated) {
+                findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
+            }else{
+                createDialog()
+            }
         }
 
         return binding.root
 
     }
 
-    private fun showAlertDialog() {
+    private fun showAlertDialog(content: String) {
         val placeFormView =
             LayoutInflater.from(activity).inflate(R.layout.dialog_create_place, null)
+
+        val editText: EditText = placeFormView.findViewById(R.id.editTextContent)
+        editText.setText(content)
+
         val dialog = AlertDialog.Builder(requireActivity())
             .setTitle(getString(R.string.edit)).setMessage(getString(R.string.enter_new_content))
             .setView(placeFormView)
@@ -104,5 +132,18 @@ class FeedFragment : Fragment() {
         }
 
     }
+
+    private fun createDialog(){
+        val builder = AlertDialog.Builder(requireActivity())
+        builder.setTitle("Would you like to sign in?")
+        builder.setNeutralButton("Yes"){dialogInterface, i ->
+            findNavController().navigate(R.id.action_feedFragment_to_signInFragment)
+        }
+        builder.setNegativeButton("No"){dialog, i ->
+            findNavController().navigate(R.id.feedFragment)
+        }
+        builder.show()
+    }
+
 
 }
