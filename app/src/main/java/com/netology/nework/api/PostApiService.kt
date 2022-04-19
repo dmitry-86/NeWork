@@ -54,6 +54,12 @@ interface PostApiService {
     @DELETE("posts/{id}")
     suspend fun removeById(@Path("id") id: Long): Response<Unit>
 
+    @POST("posts/{post_id}/likes")
+    suspend fun likeById(@Path("id") id: Long): Response<Post>
+
+    @DELETE("posts/{post_id}/likes")
+    suspend fun dislikeById(@Path("id") id: Long): Response<Post>
+
     @FormUrlEncoded
     @POST("users/authentication")
     suspend fun authUser(@Field("login") login: String, @Field("pass") pass: String): Response<User>

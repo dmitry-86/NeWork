@@ -13,9 +13,11 @@ data class PostEntity(
     var authorAvatar: String?,
     var content: String,
     var published: String,
+    var likedByMe: Boolean = false,
+    var likes: Int
 //    var coords: Coordinates? = null,
 //    var link: String? = null,
-//    var likedByMe: Boolean = false,
+
 //    @Embedded
 //    var attachment: AttachmentEmbeddable? = null,
 ) {
@@ -26,9 +28,10 @@ data class PostEntity(
         authorAvatar,
         content,
         published,
+        likedByMe,
+        likes
 //        coords,
 //        link,
-//        likedByMe,
 //        attachment?.toDto()
     )
 
@@ -42,9 +45,10 @@ data class PostEntity(
             authorAvatar = dto.authorAvatar,
             content = dto.content,
             published = dto.published,
+            likedByMe = dto.likedByMe,
+            likes = dto.likes
 //            coords = dto.coords,
 //            link = dto.link,
-//            likedByMe = dto.likedByMe,
 //            attachment = AttachmentEmbeddable.fromDto(dto.attachment),
         )
     }

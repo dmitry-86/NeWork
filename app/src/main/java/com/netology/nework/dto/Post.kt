@@ -1,7 +1,5 @@
 package com.netology.nework.dto
 
-import java.time.Instant
-
 data class Post(
     val id: Long,
     val authorId: Long,
@@ -9,9 +7,10 @@ data class Post(
     val authorAvatar: String?,
     val content: String,
     val published: String,
-    val ownedByMe: Boolean = false,
 //    val coords: Coordinates?,
 //    val link: String? = null,
-//    val likedByMe: Boolean = false,
+    val likedByMe: Boolean = false,
+    val likes: Int = 0,
+    val ownedByMe: Boolean = false,
 //    val attachment: Attachment? = null,
 )

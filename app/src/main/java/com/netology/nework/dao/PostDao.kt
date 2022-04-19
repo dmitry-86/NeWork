@@ -28,6 +28,23 @@ interface PostDao {
     @Query("SELECT * FROM PostEntity WHERE authorId = :id")
     fun getUserPostsById(id: Long): Flow<List<PostEntity>>
 
+    @Query("""
+        UPDATE PostEntity SET
+               likes = likes + 1,
+               likedByMe = 1
+           WHERE id = :id AND likedByMe = 0;
+        """)
+    suspend fun likeById(id: Long)
+
+    @Query(
+        """
+           UPDATE PostEntity SET
+               likes = likes - 1,
+               likedByMe = 0
+           WHERE id = :id AND likedByMe = 1;
+        """)
+    suspend fun dislikeById(id: Long)
+
 }
 
 class Converters {

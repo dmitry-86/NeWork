@@ -1,7 +1,6 @@
 package com.netology.nework.viewmodel
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.*
 import com.netology.nework.auth.AppAuth
 import kotlinx.coroutines.Dispatchers
@@ -16,9 +15,6 @@ import com.netology.nework.repository.PostRepositoryImpl
 import com.netology.nework.util.SingleLiveEvent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flatMapLatest
-import java.text.SimpleDateFormat
-import java.time.Instant
-import java.util.Calendar
 
 
 private val empty = Post(
@@ -124,9 +120,29 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         edited.value = edited.value?.copy(content = text)
     }
 
-//    fun likeById(id: Long) {
-//        TODO()
-//    }
+    fun likeById(id: Long) = viewModelScope.launch {
+        try {
+            _dataState.value = FeedModelState(loading = true)
+            repository.likeById(id)
+            _dataState.value = FeedModelState()
+        } catch (e: Exception) {
+            _dataState.value = FeedModelState(error = true)
+        }
+    }
+
+    fun dislikeById(id: Long) = viewModelScope.launch {
+        try {
+            _dataState.value = FeedModelState(loading = true)
+            repository.dislikeById(id)
+            _dataState.value = FeedModelState()
+        } catch (e: Exception) {
+            _dataState.value = FeedModelState(error = true)
+        }
+    }
+
+    fun likePost(post: Post){
+        if (!post.likedByMe) likeById(post.id) else dislikeById(post.id)
+    }
 
     fun removeById(id: Long)  = viewModelScope.launch {
         try {

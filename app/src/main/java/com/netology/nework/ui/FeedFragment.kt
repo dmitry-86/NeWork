@@ -65,6 +65,14 @@ class FeedFragment : Fragment() {
                 viewModel.edit(post)
             }
 
+            override fun onLike(post: Post) {
+                if(authViewModel.authenticated) {
+                    viewModel.likePost(post)
+                }else {
+                    createDialog()
+                }
+            }
+
         })
 
         binding.list.adapter = adapter

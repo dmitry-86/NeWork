@@ -1,14 +1,17 @@
 package com.netology.nework.adapter
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.navigation.Navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.netology.nework.R
 import com.netology.nework.databinding.CardPostBinding
 import com.netology.nework.dto.Post
 import java.time.LocalDateTime
@@ -17,7 +20,7 @@ import java.time.format.DateTimeFormatter
 interface PostOnInteractionListener {
     fun onEdit(post: Post) {}
     fun onRemove(post: Post) {}
-    //    fun onLike(post: Post) {}
+    fun onLike(post: Post) {}
     //    fun onShare(post: Post) {}
 }
 
@@ -47,15 +50,21 @@ class PostViewHolder(
         binding.apply {
             textViewUserName.text = post.author
             textViewPublished.text = post.published
-
             textViewContent.text = post.content
 
             val parsedDate = LocalDateTime.parse(post.published, DateTimeFormatter.ISO_DATE_TIME)
             val formattedDate = parsedDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
             textViewPublished.text = formattedDate
 
+            like.isChecked = post.likedByMe
+            like.text = "${post.likes}"
+
             delete.visibility = if (post.ownedByMe) View.VISIBLE else View.INVISIBLE
             edit.visibility = if (post.ownedByMe) View.VISIBLE else View.INVISIBLE
+
+            like.setOnClickListener {
+                onInteractionListener.onLike(post)
+            }
 
             delete.setOnClickListener {
                 onInteractionListener.onRemove(post)
