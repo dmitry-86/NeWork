@@ -14,7 +14,7 @@ import com.netology.nework.dto.Post
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-interface OnInteractionListener {
+interface PostOnInteractionListener {
     fun onEdit(post: Post) {}
     fun onRemove(post: Post) {}
     //    fun onLike(post: Post) {}
@@ -22,7 +22,7 @@ interface OnInteractionListener {
 }
 
 class PostsAdapter(
-    private val onInteractionListener: OnInteractionListener,
+    private val onInteractionListener: PostOnInteractionListener,
 ) : ListAdapter<Post, PostViewHolder>(PostDiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         val binding = CardPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -38,7 +38,7 @@ class PostsAdapter(
 
 class PostViewHolder(
     private val binding: CardPostBinding,
-    private val onInteractionListener: OnInteractionListener,
+    private val onInteractionListener: PostOnInteractionListener,
 ) : RecyclerView.ViewHolder(binding.root) {
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -57,7 +57,7 @@ class PostViewHolder(
             delete.visibility = if (post.ownedByMe) View.VISIBLE else View.INVISIBLE
             edit.visibility = if (post.ownedByMe) View.VISIBLE else View.INVISIBLE
 
-            delete.setOnClickListener{
+            delete.setOnClickListener {
                 onInteractionListener.onRemove(post)
             }
 

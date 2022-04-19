@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import com.netology.nework.databinding.FragmentNewPostBinding
 import com.netology.nework.viewmodel.PostViewModel
 import androidx.navigation.fragment.findNavController
+import com.netology.nework.R
 import com.netology.nework.utils.AndroidUtils
 import com.netology.nework.utils.StringArg
 
@@ -44,7 +45,7 @@ class NewPostFragment: Fragment() {
         }
 
         viewModel.postCreated.observe(viewLifecycleOwner) {
-            findNavController().navigateUp()
+            findNavController().navigate(R.id.feedFragment)
         }
 
         return binding.root

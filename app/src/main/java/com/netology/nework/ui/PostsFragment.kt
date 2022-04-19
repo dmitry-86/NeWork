@@ -16,12 +16,12 @@ import com.google.android.material.snackbar.Snackbar
 import com.netology.nework.R
 import com.netology.nework.adapter.PostOnInteractionListener
 import com.netology.nework.adapter.PostsAdapter
-import com.netology.nework.databinding.FragmentFeedBinding
+import com.netology.nework.databinding.FragmentPostsBinding
 import com.netology.nework.dto.Post
 import com.netology.nework.viewmodel.AuthViewModel
 import com.netology.nework.viewmodel.PostViewModel
 
-class FeedFragment : Fragment() {
+class PostsFragment : Fragment() {
 
     private val viewModel: PostViewModel by viewModels(
         ownerProducer = ::requireParentFragment
@@ -34,25 +34,11 @@ class FeedFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = FragmentFeedBinding.inflate(
+        val binding = FragmentPostsBinding.inflate(
             inflater,
             container,
             false
         )
-
-
-
-        //Заполняем данные пользователя
-//        fun bind(post: Post) {
-//            binding.apply {
-//                tvName.text = post.author
-//            }
-//        }
-
-//        binding.ivAvatar.setImageResource(R.drawable.avatar)
-//        binding.tvName.text = "Dima"
-//        binding.tvLogin.text = "dima"
-
 
         val adapter = PostsAdapter(object : PostOnInteractionListener {
 
@@ -78,9 +64,9 @@ class FeedFragment : Fragment() {
             }
         }
 
-        viewModel.data.observe(viewLifecycleOwner){ state ->
-                adapter.submitList(state.posts)
-                binding.emptyText.isVisible = state.empty
+        viewModel.userData.observe(viewLifecycleOwner){ state ->
+            adapter.submitList(state.posts)
+            binding.emptyText.isVisible = state.empty
         }
 
         binding.swiperefresh.setOnRefreshListener {
@@ -90,7 +76,7 @@ class FeedFragment : Fragment() {
 
         binding.fab.setOnClickListener {
             if(authViewModel.authenticated) {
-                findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
+                findNavController().navigate(R.id.newPostFragment)
             }else{
                 createDialog()
             }

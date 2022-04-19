@@ -2,6 +2,7 @@ package com.netology.nework.ui
 
 import android.content.DialogInterface
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -14,16 +15,20 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.netology.nework.R
+import com.netology.nework.adapter.JobOnInteractionListener
+import com.netology.nework.adapter.JobsAdapter
 import com.netology.nework.adapter.PostOnInteractionListener
 import com.netology.nework.adapter.PostsAdapter
 import com.netology.nework.databinding.FragmentFeedBinding
+import com.netology.nework.databinding.FragmentJobsBinding
 import com.netology.nework.dto.Post
 import com.netology.nework.viewmodel.AuthViewModel
+import com.netology.nework.viewmodel.JobViewModel
 import com.netology.nework.viewmodel.PostViewModel
 
-class FeedFragment : Fragment() {
+class JobsFragment : Fragment() {
 
-    private val viewModel: PostViewModel by viewModels(
+    private val viewModel: JobViewModel by viewModels(
         ownerProducer = ::requireParentFragment
     )
 
@@ -34,7 +39,7 @@ class FeedFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = FragmentFeedBinding.inflate(
+        val binding = FragmentJobsBinding.inflate(
             inflater,
             container,
             false
@@ -54,16 +59,16 @@ class FeedFragment : Fragment() {
 //        binding.tvLogin.text = "dima"
 
 
-        val adapter = PostsAdapter(object : PostOnInteractionListener {
+        val adapter = JobsAdapter(object : JobOnInteractionListener {
 
-            override fun onRemove(post: Post) {
-                viewModel.removeById(post.id)
-            }
-
-            override fun onEdit(post: Post) {
-                showAlertDialog(post.content)
-                viewModel.edit(post)
-            }
+//            override fun onRemove(post: Post) {
+//                viewModel.removeById(post.id)
+//            }
+//
+//            override fun onEdit(post: Post) {
+//                showAlertDialog(post.content)
+//                viewModel.edit(post)
+//            }
 
         })
 
@@ -73,26 +78,28 @@ class FeedFragment : Fragment() {
             binding.swiperefresh.isRefreshing = state.refreshing
             if (state.error) {
                 Snackbar.make(binding.root, R.string.error_loading, Snackbar.LENGTH_LONG)
-                    .setAction(R.string.retry_loading) { viewModel.loadPosts() }
+                    .setAction(R.string.retry_loading) { viewModel.loadJobs() }
                     .show()
             }
         }
 
         viewModel.data.observe(viewLifecycleOwner){ state ->
-                adapter.submitList(state.posts)
-                binding.emptyText.isVisible = state.empty
+            adapter.submitList(state.jobs)
+            Log.i("tag", state.jobs.toString())
+            binding.emptyText.isVisible = state.empty
         }
 
         binding.swiperefresh.setOnRefreshListener {
-            viewModel.refreshPosts()
+            viewModel.refreshJobs()
         }
 
 
         binding.fab.setOnClickListener {
             if(authViewModel.authenticated) {
-                findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
+//                findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
+                showAlertDialog()
             }else{
-                createDialog()
+                findNavController().navigate(R.id.signInFragment)
             }
         }
 
@@ -100,12 +107,12 @@ class FeedFragment : Fragment() {
 
     }
 
-    private fun showAlertDialog(content: String) {
+    private fun showAlertDialog() {
         val placeFormView =
-            LayoutInflater.from(activity).inflate(R.layout.dialog_change_post, null)
+            LayoutInflater.from(activity).inflate(R.layout.dialog_create_job, null)
 
-        val editText: EditText = placeFormView.findViewById(R.id.editTextContent)
-        editText.setText(content)
+//        val editText: EditText = placeFormView.findViewById(R.id.editTextContent)
+//        editText.setText(content)
 
         val dialog = AlertDialog.Builder(requireActivity())
             .setTitle(getString(R.string.edit)).setMessage(getString(R.string.enter_new_content))
@@ -115,29 +122,27 @@ class FeedFragment : Fragment() {
             .show()
 
         dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
-            val content = placeFormView.findViewById<EditText>(R.id.editTextContent).text.toString()
-            if (content.trim().isEmpty()) {
+            val name = placeFormView.findViewById<EditText>(R.id.name).text.toString()
+            val position  = placeFormView.findViewById<EditText>(R.id.position).text.toString()
+            val started  = placeFormView.findViewById<EditText>(R.id.started).text.toString()
+            val finished  = placeFormView.findViewById<EditText>(R.id.finished).text.toString()
+            val link  = placeFormView.findViewById<EditText>(R.id.link).text.toString()
+            if (name.trim().isEmpty()
+                || position.trim().isEmpty()
+                || started.trim().isEmpty()
+                || finished.trim().isEmpty()
+                || link.trim().isEmpty()){
                 Toast.makeText(activity, "сообщение пустое", Toast.LENGTH_LONG)
                     .show()
                 return@setOnClickListener
             }
-            viewModel.changeContent(content)
+            viewModel.changeContent(name, position, started, finished, link)
             viewModel.save()
             dialog.dismiss()
+
+
         }
 
-    }
-
-    private fun createDialog(){
-        val builder = AlertDialog.Builder(requireActivity())
-        builder.setTitle("Would you like to sign in?")
-        builder.setNeutralButton("Yes"){dialogInterface, i ->
-            findNavController().navigate(R.id.action_feedFragment_to_signInFragment)
-        }
-        builder.setNegativeButton("No"){dialog, i ->
-            findNavController().navigate(R.id.feedFragment)
-        }
-        builder.show()
     }
 
 

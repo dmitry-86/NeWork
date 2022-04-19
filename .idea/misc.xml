@@ -6,16 +6,30 @@
         <entry key="..\:/md/NeWork/app/src/main/res/drawable/ic_baseline_clear_24.xml" value="0.15833333333333333" />
         <entry key="..\:/md/NeWork/app/src/main/res/drawable/ic_baseline_more_vert_24.xml" value="0.21302083333333333" />
         <entry key="..\:/md/NeWork/app/src/main/res/drawable/ic_ok_24dp.xml" value="0.24166666666666667" />
+        <entry key="..\:/md/NeWork/app/src/main/res/layout/activity_app.xml" value="0.25" />
         <entry key="..\:/md/NeWork/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/md/NeWork/app/src/main/res/layout/card_event.xml" value="0.25" />
+        <entry key="..\:/md/NeWork/app/src/main/res/layout/card_job.xml" value="0.24139492753623187" />
         <entry key="..\:/md/NeWork/app/src/main/res/layout/card_post.xml" value="0.25" />
+        <entry key="..\:/md/NeWork/app/src/main/res/layout/dialog_change_post.xml" value="0.25" />
+        <entry key="..\:/md/NeWork/app/src/main/res/layout/dialog_create_event.xml" value="0.25" />
+        <entry key="..\:/md/NeWork/app/src/main/res/layout/dialog_create_job.xml" value="0.25" />
         <entry key="..\:/md/NeWork/app/src/main/res/layout/dialog_create_place.xml" value="0.25" />
-        <entry key="..\:/md/NeWork/app/src/main/res/layout/fragment_feed.xml" value="0.25" />
+        <entry key="..\:/md/NeWork/app/src/main/res/layout/fragment_events.xml" value="0.4" />
+        <entry key="..\:/md/NeWork/app/src/main/res/layout/fragment_feed.xml" value="0.4" />
+        <entry key="..\:/md/NeWork/app/src/main/res/layout/fragment_jobs.xml" value="0.1" />
         <entry key="..\:/md/NeWork/app/src/main/res/layout/fragment_new_post.xml" value="0.25" />
+        <entry key="..\:/md/NeWork/app/src/main/res/layout/fragment_posts.xml" value="0.25" />
         <entry key="..\:/md/NeWork/app/src/main/res/layout/fragment_sign_in.xml" value="0.25" />
         <entry key="..\:/md/NeWork/app/src/main/res/layout/fragment_sign_up.xml" value="0.25" />
+        <entry key="..\:/md/NeWork/app/src/main/res/layout/fragment_user_account.xml" value="0.1" />
         <entry key="..\:/md/NeWork/app/src/main/res/layout/fragment_user_profile.xml" value="0.25" />
+        <entry key="..\:/md/NeWork/app/src/main/res/layout/job_post.xml" value="0.25" />
+        <entry key="..\:/md/NeWork/app/src/main/res/menu/account_button.xml" value="0.25" />
         <entry key="..\:/md/NeWork/app/src/main/res/menu/menu_main.xml" value="0.24947916666666667" />
+        <entry key="..\:/md/NeWork/app/src/main/res/menu/options_post.xml" value="0.25" />
         <entry key="..\:/md/NeWork/app/src/main/res/menu/post_options.xml" value="0.196875" />
+        <entry key="..\:/md/NeWork/app/src/main/res/menu/posts_button.xml" value="0.12760416666666666" />
       </map>
     </option>
   </component>

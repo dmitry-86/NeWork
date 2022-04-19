@@ -8,11 +8,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import com.netology.nework.db.AppDb
+import com.netology.nework.dto.Coordinates
+import com.netology.nework.dto.Event
+import com.netology.nework.dto.Job
 import com.netology.nework.dto.Post
+import com.netology.nework.enumeration.EventType
+import com.netology.nework.model.EventFeedModel
 import com.netology.nework.model.FeedModel
 import com.netology.nework.model.FeedModelState
-import com.netology.nework.repository.PostRepository
-import com.netology.nework.repository.PostRepositoryImpl
+import com.netology.nework.model.JobFeedModel
+import com.netology.nework.repository.*
 import com.netology.nework.util.SingleLiveEvent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flatMapLatest
@@ -21,64 +26,55 @@ import java.time.Instant
 import java.util.Calendar
 
 
-private val empty = Post(
+private val empty = Event(
     id = 0,
     authorId = 0,
     author = "Dima",
     authorAvatar = "",
-    content = "New Post",
-    published = "2021-08-17T16:46:58.887547Z"
-//    published = SimpleDateFormat("dd.MM, HH:mm").format(Calendar.getInstance().getTime()),
-//    coords = null,
-//    link = null,
-//    likedByMe = false,
-//    attachment = null
+    content = "Выпускники Kotlin Developer",
+    datetime = "2021-09-17T16:46:58.887547Z",
+    published = "2021-08-17T16:46:58.887547Z",
+    type = EventType.OFFLINE
 )
 
 @ExperimentalCoroutinesApi
-class PostViewModel(application: Application) : AndroidViewModel(application) {
+class EventViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repository: PostRepository =
-        PostRepositoryImpl(AppDb.getInstance(context = application).postDao())
+    private val repository: EventRepository =
+        EventRepositoryImpl(AppDb.getInstance(context = application).eventDao())
 
-    val data: LiveData<FeedModel> = AppAuth.getInstance()
+    val data: LiveData<EventFeedModel> = AppAuth.getInstance()
         .authStateFlow
-        .flatMapLatest { (myId, _) ->
+        .flatMapLatest {
             repository.data
-                .map { posts ->
-                    FeedModel(
-                        posts.map { it.copy(ownedByMe = it.authorId == myId) },
-//                        posts.isEmpty()
-                    )
-                }
+                .map (::EventFeedModel)
         }.asLiveData(Dispatchers.Default)
 
-    val userData: LiveData<FeedModel> = AppAuth.getInstance()
-        .authStateFlow
-        .flatMapLatest { (myId, _) ->
-            repository.userData
-                .map { posts ->
-                    FeedModel(
-                        posts.map { it.copy(ownedByMe = it.authorId == myId) },
-//                        posts.isEmpty()
-                    )
-                }
-        }.asLiveData(Dispatchers.Default)
+
+//    val userData: LiveData<FeedModel> = AppAuth.getInstance()
+//        .authStateFlow
+//        .flatMapLatest { (myId, _) ->
+//            repository.userData
+//                .map { events ->
+//                    FeedModel(
+//                    )
+//                }
+//        }.asLiveData(Dispatchers.Default)
 
     private val _dataState = MutableLiveData<FeedModelState>()
     val dataState: LiveData<FeedModelState>
         get() = _dataState
 
     private val edited = MutableLiveData(empty)
-    private val _postCreated = SingleLiveEvent<Unit>()
-    val postCreated: LiveData<Unit>
-        get() = _postCreated
+    private val _eventCreated = SingleLiveEvent<Unit>()
+    val eventCreated: LiveData<Unit>
+        get() = _eventCreated
 
     init {
-        loadPosts()
+        loadEvents()
     }
 
-    fun loadPosts() = viewModelScope.launch {
+    fun loadEvents() = viewModelScope.launch {
         try {
             _dataState.value = FeedModelState(loading = true)
             repository.getAll()
@@ -88,7 +84,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun refreshPosts() = viewModelScope.launch {
+    fun refreshEvents() = viewModelScope.launch {
         try {
             _dataState.value = FeedModelState(refreshing = true)
             repository.getAll()
@@ -101,7 +97,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
     fun save() {
         edited.value?.let {
-            _postCreated.value = Unit
+            _eventCreated.value = Unit
             viewModelScope.launch {
                 try {
                     repository.save(it)
@@ -113,15 +109,23 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         }
         edited.value = empty
     }
-    fun edit(post: Post) {
-        edited.value = post
+    fun edit(event: Event) {
+        edited.value = event
     }
-    fun changeContent(content: String) {
-        val text = content.trim()
-        if (edited.value?.content == text) {
+
+    fun changeContent(content: String, eventType: EventType) {
+        val content = content.trim()
+//        val date = date.trim()
+        val eventType = eventType
+
+        Log.i("tag", content + eventType)
+
+        if (edited.value?.content == content
+//            && edited.value?.datetime == date
+            && edited.value?.type == eventType) {
             return
         }
-        edited.value = edited.value?.copy(content = text)
+        edited.value = edited.value?.copy(content = content, type = eventType)
     }
 
 //    fun likeById(id: Long) {
@@ -137,6 +141,5 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             _dataState.value = FeedModelState(error = true)
         }
     }
-
 
 }

@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -54,6 +55,10 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
 
+        menuInflater.inflate(R.menu.account_button, menu)
+
+        menuInflater.inflate(R.menu.posts_button, menu)
+
         menu.let {
             it.setGroupVisible(R.id.unauthenticated, !viewModel.authenticated)
             it.setGroupVisible(R.id.authenticated, viewModel.authenticated)
@@ -76,6 +81,14 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
             R.id.signout -> {
                 AppAuth.getInstance().removeAuth()
                 createDialog()
+                true
+            }
+            R.id.userAccaunt -> {
+                findNavController(R.id.nav_host_fragment).navigate(R.id.userAccountFragment)
+                true
+            }
+            R.id.posts -> {
+                findNavController(R.id.nav_host_fragment).navigate(R.id.feedFragment)
                 true
             }
             else -> super.onOptionsItemSelected(item)

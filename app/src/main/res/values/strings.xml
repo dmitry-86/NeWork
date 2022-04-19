@@ -24,4 +24,9 @@
     <string name="repeat_your_password">Repeat yout password</string>
     <string name="password_repeat">Repeat your password</string>
     <string name="enter_your_name">Enter your name</string>
+    <string name="account">Account</string>
+    <string-array name="eventType">
+        <item>online</item>
+        <item>offline</item>
+    </string-array>
 </resources>

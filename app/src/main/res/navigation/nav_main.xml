@@ -38,4 +38,8 @@
         android:name="com.netology.nework.ui.SignUpFragment"
         android:label="fragment_sign_up"
         tools:layout="@layout/fragment_sign_up" />
+    <fragment
+        android:id="@+id/userAccountFragment"
+        android:name="com.netology.nework.ui.UserAccountFragment"
+        android:label="UserAccountFragment" />
 </navigation>

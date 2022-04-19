@@ -1,6 +1,5 @@
 package com.netology.nework.dao
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.netology.nework.entity.PostEntity
 import com.netology.nework.enumeration.AttachmentType
@@ -26,6 +25,8 @@ interface PostDao {
     @Query("DELETE FROM PostEntity WHERE id = :id")
     suspend fun removeById(id: Long)
 
+    @Query("SELECT * FROM PostEntity WHERE authorId = :id")
+    fun getUserPostsById(id: Long): Flow<List<PostEntity>>
 
 }
 

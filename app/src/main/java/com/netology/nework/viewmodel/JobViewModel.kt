@@ -8,9 +8,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import com.netology.nework.db.AppDb
+import com.netology.nework.dto.Job
 import com.netology.nework.dto.Post
 import com.netology.nework.model.FeedModel
 import com.netology.nework.model.FeedModelState
+import com.netology.nework.model.JobFeedModel
+import com.netology.nework.repository.JobRepository
+import com.netology.nework.repository.JobRepositoryImpl
 import com.netology.nework.repository.PostRepository
 import com.netology.nework.repository.PostRepositoryImpl
 import com.netology.nework.util.SingleLiveEvent
@@ -21,46 +25,36 @@ import java.time.Instant
 import java.util.Calendar
 
 
-private val empty = Post(
+private val empty = Job(
     id = 0,
     authorId = 0,
-    author = "Dima",
-    authorAvatar = "",
-    content = "New Post",
-    published = "2021-08-17T16:46:58.887547Z"
-//    published = SimpleDateFormat("dd.MM, HH:mm").format(Calendar.getInstance().getTime()),
-//    coords = null,
-//    link = null,
-//    likedByMe = false,
-//    attachment = null
+    name = " ",
+    position = " ",
+    start = 0,
+    finish = null,
+    link = null
 )
 
 @ExperimentalCoroutinesApi
-class PostViewModel(application: Application) : AndroidViewModel(application) {
+class JobViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repository: PostRepository =
-        PostRepositoryImpl(AppDb.getInstance(context = application).postDao())
+    private val repository: JobRepository =
+        JobRepositoryImpl(AppDb.getInstance(context = application).jobDao())
 
-    val data: LiveData<FeedModel> = AppAuth.getInstance()
+    val data: LiveData<JobFeedModel> = AppAuth.getInstance()
         .authStateFlow
-        .flatMapLatest { (myId, _) ->
+        .flatMapLatest {
             repository.data
-                .map { posts ->
-                    FeedModel(
-                        posts.map { it.copy(ownedByMe = it.authorId == myId) },
-//                        posts.isEmpty()
-                    )
-                }
+                .map (::JobFeedModel)
         }.asLiveData(Dispatchers.Default)
+
 
     val userData: LiveData<FeedModel> = AppAuth.getInstance()
         .authStateFlow
         .flatMapLatest { (myId, _) ->
             repository.userData
-                .map { posts ->
+                .map { jobs ->
                     FeedModel(
-                        posts.map { it.copy(ownedByMe = it.authorId == myId) },
-//                        posts.isEmpty()
                     )
                 }
         }.asLiveData(Dispatchers.Default)
@@ -70,15 +64,15 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         get() = _dataState
 
     private val edited = MutableLiveData(empty)
-    private val _postCreated = SingleLiveEvent<Unit>()
+    private val _jobCreated = SingleLiveEvent<Unit>()
     val postCreated: LiveData<Unit>
-        get() = _postCreated
+        get() = _jobCreated
 
     init {
-        loadPosts()
+        loadJobs()
     }
 
-    fun loadPosts() = viewModelScope.launch {
+    fun loadJobs() = viewModelScope.launch {
         try {
             _dataState.value = FeedModelState(loading = true)
             repository.getAll()
@@ -88,7 +82,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun refreshPosts() = viewModelScope.launch {
+    fun refreshJobs() = viewModelScope.launch {
         try {
             _dataState.value = FeedModelState(refreshing = true)
             repository.getAll()
@@ -101,7 +95,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
     fun save() {
         edited.value?.let {
-            _postCreated.value = Unit
+            _jobCreated.value = Unit
             viewModelScope.launch {
                 try {
                     repository.save(it)
@@ -113,15 +107,24 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         }
         edited.value = empty
     }
-    fun edit(post: Post) {
-        edited.value = post
+    fun edit(job: Job) {
+        edited.value = job
     }
-    fun changeContent(content: String) {
-        val text = content.trim()
-        if (edited.value?.content == text) {
+
+    fun changeContent(name: String, position: String, started: String, finished: String, link: String) {
+        val name = name.trim()
+        val position = position.trim()
+        val started = started.trim()
+        val finished = finished.trim()
+        val link = link.trim()
+        if (edited.value?.name == name
+            && edited.value?.position == position
+            && edited.value?.start == started.toLong()
+            && edited.value?.finish == finished.toLong()
+            && edited.value?.link == link) {
             return
         }
-        edited.value = edited.value?.copy(content = text)
+        edited.value = edited.value?.copy(name = name, position = position, start = started.toLong(), finish = finished.toLong(), link = link)
     }
 
 //    fun likeById(id: Long) {

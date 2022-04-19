@@ -2,6 +2,7 @@ package com.netology.nework.dto
 
 data class Job(
     val id: Long,
+    val authorId: Long,
     val name: String,
     val position: String,
     val start: Long,
