@@ -11,7 +11,7 @@ import com.netology.nework.entity.EventEntity
 import com.netology.nework.entity.JobEntity
 import com.netology.nework.entity.PostEntity
 
-@Database(entities = [PostEntity::class, JobEntity::class, EventEntity::class], version = 5)
+@Database(entities = [PostEntity::class, JobEntity::class, EventEntity::class], version = 6)
 abstract class AppDb : RoomDatabase() {
     abstract fun postDao(): PostDao
     abstract fun jobDao(): JobDao

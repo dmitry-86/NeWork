@@ -124,12 +124,13 @@ class FeedFragment : Fragment() {
 
         dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
             val content = placeFormView.findViewById<EditText>(R.id.editTextContent).text.toString()
+            val link = placeFormView.findViewById<EditText>(R.id.link).text.toString()
             if (content.trim().isEmpty()) {
                 Toast.makeText(activity, "сообщение пустое", Toast.LENGTH_LONG)
                     .show()
                 return@setOnClickListener
             }
-            viewModel.changeContent(content)
+            viewModel.changeContent(content, link)
             viewModel.save()
             dialog.dismiss()
         }

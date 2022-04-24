@@ -11,9 +11,12 @@ import androidx.navigation.Navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.netology.nework.BuildConfig
 import com.netology.nework.R
 import com.netology.nework.databinding.CardPostBinding
 import com.netology.nework.dto.Post
+import com.netology.nework.enumeration.AttachmentType
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -61,6 +64,29 @@ class PostViewHolder(
 
             delete.visibility = if (post.ownedByMe) View.VISIBLE else View.INVISIBLE
             edit.visibility = if (post.ownedByMe) View.VISIBLE else View.INVISIBLE
+
+            if (attachment != null) {
+                when (post.attachment?.type) {
+                    AttachmentType.IMAGE -> {
+                        Glide.with(attachment)
+                            .load("${BuildConfig.BASE_URL}/media/${post.attachment?.url}")
+                            .into(attachment)
+                        attachment.visibility = View.VISIBLE
+                    }
+                }
+            }
+
+            imageViewAvatar.setImageResource(R.drawable.avatar)
+
+
+            if(post.link != null) {
+                textViewLink.settings.javaScriptEnabled = true
+                textViewLink.webViewClient
+                textViewLink.loadUrl(post.link.toString())
+                textViewLink.loadData("<html><body><a>${post.link.toString()}</a></body></html>",
+                    "text/html", "UTF-8");
+                textViewLink.visibility = View.VISIBLE
+            }
 
             like.setOnClickListener {
                 onInteractionListener.onLike(post)

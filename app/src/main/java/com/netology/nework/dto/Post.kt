@@ -8,9 +8,9 @@ data class Post(
     val content: String,
     val published: String,
 //    val coords: Coordinates?,
-//    val link: String? = null,
+    val link: String? = null,
     val likedByMe: Boolean = false,
     val likes: Int = 0,
     val ownedByMe: Boolean = false,
-//    val attachment: Attachment? = null,
+    val attachment: Attachment? = null,
 )

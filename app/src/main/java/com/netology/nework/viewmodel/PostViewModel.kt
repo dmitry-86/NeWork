@@ -1,20 +1,24 @@
 package com.netology.nework.viewmodel
 
 import android.app.Application
+import android.net.Uri
 import androidx.lifecycle.*
 import com.netology.nework.auth.AppAuth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import com.netology.nework.db.AppDb
+import com.netology.nework.dto.MediaUpload
 import com.netology.nework.dto.Post
 import com.netology.nework.model.FeedModel
 import com.netology.nework.model.FeedModelState
+import com.netology.nework.model.PhotoModel
 import com.netology.nework.repository.PostRepository
 import com.netology.nework.repository.PostRepositoryImpl
 import com.netology.nework.util.SingleLiveEvent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flatMapLatest
+import java.io.File
 
 
 private val empty = Post(
@@ -23,13 +27,14 @@ private val empty = Post(
     author = "Dima",
     authorAvatar = "",
     content = "New Post",
-    published = "2021-08-17T16:46:58.887547Z"
-//    published = SimpleDateFormat("dd.MM, HH:mm").format(Calendar.getInstance().getTime()),
+    published = "2021-08-17T16:46:58.887547Z",
 //    coords = null,
-//    link = null,
-//    likedByMe = false,
-//    attachment = null
+    link = null,
+    likedByMe = false,
+    attachment = null
 )
+
+private val noPhoto = PhotoModel()
 
 @ExperimentalCoroutinesApi
 class PostViewModel(application: Application) : AndroidViewModel(application) {
@@ -70,6 +75,10 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     val postCreated: LiveData<Unit>
         get() = _postCreated
 
+    private val _photo = MutableLiveData(noPhoto)
+    val photo: LiveData<PhotoModel>
+        get() = _photo
+
     init {
         loadPosts()
     }
@@ -89,8 +98,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             _dataState.value = FeedModelState(refreshing = true)
             repository.getAll()
             _dataState.value = FeedModelState()
-        }
-        catch (e: Exception) {
+        } catch (e: Exception) {
             _dataState.value = FeedModelState(error = true)
         }
     }
@@ -100,7 +108,12 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             _postCreated.value = Unit
             viewModelScope.launch {
                 try {
-                    repository.save(it)
+                    when (_photo.value) {
+                        noPhoto -> repository.save(it)
+                        else -> _photo.value?.file?.let { file ->
+                            repository.saveWithAttachment(it, MediaUpload(file))
+                        }
+                    }
                     _dataState.value = FeedModelState()
                 } catch (e: Exception) {
                     _dataState.value = FeedModelState(error = true)
@@ -108,16 +121,25 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
         edited.value = empty
+        _photo.value = noPhoto
     }
+
+
     fun edit(post: Post) {
         edited.value = post
     }
-    fun changeContent(content: String) {
+
+    fun changeContent(content: String, link: String) {
         val text = content.trim()
+        val link = link.trim()
         if (edited.value?.content == text) {
             return
         }
-        edited.value = edited.value?.copy(content = text)
+        edited.value = edited.value?.copy(content = text, link = link)
+    }
+
+    fun changePhoto(uri: Uri?, file: File?) {
+        _photo.value = PhotoModel(uri, file)
     }
 
     fun likeById(id: Long) = viewModelScope.launch {
@@ -140,11 +162,11 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun likePost(post: Post){
+    fun likePost(post: Post) {
         if (!post.likedByMe) likeById(post.id) else dislikeById(post.id)
     }
 
-    fun removeById(id: Long)  = viewModelScope.launch {
+    fun removeById(id: Long) = viewModelScope.launch {
         try {
             _dataState.value = FeedModelState(loading = true)
             repository.removeById(id)

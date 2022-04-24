@@ -2,9 +2,11 @@ package com.netology.nework.api
 
 import com.netology.nework.BuildConfig
 import com.netology.nework.auth.AppAuth
+import com.netology.nework.dto.Media
 import com.netology.nework.dto.Post
 import com.netology.nework.dto.User
 import okhttp3.Interceptor
+import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
@@ -59,6 +61,10 @@ interface PostApiService {
 
     @DELETE("posts/{post_id}/likes")
     suspend fun dislikeById(@Path("id") id: Long): Response<Post>
+
+    @Multipart
+    @POST("media")
+    suspend fun upload(@Part media: MultipartBody.Part): Response<Media>
 
     @FormUrlEncoded
     @POST("users/authentication")

@@ -33,6 +33,11 @@
         <entry key="..\:/md/NeWork/app/src/main/res/menu/options_post.xml" value="0.25" />
         <entry key="..\:/md/NeWork/app/src/main/res/menu/post_options.xml" value="0.196875" />
         <entry key="..\:/md/NeWork/app/src/main/res/menu/posts_button.xml" value="0.12760416666666666" />
+        <entry key="..\:/md/netology/NeWork2/app/src/main/res/drawable-v24/ic_camera_24dp.xml" value="0.23981481481481481" />
+        <entry key="..\:/md/netology/NeWork2/app/src/main/res/drawable-v24/ic_photo_24dp.xml" value="0.23981481481481481" />
+        <entry key="..\:/md/netology/NeWork2/app/src/main/res/layout/card_post.xml" value="0.1671195652173913" />
+        <entry key="..\:/md/netology/NeWork2/app/src/main/res/layout/fragment_image.xml" value="0.1671195652173913" />
+        <entry key="..\:/md/netology/NeWork2/app/src/main/res/layout/fragment_new_post.xml" value="0.1671195652173913" />
       </map>
     </option>
   </component>

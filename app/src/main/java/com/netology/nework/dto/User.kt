@@ -5,6 +5,7 @@ data class User(
     val token: String
 )
 
+
 //val AnonymousUser = User(
 //    id = 0L,
 //    login = "anonymous",
