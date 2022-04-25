@@ -17,11 +17,16 @@ import com.netology.nework.adapter.MyPagerAdapter
 import com.netology.nework.databinding.FragmentUserAccountBinding
 import com.netology.nework.viewmodel.AuthViewModel
 import com.netology.nework.viewmodel.PostViewModel
+import com.netology.nework.viewmodel.UserViewModel
 
 
 class UserAccountFragment : Fragment() {
 
     private val viewModel: PostViewModel by viewModels(
+        ownerProducer = ::requireParentFragment
+    )
+
+    private val userViewModel: UserViewModel by viewModels(
         ownerProducer = ::requireParentFragment
     )
 
@@ -33,23 +38,21 @@ class UserAccountFragment : Fragment() {
     ): View {
         val binding = FragmentUserAccountBinding.inflate(inflater, container, false)
 
-        authViewModel.data.observe(viewLifecycleOwner){ auth->
-//            Log.i("tag", it.id.toString())
+
+        authViewModel.data.observe(viewLifecycleOwner) { user ->
+            userViewModel.data.observe(viewLifecycleOwner) {
+                if (user.id.toInt() > 0) {
+                    binding.tvName.text = it.get(user.id.toInt() - 1).name
+                    binding.tvLogin.text = it.get(user.id.toInt() - 1).login
+                } else {
+                    binding.tvName.text = "Dima"
+                    binding.tvLogin.text = "dima"
+                }
+            }
         }
 
-//        viewModel.data.observe(viewLifecycleOwner) {
-//            binding.tvName.text = post.author
-        binding.tvName.text = "Dima"
-//            if (it.posts.get(10).authorAvatar != null) {
-//                Glide.with(binding.ivAvatar)
-//                    .load("${BuildConfig.BASE_URL}/media/${post.authorAvatar}")
-//                    .into(binding.ivAvatar)
-//            } else {
-                binding.ivAvatar.setImageResource(R.drawable.avatar)
-//            }
-//        }
+        binding.ivAvatar.setImageResource(R.drawable.avatar)
 
-        binding.tvLogin.text = "dima"
 
         binding?.viewpager?.adapter = MyPagerAdapter(this)
         binding?.tabs?.tabIconTint = null

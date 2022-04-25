@@ -58,4 +58,8 @@
         android:name="com.netology.nework.ui.CreateMapFragment"
         android:label="fragment_create_map"
         tools:layout="@layout/fragment_create_map" />
+    <fragment
+        android:id="@+id/listOfUsersFragment"
+        android:name="com.netology.nework.ListOfUsersFragment"
+        android:label="ListOfUsersFragment" />
 </navigation>

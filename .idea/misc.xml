@@ -36,15 +36,24 @@
         <entry key="..\:/md/netology/NeWork2/app/src/main/res/drawable-v24/ic_camera_24dp.xml" value="0.23981481481481481" />
         <entry key="..\:/md/netology/NeWork2/app/src/main/res/drawable-v24/ic_coords_24dp.xml" value="0.23981481481481481" />
         <entry key="..\:/md/netology/NeWork2/app/src/main/res/drawable-v24/ic_photo_24dp.xml" value="0.23981481481481481" />
+        <entry key="..\:/md/netology/NeWork2/app/src/main/res/layout/card_job.xml" value="0.1539855072463768" />
         <entry key="..\:/md/netology/NeWork2/app/src/main/res/layout/card_post.xml" value="0.1671195652173913" />
+        <entry key="..\:/md/netology/NeWork2/app/src/main/res/layout/card_user.xml" value="0.264" />
         <entry key="..\:/md/netology/NeWork2/app/src/main/res/layout/dialog_create_job.xml" value="0.1671195652173913" />
         <entry key="..\:/md/netology/NeWork2/app/src/main/res/layout/dialog_create_place.xml" value="0.1671195652173913" />
         <entry key="..\:/md/netology/NeWork2/app/src/main/res/layout/fragment_create_map.xml" value="0.1671195652173913" />
         <entry key="..\:/md/netology/NeWork2/app/src/main/res/layout/fragment_display_maps.xml" value="0.1671195652173913" />
+        <entry key="..\:/md/netology/NeWork2/app/src/main/res/layout/fragment_feed.xml" value="0.16077898550724637" />
         <entry key="..\:/md/netology/NeWork2/app/src/main/res/layout/fragment_image.xml" value="0.1671195652173913" />
+        <entry key="..\:/md/netology/NeWork2/app/src/main/res/layout/fragment_list_of_users.xml" value="0.16077898550724637" />
         <entry key="..\:/md/netology/NeWork2/app/src/main/res/layout/fragment_maps.xml" value="0.16077898550724637" />
         <entry key="..\:/md/netology/NeWork2/app/src/main/res/layout/fragment_new_post.xml" value="0.1671195652173913" />
         <entry key="..\:/md/netology/NeWork2/app/src/main/res/layout/fragment_user_account.xml" value="0.16077898550724637" />
+        <entry key="..\:/md/netology/NeWork2/app/src/main/res/menu/account_button.xml" value="0.25" />
+        <entry key="..\:/md/netology/NeWork2/app/src/main/res/menu/menu_main.xml" value="0.25" />
+        <entry key="..\:/md/netology/NeWork2/app/src/main/res/menu/options_post.xml" value="0.25" />
+        <entry key="..\:/md/netology/NeWork2/app/src/main/res/menu/posts_button.xml" value="0.12708333333333333" />
+        <entry key="..\:/md/netology/NeWork2/app/src/main/res/menu/users_button.xml" value="0.25" />
       </map>
     </option>
   </component>

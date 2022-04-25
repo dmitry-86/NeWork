@@ -57,6 +57,8 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
 
         menuInflater.inflate(R.menu.account_button, menu)
 
+        menuInflater.inflate(R.menu.users_button, menu)
+
         menuInflater.inflate(R.menu.posts_button, menu)
 
         menu.let {
@@ -85,6 +87,11 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
             }
             R.id.userAccaunt -> {
                 findNavController(R.id.nav_host_fragment).navigate(R.id.userAccountFragment)
+                true
+            }
+
+            R.id.userList-> {
+                findNavController(R.id.nav_host_fragment).navigate(R.id.listOfUsersFragment)
                 true
             }
             R.id.posts -> {

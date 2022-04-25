@@ -1,6 +1,8 @@
 package com.netology.nework.repository
 
 import com.netology.nework.api.PostsApi
+import com.netology.nework.api.UserApi
+import com.netology.nework.dto.Token
 import com.netology.nework.dto.User
 import com.netology.nework.error.ApiError
 import com.netology.nework.error.NetworkError
@@ -8,9 +10,9 @@ import com.netology.nework.error.UnknownError
 
 class AuthRepository {
 
-    suspend fun authUser(login: String, pass: String): User {
+    suspend fun authUser(login: String, pass: String): Token {
         try {
-            val response = PostsApi.service.authUser(login, pass)
+            val response = UserApi.service.authUser(login, pass)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
@@ -22,9 +24,9 @@ class AuthRepository {
         }
     }
 
-    suspend fun registerUser(login: String, pass: String, name: String): User {
+    suspend fun registerUser(login: String, pass: String, name: String): Token {
         try {
-            val response = PostsApi.service.registerUser(login, pass, name)
+            val response = UserApi.service.registerUser(login, pass, name)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
