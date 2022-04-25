@@ -2,6 +2,7 @@ package com.netology.nework.ui
 
 import android.content.DialogInterface
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -44,13 +45,6 @@ class FeedFragment : Fragment() {
 
         val adapter = PostsAdapter(object : PostOnInteractionListener {
 
-            override fun onItemClick(position: Int) {
-                //передаем позицию точки
-                bundle.putLong("id", position.toLong())
-                findNavController().navigate(
-                    R.id.action_feedFragment_to_displayMapsFragment, bundle)
-            }
-
             override fun onRemove(post: Post) {
                 viewModel.removeById(post.id)
             }
@@ -67,6 +61,20 @@ class FeedFragment : Fragment() {
                     createDialog()
                 }
             }
+
+            override fun onImageClick(post: Post) {
+                //передаем позицию точки
+                bundle.putString("url", post.attachment?.url.toString())
+                findNavController().navigate(
+                    R.id.action_feedFragment_to_imageFragment, bundle)
+            }
+
+            override fun onLocationClick(post: Post) {
+                bundle.putLong("id", post.id)
+                findNavController().navigate(
+                    R.id.action_feedFragment_to_displayMapsFragment, bundle)
+            }
+
 
 
 
@@ -86,12 +94,12 @@ class FeedFragment : Fragment() {
         viewModel.data.observe(viewLifecycleOwner){ state ->
                 adapter.submitList(state.posts)
                 binding.emptyText.isVisible = state.empty
+            Log.i("tag", state.posts.toString())
         }
 
         binding.swiperefresh.setOnRefreshListener {
             viewModel.refreshPosts()
         }
-
 
         binding.fab.setOnClickListener {
             if(authViewModel.authenticated) {

@@ -3,6 +3,7 @@ package com.netology.nework.adapter
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.os.Build
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.netology.nework.BuildConfig
 import com.netology.nework.R
 import com.netology.nework.databinding.CardPostBinding
@@ -25,7 +27,8 @@ interface PostOnInteractionListener {
     fun onEdit(post: Post) {}
     fun onRemove(post: Post) {}
     fun onLike(post: Post) {}
-    fun onItemClick(position: Int) {}
+    fun onLocationClick(post: Post) {}
+    fun onImageClick(post: Post){}
     //    fun onShare(post: Post) {}
 }
 
@@ -40,9 +43,9 @@ class PostsAdapter(
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         val post = getItem(position)
-        holder.itemView.setOnClickListener{
-            onInteractionListener.onItemClick(position)
-        }
+//        holder.itemView.setOnClickListener{
+//            onInteractionListener.onItemClick(position)
+//        }
         holder.bind(post)
     }
 }
@@ -70,11 +73,12 @@ class PostViewHolder(
             delete.visibility = if (post.ownedByMe) View.VISIBLE else View.INVISIBLE
             edit.visibility = if (post.ownedByMe) View.VISIBLE else View.INVISIBLE
 
+
             if (attachment != null) {
                 when (post.attachment?.type) {
                     AttachmentType.IMAGE -> {
                         Glide.with(attachment)
-                            .load("${BuildConfig.BASE_URL}/media/${post.attachment?.url}")
+                            .load("${post.attachment?.url}")
                             .into(attachment)
                         attachment.visibility = View.VISIBLE
                     }
@@ -105,8 +109,12 @@ class PostViewHolder(
                 onInteractionListener.onEdit(post)
             }
 
+            attachment.setOnClickListener {
+                onInteractionListener.onImageClick(post)
+            }
+
             location.setOnClickListener {
-                onInteractionListener.onItemClick(post.id.toInt())
+                onInteractionListener.onLocationClick(post)
             }
 
 

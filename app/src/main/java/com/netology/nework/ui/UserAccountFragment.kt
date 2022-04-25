@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.netology.nework.BuildConfig
@@ -41,9 +42,21 @@ class UserAccountFragment : Fragment() {
 
         authViewModel.data.observe(viewLifecycleOwner) { user ->
             userViewModel.data.observe(viewLifecycleOwner) {
-                if (user.id.toInt() > 0) {
-                    binding.tvName.text = it.get(user.id.toInt() - 1).name
-                    binding.tvLogin.text = it.get(user.id.toInt() - 1).login
+                var position = user.id.toInt()
+                if (position > 0) {
+                    binding.tvName.text = it.get(position-1).name
+                    binding.tvLogin.text = it.get(position-1).login
+                    val avatar = "${BuildConfig.BASE_URL}/avatars/${
+                        it.get(position-1).avatar
+                    }"
+                    with(binding) {
+                        Glide.with(ivAvatar)
+                            .load("$avatar")
+                            .transform(CircleCrop())
+                            .placeholder(R.drawable.avatar)
+                            .into(ivAvatar)
+                    }
+
                 } else {
                     binding.tvName.text = "Dima"
                     binding.tvLogin.text = "dima"
@@ -51,8 +64,7 @@ class UserAccountFragment : Fragment() {
             }
         }
 
-        binding.ivAvatar.setImageResource(R.drawable.avatar)
-
+//        binding.ivAvatar.setImageResource(R.drawable.avatar)
 
         binding?.viewpager?.adapter = MyPagerAdapter(this)
         binding?.tabs?.tabIconTint = null

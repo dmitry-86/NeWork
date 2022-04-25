@@ -4,6 +4,7 @@ import com.netology.nework.BuildConfig.BASE_URL
 import com.netology.nework.databinding.FragmentImageBinding
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +25,7 @@ class ImageFragment : Fragment() {
     ): View {
         val binding = FragmentImageBinding.inflate(inflater, container,false)
 
-        val url = "${BASE_URL}/media/${arguments?.getString("url")}"
+        val url = "${arguments?.getString("url")}"
 
         Glide.with(this)
             .load(url)

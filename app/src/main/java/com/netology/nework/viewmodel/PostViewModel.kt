@@ -2,6 +2,7 @@ package com.netology.nework.viewmodel
 
 import android.app.Application
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.*
 import com.google.android.gms.maps.model.Marker
 import com.netology.nework.auth.AppAuth
@@ -89,6 +90,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         try {
             _dataState.value = FeedModelState(loading = true)
             repository.getAll()
+            Log.i("tag", repository.getAll().toString())
             _dataState.value = FeedModelState()
         } catch (e: Exception) {
             _dataState.value = FeedModelState(error = true)
