@@ -1,6 +1,6 @@
 package com.netology.nework.repository
 
-import androidx.lifecycle.LiveData
+import com.netology.nework.dto.Coordinates
 import com.netology.nework.dto.Media
 import com.netology.nework.dto.MediaUpload
 import com.netology.nework.dto.Post
@@ -16,4 +16,5 @@ interface PostRepository {
     suspend fun removeById(id: Long)
     suspend fun likeById(id: Long)
     suspend fun dislikeById(id: Long)
+    suspend fun saveMarker(post: Post, coords: Coordinates)
 }

@@ -95,7 +95,6 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
         }
     }
 
-
     private fun createDialog(){
         val builder = AlertDialog.Builder(this)
         builder.setTitle("You signed out")

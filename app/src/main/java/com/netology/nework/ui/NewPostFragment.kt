@@ -32,7 +32,6 @@ class NewPostFragment: Fragment() {
         ownerProducer = ::requireParentFragment
     )
 
-
     private var fragmentBinding: FragmentNewPostBinding? = null
 
     override fun onCreateView(
@@ -93,6 +92,11 @@ class NewPostFragment: Fragment() {
 
         binding.removePhoto.setOnClickListener {
             viewModel.changePhoto(null, null)
+        }
+
+        binding.location.setOnClickListener{
+            findNavController().navigate(
+                R.id.action_newPostFragment_to_createMapFragment)
         }
 
         viewModel.photo.observe(viewLifecycleOwner) {

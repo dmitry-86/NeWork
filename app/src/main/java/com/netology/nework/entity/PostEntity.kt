@@ -3,6 +3,7 @@ package com.netology.nework.entity
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.netology.nework.dto.Coordinates
 import com.netology.nework.dto.Post
 
 @Entity
@@ -14,7 +15,8 @@ data class PostEntity(
     var authorAvatar: String?,
     var content: String,
     var published: String,
-    //    var coords: Coordinates? = null,
+    @Embedded
+    var coords: CoordinatesEmbeddable? = null,
     var link: String? = null,
     var likedByMe: Boolean = false,
     var likes: Int,
@@ -29,7 +31,7 @@ data class PostEntity(
         authorAvatar,
         content,
         published,
-        //        coords,
+        coords?.toCoordinates(),
         link,
         likedByMe,
         likes,
@@ -47,7 +49,7 @@ data class PostEntity(
             authorAvatar = dto.authorAvatar,
             content = dto.content,
             published = dto.published,
-//          coords = dto.coords,
+                coords = dto.coords?.let(CoordinatesEmbeddable::fromCoordinates),
             link = dto.link,
             likedByMe = dto.likedByMe,
             likes = dto.likes,

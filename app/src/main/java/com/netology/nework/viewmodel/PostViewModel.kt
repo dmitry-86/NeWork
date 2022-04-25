@@ -3,11 +3,13 @@ package com.netology.nework.viewmodel
 import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.*
+import com.google.android.gms.maps.model.Marker
 import com.netology.nework.auth.AppAuth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import com.netology.nework.db.AppDb
+import com.netology.nework.dto.Coordinates
 import com.netology.nework.dto.MediaUpload
 import com.netology.nework.dto.Post
 import com.netology.nework.model.FeedModel
@@ -28,7 +30,7 @@ private val empty = Post(
     authorAvatar = "",
     content = "New Post",
     published = "2021-08-17T16:46:58.887547Z",
-//    coords = null,
+    coords = null,
     link = null,
     likedByMe = false,
     attachment = null
@@ -122,6 +124,15 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         }
         edited.value = empty
         _photo.value = noPhoto
+    }
+
+    fun saveMarker(marker: Marker){
+        val lat = marker.position.latitude
+        val long = marker.position.longitude
+
+        val coords: Coordinates = Coordinates(lat, long)
+
+        edited.value?.copy(coords = coords)
     }
 
 

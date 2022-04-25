@@ -18,6 +18,9 @@
         <action
             android:id="@+id/action_feedFragment_to_signUpFragment"
             app:destination="@id/signUpFragment" />
+        <action
+            android:id="@+id/action_feedFragment_to_displayMapsFragment"
+            app:destination="@id/displayMapsFragment" />
     </fragment>
     <fragment
         android:id="@+id/newPostFragment"
@@ -27,6 +30,9 @@
         <action
             android:id="@+id/action_newPostFragment_to_feedFragment"
             app:destination="@id/feedFragment" />
+        <action
+            android:id="@+id/action_newPostFragment_to_createMapFragment"
+            app:destination="@id/createMapFragment" />
     </fragment>
     <fragment
         android:id="@+id/signInFragment"
@@ -42,4 +48,14 @@
         android:id="@+id/userAccountFragment"
         android:name="com.netology.nework.ui.UserAccountFragment"
         android:label="UserAccountFragment" />
+    <fragment
+        android:id="@+id/displayMapsFragment"
+        android:name="com.netology.nework.ui.DisplayMapsFragment"
+        android:label="fragment_display_maps"
+        tools:layout="@layout/fragment_display_maps" />
+    <fragment
+        android:id="@+id/createMapFragment"
+        android:name="com.netology.nework.ui.CreateMapFragment"
+        android:label="fragment_create_map"
+        tools:layout="@layout/fragment_create_map" />
 </navigation>

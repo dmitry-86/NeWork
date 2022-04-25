@@ -15,6 +15,14 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        Properties properties = new Properties()
+        if (rootProject.file("maps.properties").exists()) {
+            properties.load(rootProject.file("maps.properties").newDataInputStream())
+        }
+
+        manifestPlaceholders.mapsApiKey = properties.getProperty("MAPS_API_KEY", "")
+
     }
 
     compileOptions {
@@ -57,6 +65,9 @@ dependencies {
     def okhttplogging_version = "4.9.3"
     def imagepicker_version = "2.1"
     def coroutines_version = "1.6.0"
+    def maps_version = "18.0.2"
+    def location_version = "19.0.1"
+    def maps_ktx_version = "3.3.0"
 
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.4.1'
@@ -90,5 +101,10 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$retrofitgson_version"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttplogging_version"
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+
+    implementation "com.google.android.gms:play-services-location:$location_version"
+    implementation "com.google.android.gms:play-services-maps:$maps_version"
+    implementation "com.google.maps.android:maps-ktx:$maps_ktx_version"
+    implementation "com.google.maps.android:maps-utils-ktx:$maps_ktx_version"
 
 }

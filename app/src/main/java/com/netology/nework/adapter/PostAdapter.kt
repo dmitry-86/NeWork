@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.navigation.Navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -24,6 +25,7 @@ interface PostOnInteractionListener {
     fun onEdit(post: Post) {}
     fun onRemove(post: Post) {}
     fun onLike(post: Post) {}
+    fun onItemClick(position: Int) {}
     //    fun onShare(post: Post) {}
 }
 
@@ -38,6 +40,9 @@ class PostsAdapter(
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         val post = getItem(position)
+        holder.itemView.setOnClickListener{
+            onInteractionListener.onItemClick(position)
+        }
         holder.bind(post)
     }
 }
@@ -99,6 +104,11 @@ class PostViewHolder(
             edit.setOnClickListener {
                 onInteractionListener.onEdit(post)
             }
+
+            location.setOnClickListener {
+                onInteractionListener.onItemClick(post.id.toInt())
+            }
+
 
         }
     }

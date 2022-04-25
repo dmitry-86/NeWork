@@ -1,14 +1,10 @@
 package com.netology.nework.repository
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.netology.nework.api.*
 import com.netology.nework.auth.AppAuth
 import com.netology.nework.dao.PostDao
-import com.netology.nework.dto.Attachment
-import com.netology.nework.dto.Media
-import com.netology.nework.dto.MediaUpload
-import com.netology.nework.dto.Post
+import com.netology.nework.dto.*
 import com.netology.nework.entity.PostEntity
 import com.netology.nework.entity.toDto
 import com.netology.nework.entity.toEntity
@@ -69,7 +65,8 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
     override suspend fun saveWithAttachment(post: Post, upload: MediaUpload) {
         try {
             val media = upload(upload)
-            val postWithAttachment = post.copy(attachment = Attachment(media.url, AttachmentType.IMAGE))
+            val postWithAttachment =
+                post.copy(attachment = Attachment(media.url, AttachmentType.IMAGE))
             save(postWithAttachment)
         } catch (e: AppError) {
             throw e
@@ -147,4 +144,16 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
         }
     }
 
+    override suspend fun saveMarker(post: Post, coords: Coordinates) {
+        try {
+            val postWithCoords = post.copy(coords = coords)
+            save(postWithCoords)
+        } catch (e: AppError) {
+            throw e
+        } catch (e: IOException) {
+            throw NetworkError
+        } catch (e: Exception) {
+            throw UnknownError
+        }
+    }
 }

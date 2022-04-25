@@ -40,21 +40,16 @@ class FeedFragment : Fragment() {
             false
         )
 
-
-
-        //Заполняем данные пользователя
-//        fun bind(post: Post) {
-//            binding.apply {
-//                tvName.text = post.author
-//            }
-//        }
-
-//        binding.ivAvatar.setImageResource(R.drawable.avatar)
-//        binding.tvName.text = "Dima"
-//        binding.tvLogin.text = "dima"
-
+        val bundle = Bundle()
 
         val adapter = PostsAdapter(object : PostOnInteractionListener {
+
+            override fun onItemClick(position: Int) {
+                //передаем позицию точки
+                bundle.putLong("id", position.toLong())
+                findNavController().navigate(
+                    R.id.action_feedFragment_to_displayMapsFragment, bundle)
+            }
 
             override fun onRemove(post: Post) {
                 viewModel.removeById(post.id)
@@ -72,6 +67,8 @@ class FeedFragment : Fragment() {
                     createDialog()
                 }
             }
+
+
 
         })
 

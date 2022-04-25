@@ -7,7 +7,7 @@ data class Post(
     val authorAvatar: String?,
     val content: String,
     val published: String,
-//    val coords: Coordinates?,
+    val coords: Coordinates?,
     val link: String? = null,
     val likedByMe: Boolean = false,
     val likes: Int = 0,

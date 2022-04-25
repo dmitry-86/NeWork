@@ -3,14 +3,16 @@ package com.netology.nework.entity
 import com.netology.nework.dto.Coordinates
 
 data class CoordinatesEmbeddable(
-    var lat: Double,
-    var long: Double,
+    var lat: Double? = null,
+    var long: Double? = null,
 ) {
-    fun toDto() = Coordinates(lat, long)
+
+    fun toCoordinates(): Coordinates = Coordinates(lat = lat ?: 0.0, long = long ?: 0.0)
 
     companion object {
-        fun fromDto(dto: Coordinates?) = dto?.let {
-            CoordinatesEmbeddable(it.lat, it.long)
-        }
+        fun fromCoordinates(coordinates: Coordinates): CoordinatesEmbeddable =
+            with(coordinates) {
+                CoordinatesEmbeddable(lat = lat, long = long)
+            }
     }
 }
