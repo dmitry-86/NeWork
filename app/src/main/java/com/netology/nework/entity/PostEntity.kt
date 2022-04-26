@@ -25,36 +25,36 @@ data class PostEntity(
     var attachment: AttachmentEmbeddable? = null,
 ) {
     fun toDto() = Post(
-        id,
-        authorId,
-        author,
-        authorAvatar,
-        content,
-        published,
-        coords?.toCoordinates(),
-        link,
-        likedByMe,
-        likes,
-        ownedByMe,
-        attachment?.toDto()
+        id = id,
+        authorId = authorId,
+        author = author,
+        authorAvatar = authorAvatar,
+        content = content,
+        published = published,
+        coords = coords?.toCoordinates(),
+        link = link,
+        likedByMe = likedByMe,
+        likes = likes,
+        ownedByMe = ownedByMe,
+        attachment = attachment?.toDto()
     )
 
 
     companion object {
         fun fromDto(dto: Post) =
             PostEntity(
-            id = dto.id,
-            authorId = dto.authorId,
-            author = dto.author,
-            authorAvatar = dto.authorAvatar,
-            content = dto.content,
-            published = dto.published,
-                coords = dto.coords?.let(CoordinatesEmbeddable::fromCoordinates),
-            link = dto.link,
-            likedByMe = dto.likedByMe,
-            likes = dto.likes,
-            ownedByMe = dto.ownedByMe,
-            attachment = AttachmentEmbeddable.fromDto(dto.attachment),
+            dto.id,
+            dto.authorId,
+            dto.author,
+            dto.authorAvatar,
+            dto.content,
+            dto.published,
+            dto.coords?.let(CoordinatesEmbeddable::fromCoordinates),
+            dto.link,
+            dto.likedByMe,
+            dto.likes,
+            dto.ownedByMe,
+            AttachmentEmbeddable.fromDto(dto.attachment),
         )
     }
 }

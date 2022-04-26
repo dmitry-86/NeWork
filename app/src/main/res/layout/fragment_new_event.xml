@@ -29,12 +29,27 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
+                    android:hint="content"
                     android:inputType="textMultiLine"
-                    android:hint="post"
                     android:padding="@dimen/common_spacing" />
 
                 <View
                     android:id="@+id/view1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="1dp"
+                    android:background="@android:color/darker_gray" />
+
+                <EditText
+                    android:id="@+id/datetime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:inputType="textMultiLine"
+                    android:hint="date"
+                    android:padding="@dimen/common_spacing" />
+
+                <View
+                    android:id="@+id/view2"
                     android:layout_width="wrap_content"
                     android:layout_height="1dp"
                     android:background="@android:color/darker_gray" />
@@ -48,11 +63,12 @@
                     android:hint="link"
                     android:padding="@dimen/common_spacing" />
 
-                <View
-                    android:id="@+id/view2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="1dp"
-                    android:background="@android:color/darker_gray" />
+                <Spinner
+                    android:id="@+id/spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:entries="@array/eventType"
+                    />
 
                 <FrameLayout
                     android:id="@+id/photoContainer"

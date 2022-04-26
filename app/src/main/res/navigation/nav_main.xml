@@ -70,4 +70,13 @@
         android:name="com.netology.nework.ui.ImageFragment"
         android:label="fragment_image"
         tools:layout="@layout/fragment_image" />
+    <fragment
+        android:id="@+id/newEventFragment"
+        android:name="com.netology.nework.ui.NewEventFragment"
+        android:label="NewEventFragment" />
+    <fragment
+        android:id="@+id/editUserFragment"
+        android:name="com.netology.nework.ui.EditUserFragment"
+        android:label="fragment_edit_user"
+        tools:layout="@layout/fragment_edit_user" />
 </navigation>

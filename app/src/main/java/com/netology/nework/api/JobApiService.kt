@@ -55,18 +55,6 @@ interface JobApiService {
     @DELETE("jobs/{id}")
     suspend fun removeById(@Path("id") id: Long): Response<Unit>
 
-//    @FormUrlEncoded
-//    @POST("users/authentication")
-//    suspend fun authUser(@Field("login") login: String, @Field("pass") pass: String): Response<User>
-//
-//    @FormUrlEncoded
-//    @POST("users/registration")
-//    suspend fun registerUser(
-//        @Field("login") login: String,
-//        @Field("pass") pass: String,
-//        @Field("name") name: String
-//    ): Response<User>
-
 }
 
 object JobsApi {

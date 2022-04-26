@@ -2,12 +2,17 @@ package com.netology.nework.adapter
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Intent
+import android.graphics.Color
+import android.net.Uri
 import android.os.Build
+import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
@@ -28,8 +33,8 @@ interface PostOnInteractionListener {
     fun onRemove(post: Post) {}
     fun onLike(post: Post) {}
     fun onLocationClick(post: Post) {}
-    fun onImageClick(post: Post){}
-    //    fun onShare(post: Post) {}
+    fun onImageClick(post: Post) {}
+    fun onLinkClick(post: Post) {}
 }
 
 class PostsAdapter(
@@ -60,7 +65,7 @@ class PostViewHolder(
     fun bind(post: Post) {
         binding.apply {
             textViewUserName.text = post.author
-            textViewPublished.text = post.published
+//            textViewPublished.text = post.published
             textViewContent.text = post.content
 
             val parsedDate = LocalDateTime.parse(post.published, DateTimeFormatter.ISO_DATE_TIME)
@@ -87,14 +92,15 @@ class PostViewHolder(
 
             imageViewAvatar.setImageResource(R.drawable.avatar)
 
-
-            if(post.link != null) {
-                textViewLink.settings.javaScriptEnabled = true
-                textViewLink.webViewClient
-                textViewLink.loadUrl(post.link.toString())
-                textViewLink.loadData("<html><body><a>${post.link.toString()}</a></body></html>",
-                    "text/html", "UTF-8");
+            if (post.link != null) {
+                textViewLink.text = post.link
+                textViewLink.movementMethod = LinkMovementMethod.getInstance()
+                textViewLink.setTextColor(Color.BLUE)
                 textViewLink.visibility = View.VISIBLE
+            }
+
+            textViewLink.setOnClickListener {
+                onInteractionListener.onLinkClick(post)
             }
 
             like.setOnClickListener {

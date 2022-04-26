@@ -18,6 +18,7 @@ import com.netology.nework.adapter.*
 import com.netology.nework.databinding.FragmentEventsBinding
 import com.netology.nework.databinding.FragmentFeedBinding
 import com.netology.nework.databinding.FragmentJobsBinding
+import com.netology.nework.dto.Event
 import com.netology.nework.dto.Post
 import com.netology.nework.enumeration.EventType
 import com.netology.nework.viewmodel.AuthViewModel
@@ -47,14 +48,22 @@ class EventsFragment : Fragment() {
 
         val adapter = EventAdapter(object : EventOnInteractionListener {
 
-//            override fun onRemove(post: Post) {
+            override fun onRemove(event: Event) {
 //                viewModel.removeById(post.id)
-//            }
-//
-//            override fun onEdit(post: Post) {
+            }
+
+            override fun onEdit(event: Event) {
 //                showAlertDialog(post.content)
-//                viewModel.edit(post)
-//            }
+                viewModel.edit(event)
+            }
+
+            override fun onLike(event: Event) {
+                if(authViewModel.authenticated) {
+                    viewModel.likeEvent(event)
+                }else {
+                    createDialog()
+                }
+            }
 
         })
 
@@ -81,10 +90,9 @@ class EventsFragment : Fragment() {
 
         binding.fab.setOnClickListener {
             if(authViewModel.authenticated) {
-//                findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
-                showAlertDialog()
+                findNavController().navigate(R.id.newEventFragment)
             }else{
-                findNavController().navigate(R.id.signInFragment)
+                createDialog()
             }
         }
 
@@ -92,49 +100,17 @@ class EventsFragment : Fragment() {
 
     }
 
-    private fun showAlertDialog() {
-        val placeFormView =
-            LayoutInflater.from(activity).inflate(R.layout.dialog_create_event, null)
 
-//        val editText: EditText = placeFormView.findViewById(R.id.editTextContent)
-//        editText.setText(content)
-
-        val dialog = AlertDialog.Builder(requireActivity())
-            .setTitle(getString(R.string.edit)).setMessage(getString(R.string.enter_new_content))
-            .setView(placeFormView)
-            .setNegativeButton(getString(R.string.cancel), null)
-            .setPositiveButton(getString(R.string.ok), null)
-            .show()
-
-        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
-            val content = placeFormView.findViewById<EditText>(R.id.content).text.toString()
-//            val date  = placeFormView.findViewById<EditText>(R.id.date).text.toString()
-            val event: Spinner = placeFormView.findViewById<Spinner>(R.id.spinner)
-
-            val adapter = ArrayAdapter.createFromResource(placeFormView.getContext(), R.array.eventType, android.R.layout.simple_spinner_dropdown_item)
-            event.adapter = adapter
-            val selectedItem = event.selectedItem.toString()
-
-            if (content.trim().isEmpty()
-//                || date.trim().isEmpty()
-                || selectedItem.trim().isEmpty()){
-                Toast.makeText(activity, "сообщение пустое", Toast.LENGTH_LONG)
-                    .show()
-                return@setOnClickListener
-            }
-            val eventType: EventType
-            when(selectedItem){
-                "online"-> eventType = EventType.ONLINE
-                 else-> eventType = EventType.OFFLINE
-            }
-
-            viewModel.changeContent(content, eventType)
-            viewModel.save()
-            dialog.dismiss()
-
-
+    private fun createDialog(){
+        val builder = AlertDialog.Builder(requireActivity())
+        builder.setTitle("Would you like to sign in?")
+        builder.setNeutralButton("Yes"){dialogInterface, i ->
+            findNavController().navigate(R.id.action_feedFragment_to_signInFragment)
         }
-
+        builder.setNegativeButton("No"){dialog, i ->
+            findNavController().navigate(R.id.feedFragment)
+        }
+        builder.show()
     }
 
 

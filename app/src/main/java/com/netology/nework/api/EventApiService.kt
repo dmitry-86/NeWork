@@ -2,11 +2,9 @@ package com.netology.nework.api
 
 import com.netology.nework.BuildConfig
 import com.netology.nework.auth.AppAuth
-import com.netology.nework.dto.Event
-import com.netology.nework.dto.Job
-import com.netology.nework.dto.Post
-import com.netology.nework.dto.User
+import com.netology.nework.dto.*
 import okhttp3.Interceptor
+import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
@@ -56,17 +54,15 @@ interface EventApiService {
     @DELETE("events/{id}")
     suspend fun removeById(@Path("id") id: Long): Response<Unit>
 
-//    @FormUrlEncoded
-//    @POST("users/authentication")
-//    suspend fun authUser(@Field("login") login: String, @Field("pass") pass: String): Response<User>
-//
-//    @FormUrlEncoded
-//    @POST("users/registration")
-//    suspend fun registerUser(
-//        @Field("login") login: String,
-//        @Field("pass") pass: String,
-//        @Field("name") name: String
-//    ): Response<User>
+    @POST("events/{id}/likes")
+    suspend fun likeById(@Path("id") id: Long): Response<Event>
+
+    @DELETE("events/{id}/likes")
+    suspend fun dislikeById(@Path("id") id: Long): Response<Event>
+
+    @Multipart
+    @POST("media")
+    suspend fun upload(@Part media: MultipartBody.Part): Response<Media>
 
 }
 

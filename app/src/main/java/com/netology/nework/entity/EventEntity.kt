@@ -1,12 +1,14 @@
 package com.netology.nework.entity
 
+import androidx.annotation.InspectableProperty
+import androidx.navigation.NavType
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.gson.internal.bind.TypeAdapters.STRING
 import com.netology.nework.dto.Event
-import com.netology.nework.dto.Job
 import com.netology.nework.enumeration.EventType
-import java.time.Instant
+import javax.xml.xpath.XPathConstants.STRING
 
 @Entity
 data class EventEntity(
@@ -16,37 +18,22 @@ data class EventEntity(
     val author: String,
     val authorAvatar: String?,
     val content: String,
-    /**
-     * Дата и время проведения
-     */
     val datetime: String,
     val published: String,
-    /**
-     * Координаты проведения
-     */
-//    @Embedded
-//    val coords: CoordinatesEmbeddable? = null,
-    /**
-     * Типы события
-     */
-    val type: EventType,
+    @Embedded
+    val coords: CoordinatesEmbeddable? = null,
+    @Embedded
+    val type: EventTypeEmbeddable,
+    val likedByMe: Boolean,
 ////    @ElementCollection
-//    /**
-//     * Id'шники залайкавших
-//     */
 //    val likeOwnerIds: Set<Long> = emptySet(),
-//    /**
-//     * Id'шники спикеров
-//     */
 ////    @ElementCollection
 //    val speakerIds: Set<Long> = emptySet(),
-//    /**
-//     * Id'шники участников
-//     */
 //    val participantsIds: MutableSet<Long> = mutableSetOf(),
-//    @Embedded
-//    val attachment: AttachmentEmbeddable? = null,
-//    val link: String? = null,
+    @Embedded
+    val attachment: AttachmentEmbeddable? = null,
+    val link: String? = null,
+    val likes: Long
 ) {
     fun toDto() = Event(
         id = id,
@@ -56,15 +43,16 @@ data class EventEntity(
         content = content,
         datetime = datetime,
         published = published,
-//        coords = coords?.toCoordinates(),
-        type = type,
+        coords = coords?.toCoordinates(),
+        type = type.toDto(),
 //        likeOwnerIds = likeOwnerIds,
-//        likedByMe = likeOwnerIds.contains(myId),
+        likedByMe = likedByMe,
 //        speakerIds = speakerIds,
 //        participantsIds = participantsIds,
 //        participatedByMe = participantsIds.contains(myId),
-//        attachment = attachment?.toDto(),
-//        link = link,
+        attachment = attachment?.toDto(),
+        link = link,
+        likes = likes
     )
 
     companion object {
@@ -76,13 +64,15 @@ data class EventEntity(
             dto.content,
             dto.datetime,
             dto.published,
-//            dto.coords?.let(CoordinatesEmbeddable::fromCoordinates),
-            dto.type,
+            dto.coords?.let(CoordinatesEmbeddable::fromCoordinates),
+            EventTypeEmbeddable.fromDto(dto.type),
+            dto.likedByMe,
 //            mutableSetOf(),
 //            dto.speakerIds.toMutableSet(),
 //            dto.participantsIds.toMutableSet(),
-//            AttachmentEmbeddable.fromDto(dto.attachment),
-//            dto.link,
+            AttachmentEmbeddable.fromDto(dto.attachment),
+            dto.link,
+            dto.likes
         )
     }
 }

@@ -1,7 +1,9 @@
 package com.netology.nework.dto
 
+import androidx.navigation.NavType
 import com.netology.nework.enumeration.EventType
 import java.time.Instant
+import javax.xml.xpath.XPathConstants.STRING
 
 data class Event(
     val id: Long,
@@ -9,39 +11,16 @@ data class Event(
     val author: String,
     val authorAvatar: String?,
     val content: String,
-    /**
-     * Дата и время проведения
-     */
     val datetime: String,
     val published: String,
-    /**
-     * Координаты проведения
-     */
-//    val coords: Coordinates? = null,
-    /**
-     * Типы события
-     */
+    val coords: Coordinates? = null,
     val type: EventType,
-    /**
-     * Id'шники залайкавших
-     */
 //    val likeOwnerIds: Set<Long> = emptySet(),
-//    /**
-//     * Залайкал ли я
-//     */
-//    val likedByMe: Boolean = false,
-//    /**
-//     * Id'шники спикеров
-//     */
+    val likedByMe: Boolean = false,
 //    val speakerIds: Set<Long> = emptySet(),
-//    /**
-//     * Id'шники участников
-//     */
 //    val participantsIds: Set<Long> = emptySet(),
-//    /**
-//     * Участвовал ли я
-//     */
 //    val participatedByMe: Boolean = false,
-//    val attachment: Attachment? = null,
-//    val link: String? = null,
+    val attachment: Attachment? = null,
+    val link: String? = null,
+    val likes: Long
 )

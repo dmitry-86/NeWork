@@ -1,6 +1,8 @@
 package com.netology.nework.ui
 
 import android.content.DialogInterface
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -10,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -63,7 +66,6 @@ class FeedFragment : Fragment() {
             }
 
             override fun onImageClick(post: Post) {
-                //передаем позицию точки
                 bundle.putString("url", post.attachment?.url.toString())
                 findNavController().navigate(
                     R.id.action_feedFragment_to_imageFragment, bundle)
@@ -75,8 +77,16 @@ class FeedFragment : Fragment() {
                     R.id.action_feedFragment_to_displayMapsFragment, bundle)
             }
 
-
-
+            override fun onLinkClick(post: Post) {
+                val intent = Intent(Intent.ACTION_VIEW)
+                val url = post.link
+                if (!url?.startsWith("http://")!! && !url.startsWith("https://")) {
+                    intent.data = Uri.parse("http://" + url)
+                }else{
+                    intent.data = Uri.parse(url)
+                }
+                startActivity(intent)
+            }
 
         })
 
@@ -139,7 +149,6 @@ class FeedFragment : Fragment() {
             viewModel.save()
             dialog.dismiss()
         }
-
     }
 
     private fun createDialog(){
@@ -153,6 +162,5 @@ class FeedFragment : Fragment() {
         }
         builder.show()
     }
-
 
 }

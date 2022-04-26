@@ -5,8 +5,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.netology.nework.entity.EventEntity
-import com.netology.nework.entity.JobEntity
-import com.netology.nework.entity.PostEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -21,14 +19,28 @@ interface EventDao {
     suspend fun count(): Int
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(post: EventEntity)
+    suspend fun insert(event: EventEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(posts: List<EventEntity>)
+    suspend fun insert(events: List<EventEntity>)
 
     @Query("DELETE FROM EventEntity WHERE id = :id")
     suspend fun removeById(id: Long)
 
-//    @Query("SELECT * FROM EventEntity WHERE authorId = :id")
-//    fun getUserEventsById(id: Long): Flow<List<EventEntity>>
+    @Query("""
+        UPDATE EventEntity SET
+               likes = likes + 1,
+               likedByMe = 1
+           WHERE id = :id AND likedByMe = 0;
+        """)
+    suspend fun likeById(id: Long)
+
+    @Query(
+        """
+           UPDATE EventEntity SET
+               likes = likes - 1,
+               likedByMe = 0
+           WHERE id = :id AND likedByMe = 1;
+        """)
+    suspend fun dislikeById(id: Long)
 }

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.NewPostFragment">
+    tools:context=".ui.EditUserFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -25,31 +25,16 @@
                 android:orientation="vertical">
 
                 <EditText
-                    android:id="@+id/edit"
+                    android:id="@+id/name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
                     android:inputType="textMultiLine"
-                    android:hint="post"
+                    android:hint="User Name"
                     android:padding="@dimen/common_spacing" />
 
                 <View
                     android:id="@+id/view1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="1dp"
-                    android:background="@android:color/darker_gray" />
-
-                <EditText
-                    android:id="@+id/link"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:inputType="textMultiLine"
-                    android:hint="link"
-                    android:padding="@dimen/common_spacing" />
-
-                <View
-                    android:id="@+id/view2"
                     android:layout_width="wrap_content"
                     android:layout_height="1dp"
                     android:background="@android:color/darker_gray" />
@@ -113,15 +98,6 @@
                 android:contentDescription="@string/description_take_photo"
                 android:padding="@dimen/common_spacing"
                 app:icon="@drawable/ic_camera_24dp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/location"
-                style="@style/Widget.AppTheme.LikeCheckBox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:icon="@drawable/ic_baseline_add_location_alt_24"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/footer" />
 
         </LinearLayout>
 

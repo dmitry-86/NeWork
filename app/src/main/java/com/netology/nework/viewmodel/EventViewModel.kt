@@ -1,26 +1,23 @@
 package com.netology.nework.viewmodel
 
 import android.app.Application
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.*
+import com.google.android.gms.maps.model.Marker
 import com.netology.nework.auth.AppAuth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import com.netology.nework.db.AppDb
-import com.netology.nework.dto.Coordinates
-import com.netology.nework.dto.Event
-import com.netology.nework.dto.Job
-import com.netology.nework.dto.Post
+import com.netology.nework.dto.*
 import com.netology.nework.enumeration.EventType
-import com.netology.nework.model.EventFeedModel
-import com.netology.nework.model.FeedModel
-import com.netology.nework.model.FeedModelState
-import com.netology.nework.model.JobFeedModel
+import com.netology.nework.model.*
 import com.netology.nework.repository.*
 import com.netology.nework.util.SingleLiveEvent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flatMapLatest
+import java.io.File
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.util.Calendar
@@ -34,8 +31,11 @@ private val empty = Event(
     content = "Выпускники Kotlin Developer",
     datetime = "2021-09-17T16:46:58.887547Z",
     published = "2021-08-17T16:46:58.887547Z",
-    type = EventType.OFFLINE
+    type = EventType.OFFLINE,
+    likes = 0
 )
+
+private val noPhoto = PhotoModel()
 
 @ExperimentalCoroutinesApi
 class EventViewModel(application: Application) : AndroidViewModel(application) {
@@ -70,6 +70,10 @@ class EventViewModel(application: Application) : AndroidViewModel(application) {
     val eventCreated: LiveData<Unit>
         get() = _eventCreated
 
+    private val _photo = MutableLiveData(noPhoto)
+    val photo: LiveData<PhotoModel>
+        get() = _photo
+
     init {
         loadEvents()
     }
@@ -100,7 +104,12 @@ class EventViewModel(application: Application) : AndroidViewModel(application) {
             _eventCreated.value = Unit
             viewModelScope.launch {
                 try {
-                    repository.save(it)
+                    when (_photo.value) {
+                        noPhoto -> repository.save(it)
+                        else -> _photo.value?.file?.let { file ->
+                            repository.saveWithAttachment(it, MediaUpload(file))
+                        }
+                    }
                     _dataState.value = FeedModelState()
                 } catch (e: Exception) {
                     _dataState.value = FeedModelState(error = true)
@@ -108,29 +117,63 @@ class EventViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
         edited.value = empty
+        _photo.value = noPhoto
     }
+
+    fun saveMarker(marker: Marker){
+        val lat = marker.position.latitude
+        val long = marker.position.longitude
+
+        val coords: Coordinates = Coordinates(lat, long)
+
+        edited.value?.copy(coords = coords)
+    }
+
     fun edit(event: Event) {
         edited.value = event
     }
 
-    fun changeContent(content: String, eventType: EventType) {
+    fun changeContent(content: String, link: String, eventType: EventType) {
         val content = content.trim()
 //        val date = date.trim()
+        val link = link.trim()
         val eventType = eventType
-
-        Log.i("tag", content + eventType)
 
         if (edited.value?.content == content
 //            && edited.value?.datetime == date
             && edited.value?.type == eventType) {
             return
         }
-        edited.value = edited.value?.copy(content = content, type = eventType)
+        edited.value = edited.value?.copy(content = content, link = link, type = eventType)
     }
 
-//    fun likeById(id: Long) {
-//        TODO()
-//    }
+    fun changePhoto(uri: Uri?, file: File?) {
+        _photo.value = PhotoModel(uri, file)
+    }
+
+    fun likeById(id: Long) = viewModelScope.launch {
+        try {
+            _dataState.value = FeedModelState(loading = true)
+            repository.likeById(id)
+            _dataState.value = FeedModelState()
+        } catch (e: Exception) {
+            _dataState.value = FeedModelState(error = true)
+        }
+    }
+
+    fun dislikeById(id: Long) = viewModelScope.launch {
+        try {
+            _dataState.value = FeedModelState(loading = true)
+            repository.dislikeById(id)
+            _dataState.value = FeedModelState()
+        } catch (e: Exception) {
+            _dataState.value = FeedModelState(error = true)
+        }
+    }
+
+    fun likeEvent(event: Event) {
+        if (!event.likedByMe) likeById(event.id) else dislikeById(event.id)
+    }
 
     fun removeById(id: Long)  = viewModelScope.launch {
         try {

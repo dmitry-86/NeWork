@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.google.android.material.tabs.TabLayout
@@ -23,10 +24,6 @@ import com.netology.nework.viewmodel.UserViewModel
 
 class UserAccountFragment : Fragment() {
 
-    private val viewModel: PostViewModel by viewModels(
-        ownerProducer = ::requireParentFragment
-    )
-
     private val userViewModel: UserViewModel by viewModels(
         ownerProducer = ::requireParentFragment
     )
@@ -40,26 +37,30 @@ class UserAccountFragment : Fragment() {
         val binding = FragmentUserAccountBinding.inflate(inflater, container, false)
 
 
+        binding.buttonEdit.setOnClickListener {
+            findNavController().navigate(R.id.editUserFragment)
+        }
+
         authViewModel.data.observe(viewLifecycleOwner) { user ->
             userViewModel.data.observe(viewLifecycleOwner) {
                 var position = user.id.toInt()
                 if (position > 0) {
-                    binding.tvName.text = it.get(position-1).name
-                    binding.tvLogin.text = it.get(position-1).login
+                    binding.textViewName.text = it.get(position-1).name
+                    binding.textViewLogin.text = it.get(position-1).login
                     val avatar = "${BuildConfig.BASE_URL}/avatars/${
                         it.get(position-1).avatar
                     }"
                     with(binding) {
-                        Glide.with(ivAvatar)
+                        Glide.with(imageViewAvatar)
                             .load("$avatar")
                             .transform(CircleCrop())
                             .placeholder(R.drawable.avatar)
-                            .into(ivAvatar)
+                            .into(imageViewAvatar)
                     }
 
                 } else {
-                    binding.tvName.text = "Dima"
-                    binding.tvLogin.text = "dima"
+                    binding.textViewName.text = "Dima"
+                    binding.textViewLogin.text = "dima"
                 }
             }
         }

@@ -1,7 +1,9 @@
 package com.netology.nework.adapter
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Build
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,16 +14,23 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.netology.nework.R
 import com.netology.nework.databinding.CardEventBinding
 import com.netology.nework.dto.Event
 import com.netology.nework.dto.Job
+import com.netology.nework.dto.Post
+import com.netology.nework.enumeration.AttachmentType
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 interface EventOnInteractionListener {
     fun onEdit(event: Event) {}
     fun onRemove(event: Event) {}
-    //    fun onLike(post: Post) {}
-    //    fun onShare(post: Post) {}
+    fun onLike(event: Event) {}
+    fun onLocationClick(event: Event) {}
+    fun onImageClick(event: Event) {}
+    fun onLinkClick(event: Event) {}
 }
 
 class EventAdapter(
@@ -44,12 +53,55 @@ class EventViewHolder(
     private val onInteractionListener: EventOnInteractionListener,
 ) : RecyclerView.ViewHolder(binding.root) {
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun bind(event: Event) {
         binding.apply {
+
+            textViewUserName.text = event.author
 
             textViewContent.text = event.content
             textViewDate.text = event.datetime.toString()
             eventType.text = event.type.toString()
+
+            val parsedDate = LocalDateTime.parse(event.published, DateTimeFormatter.ISO_DATE_TIME)
+            val formattedDate = parsedDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
+            textViewPublished.text = formattedDate
+
+            like.isChecked = event.likedByMe
+            like.text = "${event.likes}"
+
+//            delete.visibility = if (event.ownedByMe) View.VISIBLE else View.INVISIBLE
+//            edit.visibility = if (event.ownedByMe) View.VISIBLE else View.INVISIBLE
+
+
+            if (attachment != null) {
+                when (event.attachment?.type) {
+                    AttachmentType.IMAGE -> {
+                        Glide.with(attachment)
+                            .load("${event.attachment?.url}")
+                            .into(attachment)
+                        attachment.visibility = View.VISIBLE
+                    }
+                }
+            }
+
+            imageViewAvatar.setImageResource(R.drawable.avatar)
+
+            if (event.link != null) {
+                textViewLink.text = event.link
+                textViewLink.movementMethod = LinkMovementMethod.getInstance()
+                textViewLink.setTextColor(Color.BLUE)
+                textViewLink.visibility = View.VISIBLE
+            }
+
+            textViewLink.setOnClickListener {
+                onInteractionListener.onLinkClick(event)
+            }
+
+            like.setOnClickListener {
+                onInteractionListener.onLike(event)
+            }
+
 
             delete.setOnClickListener {
                 onInteractionListener.onRemove(event)
@@ -58,6 +110,11 @@ class EventViewHolder(
             edit.setOnClickListener {
                 onInteractionListener.onEdit(event)
             }
+
+            like.setOnClickListener {
+                onInteractionListener.onLike(event)
+            }
+
 
         }
     }

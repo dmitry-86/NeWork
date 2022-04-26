@@ -1,14 +1,18 @@
 package com.netology.nework.viewmodel
 
 import android.app.Application
+import android.net.Uri
 import androidx.lifecycle.*
 import com.netology.nework.auth.AppAuth
 import com.netology.nework.db.AppDb
 import com.netology.nework.dto.Job
+import com.netology.nework.dto.MediaUpload
+import com.netology.nework.dto.Post
 import com.netology.nework.dto.User
 import com.netology.nework.model.FeedModel
 import com.netology.nework.model.FeedModelState
 import com.netology.nework.model.JobFeedModel
+import com.netology.nework.model.PhotoModel
 import com.netology.nework.repository.JobRepository
 import com.netology.nework.repository.JobRepositoryImpl
 import com.netology.nework.repository.UserRepository
@@ -19,6 +23,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import java.io.File
 
 private val empty = User(
     id = 0,
@@ -26,6 +31,8 @@ private val empty = User(
     login = " ",
     avatar = " "
 )
+
+private val noPhoto = PhotoModel()
 
 @ExperimentalCoroutinesApi
 class UserViewModel(application: Application) : AndroidViewModel(application) {
@@ -48,9 +55,57 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
     val userIds: LiveData<Set<Long>>
         get() = _usersIds
 
+    private val edited = MutableLiveData(empty)
+    private val _userCreated = SingleLiveEvent<Unit>()
+    val userCreated: LiveData<Unit>
+        get() = _userCreated
+
+    private val _photo = MutableLiveData(noPhoto)
+    val photo: LiveData<PhotoModel>
+        get() = _photo
+
     init {
         loadUsers()
     }
+
+    fun save() {
+        edited.value?.let {
+            _userCreated.value = Unit
+            viewModelScope.launch {
+                try {
+                    when (_photo.value) {
+                        noPhoto -> repository.save(it)
+                        else -> _photo.value?.file?.let { file ->
+                            repository.saveWithAttachment(it, MediaUpload(file))
+                        }
+                    }
+                    _dataState.value = FeedModelState()
+                } catch (e: Exception) {
+                    _dataState.value = FeedModelState(error = true)
+                }
+            }
+        }
+        edited.value = empty
+        _photo.value = noPhoto
+    }
+
+
+    fun edit(user: User) {
+        edited.value = user
+    }
+
+    fun changeContent(name: String) {
+        val text = name.trim()
+        if (edited.value?.name == text) {
+            return
+        }
+        edited.value = edited.value?.copy(name = name)
+    }
+
+    fun changePhoto(uri: Uri?, file: File?) {
+        _photo.value = PhotoModel(uri, file)
+    }
+
 
     fun loadUsers() = viewModelScope.launch {
         try {

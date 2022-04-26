@@ -14,6 +14,12 @@ interface UserDao {
     @Query("SELECT * FROM UserEntity ORDER BY name ASC")
     fun getAll(): Flow<List<UserEntity>>
 
+    @Query("SELECT COUNT(*) == 0 FROM UserEntity")
+    suspend fun isEmpty(): Boolean
+
+    @Query("SELECT COUNT(*) FROM UserEntity")
+    suspend fun count(): Int
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(user: UserEntity)
 

@@ -1,6 +1,8 @@
 package com.netology.nework.ui
 
 import android.content.DialogInterface
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -47,7 +49,7 @@ class PostsFragment : Fragment() {
             }
 
             override fun onEdit(post: Post) {
-                showAlertDialog(post.content)
+//                showAlertDialog(post.content)
                 viewModel.edit(post)
             }
 
@@ -57,6 +59,29 @@ class PostsFragment : Fragment() {
                 }else {
                     createDialog()
                 }
+            }
+
+//            override fun onImageClick(post: Post) {
+//                bundle.putString("url", post.attachment?.url.toString())
+//                findNavController().navigate(
+//                    R.id.action_feedFragment_to_imageFragment, bundle)
+//            }
+//
+//            override fun onLocationClick(post: Post) {
+//                bundle.putLong("id", post.id)
+//                findNavController().navigate(
+//                    R.id.action_feedFragment_to_displayMapsFragment, bundle)
+//            }
+
+            override fun onLinkClick(post: Post) {
+                val intent = Intent(Intent.ACTION_VIEW)
+                val url = post.link
+                if (!url?.startsWith("http://")!! && !url.startsWith("https://")) {
+                    intent.data = Uri.parse("http://" + url)
+                }else{
+                    intent.data = Uri.parse(url)
+                }
+                startActivity(intent)
             }
 
         })
@@ -91,35 +116,6 @@ class PostsFragment : Fragment() {
         }
 
         return binding.root
-
-    }
-
-    private fun showAlertDialog(content: String) {
-        val placeFormView =
-            LayoutInflater.from(activity).inflate(R.layout.dialog_change_post, null)
-
-        val editText: EditText = placeFormView.findViewById(R.id.editTextContent)
-        editText.setText(content)
-
-        val dialog = AlertDialog.Builder(requireActivity())
-            .setTitle(getString(R.string.edit)).setMessage(getString(R.string.enter_new_content))
-            .setView(placeFormView)
-            .setNegativeButton(getString(R.string.cancel), null)
-            .setPositiveButton(getString(R.string.ok), null)
-            .show()
-
-        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
-            val content = placeFormView.findViewById<EditText>(R.id.editTextContent).text.toString()
-            val link = placeFormView.findViewById<EditText>(R.id.link).text.toString()
-            if (content.trim().isEmpty()) {
-                Toast.makeText(activity, "сообщение пустое", Toast.LENGTH_LONG)
-                    .show()
-                return@setOnClickListener
-            }
-            viewModel.changeContent(content, link)
-            viewModel.save()
-            dialog.dismiss()
-        }
 
     }
 
