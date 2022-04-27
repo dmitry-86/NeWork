@@ -1,7 +1,16 @@
 package com.netology.nework.auth
 
 import android.content.Context
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.ktx.messaging
+import com.netology.nework.api.UserApi
+import com.netology.nework.dto.PushToken
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+
 
 class AppAuth private constructor(context: Context) {
     private val prefs = context.getSharedPreferences("auth", Context.MODE_PRIVATE)
@@ -23,6 +32,7 @@ class AppAuth private constructor(context: Context) {
         } else {
             _authStateFlow = MutableStateFlow(AuthState(id, token))
         }
+        sendPushToken()
     }
 
     val authStateFlow: StateFlow<AuthState> = _authStateFlow.asStateFlow()
@@ -35,6 +45,7 @@ class AppAuth private constructor(context: Context) {
             putString(tokenKey, token)
             apply()
         }
+        sendPushToken()
     }
 
     @Synchronized
@@ -43,6 +54,18 @@ class AppAuth private constructor(context: Context) {
         with(prefs.edit()) {
             clear()
             commit()
+        }
+        sendPushToken()
+    }
+
+    fun sendPushToken(token: String? = null) {
+        CoroutineScope(Dispatchers.Default).launch {
+            try {
+                val pushToken = PushToken(token ?: Firebase.messaging.token.await())
+                UserApi.service.save(pushToken)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 

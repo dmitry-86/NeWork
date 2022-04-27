@@ -30,6 +30,9 @@
     <string name="description_photo">Фото</string>
     <string name="description_select_photo">Выбрать фото</string>
     <string name="description_take_photo">Сделать фото</string>
+    <string name="channel_remote_name">Уведомления с сервера</string>
+    <string name="channel_remote_description">Уведомления с удалённого сервера</string>
+    <string name="google_play_unavailable">Google Api Недоступно</string>
     <string-array name="eventType">
         <item>online</item>
         <item>offline</item>

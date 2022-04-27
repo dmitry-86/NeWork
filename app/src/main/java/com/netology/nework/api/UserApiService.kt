@@ -3,10 +3,7 @@ package com.netology.nework.api
 
 import com.netology.nework.BuildConfig
 import com.netology.nework.auth.AppAuth
-import com.netology.nework.dto.Token
-import com.netology.nework.dto.Media
-import com.netology.nework.dto.Post
-import com.netology.nework.dto.User
+import com.netology.nework.dto.*
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -52,6 +49,9 @@ interface UserApiService {
 
     @POST("users")
     suspend fun save(@Body user: User): Response<User>
+
+    @POST("users/push-tokens")
+    suspend fun save(@Body pushToken: PushToken): Response<Unit>
 
     @Multipart
     @POST("media")
