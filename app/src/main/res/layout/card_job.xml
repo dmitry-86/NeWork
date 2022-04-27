@@ -18,7 +18,7 @@
 
 
     <TextView
-        android:id="@+id/name"
+        android:id="@+id/textViewName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
@@ -30,45 +30,45 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
-        android:id="@+id/position"
+        android:id="@+id/textViewPosition"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="left"
         android:layout_margin="8dp"
         android:text="Андройд Разработчик"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/name" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewName" />
 
 
     <TextView
-        android:id="@+id/started"
+        android:id="@+id/textViewSarted"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="left"
         android:layout_margin="8dp"
         android:text="30.03.2022"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/position" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewPosition" />
 
     <TextView
-        android:id="@+id/finished"
+        android:id="@+id/textViewFinished"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="left"
         android:layout_margin="8dp"
         android:text="30.03.2022"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/started" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewSarted" />
 
     <TextView
-        android:id="@+id/link"
+        android:id="@+id/textViewLink"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="left"
         android:layout_margin="8dp"
         android:text="link"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/finished"/>
+        app:layout_constraintTop_toBottomOf="@+id/textViewFinished"/>
 
     <ImageView
         android:id="@+id/edit"
@@ -86,12 +86,13 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_baseline_clear_24"/>
 
-<!--    <View-->
-<!--        android:id="@+id/view"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="1dp"-->
-<!--        android:background="@android:color/darker_gray"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/link" />-->
+    <View
+        android:id="@+id/view"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewLink" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

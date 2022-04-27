@@ -1,7 +1,9 @@
 package com.netology.nework.adapter
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Build
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,8 +20,7 @@ import java.time.format.DateTimeFormatter
 interface JobOnInteractionListener {
     fun onEdit(job: Job) {}
     fun onRemove(job: Job) {}
-    //    fun onLike(post: Post) {}
-    //    fun onShare(post: Post) {}
+    fun onLinkClick(job: Job) {}
 }
 
 class JobsAdapter(
@@ -45,11 +46,21 @@ class JobViewHolder(
     fun bind(job: Job) {
         binding.apply {
 
-            name.text = job.name
-            position.text = job.position
-            started.text = job.start.toString()
-            finished.text = job.finish.toString()
-            link.text = job.link
+            textViewName.text = job.name
+            textViewPosition.text = job.position
+            textViewSarted.text = job.start.toString()
+            textViewFinished.text = job.finish.toString()
+
+            if (job.link != null) {
+                textViewLink.text = job.link
+                textViewLink.movementMethod = LinkMovementMethod.getInstance()
+                textViewLink.setTextColor(Color.BLUE)
+                textViewLink.visibility = View.VISIBLE
+            }
+
+            textViewLink.setOnClickListener {
+                onInteractionListener.onLinkClick(job)
+            }
 
             delete.setOnClickListener {
                 onInteractionListener.onRemove(job)

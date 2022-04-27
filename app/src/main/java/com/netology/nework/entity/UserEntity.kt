@@ -2,16 +2,19 @@ package com.netology.nework.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.netology.nework.dto.Coordinates
 import com.netology.nework.dto.User
 
 @Entity
 data class UserEntity(
     @PrimaryKey(autoGenerate = true)
     var id: Long,
-    val login: String,
+    val login: String = "",
     val name: String,
     val avatar: String? = null
 ) {
+    constructor(id: Long) : this(id, "", "", "")
+
     fun toDto() =
         User(
             id = id,

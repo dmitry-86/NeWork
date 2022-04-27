@@ -1,6 +1,8 @@
 package com.netology.nework.ui
 
 import android.content.DialogInterface
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -21,6 +23,7 @@ import com.netology.nework.adapter.PostOnInteractionListener
 import com.netology.nework.adapter.PostsAdapter
 import com.netology.nework.databinding.FragmentFeedBinding
 import com.netology.nework.databinding.FragmentJobsBinding
+import com.netology.nework.dto.Job
 import com.netology.nework.dto.Post
 import com.netology.nework.viewmodel.AuthViewModel
 import com.netology.nework.viewmodel.JobViewModel
@@ -45,30 +48,27 @@ class JobsFragment : Fragment() {
             false
         )
 
-
-
-        //Заполняем данные пользователя
-//        fun bind(post: Post) {
-//            binding.apply {
-//                tvName.text = post.author
-//            }
-//        }
-
-//        binding.ivAvatar.setImageResource(R.drawable.avatar)
-//        binding.tvName.text = "Dima"
-//        binding.tvLogin.text = "dima"
-
-
         val adapter = JobsAdapter(object : JobOnInteractionListener {
 
-//            override fun onRemove(post: Post) {
-//                viewModel.removeById(post.id)
-//            }
-//
-//            override fun onEdit(post: Post) {
-//                showAlertDialog(post.content)
-//                viewModel.edit(post)
-//            }
+            override fun onRemove(job: Job) {
+                viewModel.removeById(job.id)
+            }
+
+            override fun onEdit(job: Job) {
+                showAlertDialog()
+                viewModel.edit(job)
+            }
+
+            override fun onLinkClick(job: Job) {
+                val intent = Intent(Intent.ACTION_VIEW)
+                val url = job.link
+                if (!url?.startsWith("http://")!! && !url.startsWith("https://")) {
+                    intent.data = Uri.parse("http://" + url)
+                }else{
+                    intent.data = Uri.parse(url)
+                }
+                startActivity(intent)
+            }
 
         })
 
