@@ -34,7 +34,6 @@ class EventRepositoryImpl(private val dao: EventDao) : EventRepository {
     override suspend fun getAll() {
         try {
             val response = EventsApi.service.getAll()
-            Log.i("tag getall", response.toString())
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }

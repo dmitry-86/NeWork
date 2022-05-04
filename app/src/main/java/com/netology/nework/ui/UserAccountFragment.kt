@@ -16,6 +16,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.netology.nework.BuildConfig
 import com.netology.nework.R
 import com.netology.nework.adapter.MyPagerAdapter
+import com.netology.nework.auth.AppAuth
 import com.netology.nework.databinding.FragmentUserAccountBinding
 import com.netology.nework.viewmodel.AuthViewModel
 import com.netology.nework.viewmodel.PostViewModel
@@ -28,44 +29,54 @@ class UserAccountFragment : Fragment() {
         ownerProducer = ::requireParentFragment
     )
 
+    private val userId = AppAuth.getInstance().authStateFlow.value.id
+
     private val authViewModel: AuthViewModel by viewModels()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         val binding = FragmentUserAccountBinding.inflate(inflater, container, false)
-
 
         binding.buttonEdit.setOnClickListener {
             findNavController().navigate(R.id.editUserFragment)
         }
 
-        authViewModel.data.observe(viewLifecycleOwner) { user ->
-            userViewModel.data.observe(viewLifecycleOwner) {
-                var position = user.id.toInt()
-                if (position > 0) {
-                    binding.textViewName.text = it.get(position-1).name
-                    binding.textViewLogin.text = it.get(position-1).login
-                    val avatar = "${BuildConfig.BASE_URL}/avatars/${
-                        it.get(position-1).avatar
-                    }"
-                    with(binding) {
-                        Glide.with(imageViewAvatar)
-                            .load("$avatar")
-                            .transform(CircleCrop())
-                            .placeholder(R.drawable.avatar)
-                            .into(imageViewAvatar)
-                    }
 
-                } else {
-                    binding.textViewName.text = "Dima"
-                    binding.textViewLogin.text = "dima"
-                }
+//        val name = arguments?.getString("name")
+//        val login = arguments?.getString("login")
+//
+//        with(binding) {
+//            textViewName.text = name
+//            textViewLogin.text = login
+//        }
+
+
+        userViewModel.getUserById(userId)
+
+        userViewModel.user.observe(viewLifecycleOwner) {
+            with(binding) {
+                textViewName.text = it.name
+                textViewLogin.text = it.login
             }
         }
 
-//        binding.ivAvatar.setImageResource(R.drawable.avatar)
+
+//                    binding.textViewLogin.text = it.get(userId.toInt()+1).login
+//                    val avatar = "${BuildConfig.BASE_URL}/avatars/${
+//                        it.get(userId.toInt()).avatar
+//                    }"
+//                    with(binding) {
+//                        Glide.with(imageViewAvatar)
+//                            .load("$avatar")
+//                            .transform(CircleCrop())
+//                            .placeholder(R.drawable.avatar)
+//                            .into(imageViewAvatar)
+//                    }
+
+        binding.imageViewAvatar.setImageResource(R.drawable.avatar)
 
         binding?.viewpager?.adapter = MyPagerAdapter(this)
         binding?.tabs?.tabIconTint = null

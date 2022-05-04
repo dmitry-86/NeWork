@@ -62,10 +62,6 @@
         android:label="fragment_create_map"
         tools:layout="@layout/fragment_create_map" />
     <fragment
-        android:id="@+id/listOfUsersFragment"
-        android:name="com.netology.nework.ListOfUsersFragment"
-        android:label="ListOfUsersFragment" />
-    <fragment
         android:id="@+id/imageFragment"
         android:name="com.netology.nework.ui.ImageFragment"
         android:label="fragment_image"
@@ -79,4 +75,9 @@
         android:name="com.netology.nework.ui.EditUserFragment"
         android:label="fragment_edit_user"
         tools:layout="@layout/fragment_edit_user" />
+    <fragment
+        android:id="@+id/usersFragment"
+        android:name="com.netology.nework.ui.UsersFragment"
+        android:label="fragment_users"
+        tools:layout="@layout/fragment_users" />
 </navigation>

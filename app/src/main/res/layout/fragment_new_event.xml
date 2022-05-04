@@ -39,14 +39,72 @@
                     android:layout_height="1dp"
                     android:background="@android:color/darker_gray" />
 
-                <EditText
-                    android:id="@+id/datetime"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/editDate"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
+                    android:layout_marginTop="@dimen/common_spacing"
+                    android:hint="выберете дату"
                     android:inputType="textMultiLine"
-                    android:hint="date"
-                    android:padding="@dimen/common_spacing" />
+                    android:minHeight="48dp"
+                    tools:ignore="MissingConstraints,TextFields"
+                    app:layout_constraintStart_toStartOf="parent"/>
+
+                <EditText
+                    android:id="@+id/editTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/common_spacing"
+                    android:hint="выберете время"
+                    android:inputType="textMultiLine"
+                    android:minHeight="48dp"
+                    tools:ignore="MissingConstraints"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/editDate"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/date"
+                        style="@style/Widget.AppTheme.LikeCheckBox"
+                        android:layout_width="54dp"
+                        android:layout_height="54dp"
+                        android:layout_gravity="center_horizontal|start"
+                        app:icon="@drawable/ic_baseline_calendar_month_24"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintStart_toEndOf="@id/editDate"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/time"
+                        style="@style/Widget.AppTheme.LikeCheckBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal|start"
+                        app:icon="@drawable/ic_baseline_more_time_24"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintStart_toEndOf="@id/editTime"
+
+                        app:layout_constraintTop_toBottomOf="@id/date"
+                        app:layout_constraintVertical_bias="1.0" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+                <!--                <EditText-->
+<!--                    android:id="@+id/datetime"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:background="@android:color/transparent"-->
+<!--                    android:inputType="textMultiLine"-->
+<!--                    android:hint="date"-->
+<!--                    android:padding="@dimen/common_spacing" />-->
 
                 <View
                     android:id="@+id/view2"

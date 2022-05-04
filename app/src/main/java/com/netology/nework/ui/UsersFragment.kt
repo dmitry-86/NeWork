@@ -1,23 +1,24 @@
-package com.netology.nework
+package com.netology.nework.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
+import com.netology.nework.R
 import com.netology.nework.adapter.UserAdapter
 import com.netology.nework.adapter.UserOnInteractionListener
-import com.netology.nework.databinding.FragmentFeedBinding
+import com.netology.nework.databinding.FragmentUsersBinding
+import com.netology.nework.dto.User
 import com.netology.nework.viewmodel.AuthViewModel
-import com.netology.nework.viewmodel.PostViewModel
 import com.netology.nework.viewmodel.UserViewModel
 
-class ListOfUsersFragment : Fragment() {
+class UsersFragment : Fragment() {
 
     private val viewModel: UserViewModel by viewModels(
         ownerProducer = ::requireParentFragment
@@ -30,7 +31,7 @@ class ListOfUsersFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = FragmentFeedBinding.inflate(
+        val binding = FragmentUsersBinding.inflate(
             inflater,
             container,
             false
@@ -40,8 +41,10 @@ class ListOfUsersFragment : Fragment() {
 
         val adapter = UserAdapter(object : UserOnInteractionListener {
 
-            override fun onItemClick(position: Int) {
-
+            override fun onItemClick(user: User) {
+                bundle.putString("name", user.name.toString())
+                bundle.putString("login", user.login.toString())
+                findNavController().navigate(R.id.userAccountFragment, bundle)
             }
 
 
@@ -59,7 +62,7 @@ class ListOfUsersFragment : Fragment() {
         }
 
         viewModel.data.observe(viewLifecycleOwner){ state ->
-            adapter.submitList(state)
+            adapter.submitList(state.users)
 //            binding.emptyText.isVisible = state.empty
         }
 

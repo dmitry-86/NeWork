@@ -31,8 +31,12 @@ private val empty = Event(
     content = "Выпускники Kotlin Developer",
     datetime = "2021-09-17T16:46:58.887547Z",
     published = "2021-08-17T16:46:58.887547Z",
+    coords = null,
     type = EventType.OFFLINE,
-    likes = 0
+    likedByMe = false,
+    attachment = null,
+    link = "",
+    likes = 0,
 )
 
 private val noPhoto = PhotoModel()
@@ -50,16 +54,6 @@ class EventViewModel(application: Application) : AndroidViewModel(application) {
                 .map (::EventFeedModel)
         }.asLiveData(Dispatchers.Default)
 
-
-//    val userData: LiveData<FeedModel> = AppAuth.getInstance()
-//        .authStateFlow
-//        .flatMapLatest { (myId, _) ->
-//            repository.userData
-//                .map { events ->
-//                    FeedModel(
-//                    )
-//                }
-//        }.asLiveData(Dispatchers.Default)
 
     private val _dataState = MutableLiveData<FeedModelState>()
     val dataState: LiveData<FeedModelState>
@@ -133,19 +127,23 @@ class EventViewModel(application: Application) : AndroidViewModel(application) {
         edited.value = event
     }
 
-    fun changeContent(content: String, link: String, eventType: EventType) {
+    fun changeContent(content: String, datetime: String, link: String, eventType: EventType) {
         val content = content.trim()
-//        val date = date.trim()
+        val datetime = datetime.trim()
         val link = link.trim()
         val eventType = eventType
 
+        Log.i("event!!", content + datetime + link + eventType)
+
         if (edited.value?.content == content
-//            && edited.value?.datetime == date
+            && edited.value?.datetime == datetime
+            && edited.value?.link == link
             && edited.value?.type == eventType) {
             return
         }
-        edited.value = edited.value?.copy(content = content, link = link, type = eventType)
+        edited.value = edited.value?.copy(content = content, datetime = datetime, link = link, type = eventType)
     }
+
 
     fun changePhoto(uri: Uri?, file: File?) {
         _photo.value = PhotoModel(uri, file)

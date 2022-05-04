@@ -95,7 +95,7 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
             }
 
             R.id.userList-> {
-                findNavController(R.id.nav_host_fragment).navigate(R.id.listOfUsersFragment)
+                findNavController(R.id.nav_host_fragment).navigate(R.id.usersFragment)
                 true
             }
             R.id.posts -> {

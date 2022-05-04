@@ -105,7 +105,7 @@ class EventsFragment : Fragment() {
         val builder = AlertDialog.Builder(requireActivity())
         builder.setTitle("Would you like to sign in?")
         builder.setNeutralButton("Yes"){dialogInterface, i ->
-            findNavController().navigate(R.id.action_feedFragment_to_signInFragment)
+            findNavController().navigate(R.id.signInFragment)
         }
         builder.setNegativeButton("No"){dialog, i ->
             findNavController().navigate(R.id.feedFragment)

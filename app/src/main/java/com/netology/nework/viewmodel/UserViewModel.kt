@@ -3,16 +3,16 @@ package com.netology.nework.viewmodel
 import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.*
+import com.netology.nework.api.PostsApi
+import com.netology.nework.api.UserApi
+import com.netology.nework.api.UserApiService
 import com.netology.nework.auth.AppAuth
 import com.netology.nework.db.AppDb
 import com.netology.nework.dto.Job
 import com.netology.nework.dto.MediaUpload
 import com.netology.nework.dto.Post
 import com.netology.nework.dto.User
-import com.netology.nework.model.FeedModel
-import com.netology.nework.model.FeedModelState
-import com.netology.nework.model.JobFeedModel
-import com.netology.nework.model.PhotoModel
+import com.netology.nework.model.*
 import com.netology.nework.repository.JobRepository
 import com.netology.nework.repository.JobRepositoryImpl
 import com.netology.nework.repository.UserRepository
@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.io.File
+import java.io.IOException
 
 private val empty = User(
     id = 0,
@@ -40,20 +41,29 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: UserRepository =
         UserRepositoryImpl(AppDb.getInstance(context = application).userDao())
 
-    val data: LiveData<List<User>> = repository.data
-        .asLiveData(Dispatchers.Default)
+    val data: LiveData<UserModel> = repository.data
+        .map { user ->
+            UserModel(
+                user,
+                user.isEmpty()
+            )
+        }.asLiveData(Dispatchers.Default)
+
+    val id = AppAuth.getInstance().authStateFlow.value.id
+
+    val user = MutableLiveData<User>()
 
     private val _dataState = MutableLiveData<FeedModelState>()
     val dataState: LiveData<FeedModelState>
         get() = _dataState
 
-    private val _user = MutableLiveData<User>()
-    val user: LiveData<User>
-        get() = _user
+//    private val _user = MutableLiveData<User>()
+//    val user: LiveData<User>
+//        get() = _user
 
-    private val _usersIds = MutableLiveData<Set<Long>>()
-    val userIds: LiveData<Set<Long>>
-        get() = _usersIds
+//    private val _usersIds = MutableLiveData<Set<Long>>()
+//    val userIds: LiveData<Set<Long>>
+//        get() = _usersIds
 
     private val edited = MutableLiveData(empty)
     private val _userCreated = SingleLiveEvent<Unit>()
@@ -67,6 +77,7 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
     init {
         loadUsers()
     }
+
 
     fun save() {
         edited.value?.let {
@@ -121,6 +132,16 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
         try {
             _dataState.value = FeedModelState(refreshing = true)
             repository.getAll()
+            _dataState.value = FeedModelState()
+        } catch (e: Exception) {
+            _dataState.value = FeedModelState(error = true)
+        }
+    }
+
+    fun getUserById(id: Long) = viewModelScope.launch {
+        try {
+            _dataState.value = FeedModelState(loading = true)
+            user.value = repository.getUserById(id)
             _dataState.value = FeedModelState()
         } catch (e: Exception) {
             _dataState.value = FeedModelState(error = true)

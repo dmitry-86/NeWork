@@ -1,7 +1,11 @@
 package com.netology.nework.ui
 
 import android.app.Activity
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
+import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -9,12 +13,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Spinner
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.core.net.toFile
 import androidx.fragment.app.viewModels
-import com.netology.nework.databinding.FragmentNewPostBinding
-import com.netology.nework.viewmodel.PostViewModel
 import androidx.navigation.fragment.findNavController
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.github.dhaval2404.imagepicker.constant.ImageProvider
@@ -22,9 +25,10 @@ import com.google.android.material.snackbar.Snackbar
 import com.netology.nework.R
 import com.netology.nework.databinding.FragmentNewEventBinding
 import com.netology.nework.enumeration.EventType
-import com.netology.nework.utils.AndroidUtils
-import com.netology.nework.utils.StringArg
+import com.netology.nework.utils.*
 import com.netology.nework.viewmodel.EventViewModel
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class NewEventFragment: Fragment() {
@@ -39,6 +43,7 @@ class NewEventFragment: Fragment() {
 
     private var fragmentBinding: FragmentNewEventBinding? = null
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -52,6 +57,40 @@ class NewEventFragment: Fragment() {
             ?.let(binding.edit::setText)
         arguments?.textArg
             ?.let(binding.link::setText)
+        binding.edit.setText(arguments?.getString("content"))
+
+
+        val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
+            binding.date.setOnClickListener{
+                val now = Calendar.getInstance()
+                val datePicker = DatePickerDialog(binding.getRoot().getContext(), DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
+                    val selectedDate= Calendar.getInstance()
+                    selectedDate.set(Calendar.YEAR, year)
+                    selectedDate.set(Calendar.MONTH, month)
+                    selectedDate.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                    val date = format.format(selectedDate.time).toString()
+                    binding.editDate.setText(date)
+//                Toast.makeText(binding.getRoot().getContext(), "date: $date", Toast.LENGTH_SHORT).show()
+                },
+                    now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH))
+                datePicker.show()
+            }
+
+        binding.time.setOnClickListener{
+            val now = Calendar.getInstance()
+            val timePicker = TimePickerDialog.OnTimeSetListener { _, hour, minute ->
+                now.set(Calendar.HOUR_OF_DAY, hour)
+                now.set(Calendar.MINUTE, minute)
+                val time = SimpleDateFormat("HH:mm").format(now.time)
+                binding.editTime.setText(time)
+            }
+            val time = TimePickerDialog(context, timePicker, now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE), true)
+
+            time.setTitle("")
+            time.show()
+        }
+
 
         val event = binding.spinner
 
@@ -63,10 +102,6 @@ class NewEventFragment: Fragment() {
                     "online"-> eventType = EventType.ONLINE
                     else-> eventType = EventType.OFFLINE
                 }
-
-
-        binding.edit.requestFocus()
-
 
         val pickPhotoLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -126,8 +161,10 @@ class NewEventFragment: Fragment() {
             binding.photo.setImageURI(it.uri)
         }
 
+//
+
         binding.ok.setOnClickListener {
-            viewModel.changeContent(binding.edit.text.toString(), binding.link.text.toString(), eventType)
+            viewModel.changeContent(binding.edit.text.toString(), binding.editDate.text.toString() + " " + binding.editTime.text.toString(), binding.link.text.toString(), eventType)
             viewModel.save()
             AndroidUtils.hideKeyboard(requireView())
         }

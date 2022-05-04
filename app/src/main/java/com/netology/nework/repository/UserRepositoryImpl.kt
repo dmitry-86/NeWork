@@ -24,9 +24,16 @@ import java.io.IOException
 
 class UserRepositoryImpl(private val dao: UserDao) : UserRepository {
 
+    private val userId = AppAuth.getInstance().authStateFlow.value.id
+
     override val data = dao.getAll()
         .map(List<UserEntity>::toDto)
         .flowOn(Dispatchers.Default)
+
+
+//    override val userData = dao.getUserById(id = userId)
+//        .map(List<UserEntity>::toDto)
+//        .flowOn(Dispatchers.Default)
 
     override suspend fun getAll() {
         try {
@@ -37,6 +44,20 @@ class UserRepositoryImpl(private val dao: UserDao) : UserRepository {
             val body = response.body() ?: throw ApiError(response.code(), response.message())
             dao.insert(body.toEntity())
         } catch (e: IOException) {
+            throw NetworkError
+        } catch (e: Exception) {
+            throw UnknownError
+        }
+    }
+
+    override suspend fun getUserById(id: Long) : User{
+        try {
+            val response = UserApi.service.getUserById(id)
+            if (!response.isSuccessful) {
+                throw ApiError(response.code(), response.message())
+            }
+            return response.body() ?: throw Exception()
+        }catch(e: IOException) {
             throw NetworkError
         } catch (e: Exception) {
             throw UnknownError

@@ -45,7 +45,7 @@ interface UserApiService {
     suspend fun getAll(): Response<List<User>>
 
     @GET("users/{id}")
-    suspend fun getById(@Path("id") id: Long): Response<User>
+    suspend fun getUserById(@Path("id") id: Long): Response<User>
 
     @POST("users")
     suspend fun save(@Body user: User): Response<User>

@@ -12,11 +12,7 @@ import com.netology.nework.databinding.CardUserBinding
 import com.netology.nework.dto.User
 
 interface UserOnInteractionListener {
-    fun onItemClick(item: Int) {}
-//    fun onRemove(post: Post) {}
-//    fun onLike(post: Post) {}
-//    fun onItemClick(position: Int) {}
-    //    fun onShare(post: Post) {}
+    fun onItemClick(user: User) {}
 }
 
 class UserAdapter(
@@ -30,9 +26,9 @@ class UserAdapter(
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
         val user = getItem(position)
-        holder.itemView.setOnClickListener{
-            onInteractionListener.onItemClick(position)
-        }
+//        holder.itemView.setOnClickListener{
+//            onInteractionListener.onItemClick(position)
+//        }
         holder.bind(user)
     }
 }
@@ -49,7 +45,6 @@ class UserViewHolder(
             textViewUserName.text = user.name
             textViewLogin.text  = user.login
             imageViewAvatar.setImageResource(R.drawable.avatar)
-
         }
     }
 }
