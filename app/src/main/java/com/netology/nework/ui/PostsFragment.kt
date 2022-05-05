@@ -49,7 +49,7 @@ class PostsFragment : Fragment() {
             }
 
             override fun onEdit(post: Post) {
-//                showAlertDialog(post.content)
+                showAlertDialog(post.content, post.link!!)
                 viewModel.edit(post)
             }
 
@@ -119,6 +119,36 @@ class PostsFragment : Fragment() {
 
     }
 
+    private fun showAlertDialog(content: String, link: String) {
+        val placeFormView =
+            LayoutInflater.from(activity).inflate(R.layout.dialog_change_post, null)
+
+        val editText: EditText = placeFormView.findViewById(R.id.editEditText)
+        editText.setText(content)
+        val linkEditText: EditText = placeFormView.findViewById(R.id.linkEditText)
+        linkEditText.setText(link)
+
+        val dialog = AlertDialog.Builder(requireActivity())
+            .setTitle(getString(R.string.edit)).setMessage(getString(R.string.enter_new_content))
+            .setView(placeFormView)
+            .setNegativeButton(getString(R.string.cancel), null)
+            .setPositiveButton(getString(R.string.ok), null)
+            .show()
+
+        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
+            val content = placeFormView.findViewById<EditText>(R.id.editEditText).text.toString()
+            val link = placeFormView.findViewById<EditText>(R.id.linkEditText).text.toString()
+            if (content.trim().isEmpty()) {
+                Toast.makeText(activity, "сообщение пустое", Toast.LENGTH_LONG)
+                    .show()
+                return@setOnClickListener
+            }
+            viewModel.changeContent(content, link)
+            viewModel.save()
+            dialog.dismiss()
+        }
+    }
+
     private fun createDialog(){
         val builder = AlertDialog.Builder(requireActivity())
         builder.setTitle("Would you like to sign in?")
@@ -130,6 +160,5 @@ class PostsFragment : Fragment() {
         }
         builder.show()
     }
-
 
 }

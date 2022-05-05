@@ -5,16 +5,16 @@
     android:layout_height="match_parent">
 
     <EditText
-        android:id="@+id/editEditText"
+        android:id="@+id/editTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
+        android:hint="content"
         android:inputType="textMultiLine"
-        android:hint="post"
         android:padding="@dimen/common_spacing" />
 
     <EditText
-        android:id="@+id/linkEditText"
+        android:id="@+id/linkTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"

@@ -25,6 +25,7 @@ import com.netology.nework.R
 import com.netology.nework.databinding.CardPostBinding
 import com.netology.nework.dto.Post
 import com.netology.nework.enumeration.AttachmentType
+import com.netology.nework.utils.AndroidUtils.formatDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -65,16 +66,10 @@ class PostViewHolder(
     fun bind(post: Post) {
         binding.apply {
             textViewUserName.text = post.author
-//            textViewPublished.text = post.published
             textViewContent.text = post.content
-
-            val parsedDate = LocalDateTime.parse(post.published, DateTimeFormatter.ISO_DATE_TIME)
-            val formattedDate = parsedDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
-            textViewPublished.text = formattedDate
-
+            textViewPublished.text = formatDate(post.published)
             like.isChecked = post.likedByMe
             like.text = "${post.likes}"
-
             delete.visibility = if (post.ownedByMe) View.VISIBLE else View.INVISIBLE
             edit.visibility = if (post.ownedByMe) View.VISIBLE else View.INVISIBLE
 

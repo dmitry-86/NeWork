@@ -8,14 +8,10 @@ import androidx.fragment.app.Fragment
 
 import android.os.Bundle
 import android.view.*
-import android.widget.EditText
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.coroutineScope
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -25,16 +21,10 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.maps.android.collections.MarkerManager
 import com.google.maps.android.ktx.awaitMap
 import com.google.maps.android.ktx.model.cameraPosition
-import com.google.maps.android.ktx.utils.collection.addMarker
 import com.netology.nework.R
-import com.netology.nework.databinding.ActivityAppBinding.inflate
 import com.netology.nework.databinding.FragmentCreateMapBinding
-import com.netology.nework.databinding.FragmentNewPostBinding
-import com.netology.nework.dto.Coordinates
-import com.netology.nework.utils.AndroidUtils
 import com.netology.nework.viewmodel.PostViewModel
 
 class CreateMapFragment : Fragment() {

@@ -21,6 +21,7 @@ import com.netology.nework.dto.Event
 import com.netology.nework.dto.Job
 import com.netology.nework.dto.Post
 import com.netology.nework.enumeration.AttachmentType
+import com.netology.nework.utils.AndroidUtils.formatDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -58,21 +59,15 @@ class EventViewHolder(
         binding.apply {
 
             textViewUserName.text = event.author
-
             textViewContent.text = event.content
-            textViewDate.text = event.datetime.toString()
             eventType.text = event.type.toString()
-
-            val parsedDate = LocalDateTime.parse(event.published, DateTimeFormatter.ISO_DATE_TIME)
-            val formattedDate = parsedDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
-            textViewPublished.text = formattedDate
-
+            textViewPublished.text = formatDate(event.published)
+            textViewDate.text = formatDate(event.datetime)
             like.isChecked = event.likedByMe
             like.text = "${event.likes}"
 
 //            delete.visibility = if (event.ownedByMe) View.VISIBLE else View.INVISIBLE
 //            edit.visibility = if (event.ownedByMe) View.VISIBLE else View.INVISIBLE
-
 
             if (attachment != null) {
                 when (event.attachment?.type) {

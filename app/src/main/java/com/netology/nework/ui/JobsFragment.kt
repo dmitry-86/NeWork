@@ -19,15 +19,10 @@ import com.google.android.material.snackbar.Snackbar
 import com.netology.nework.R
 import com.netology.nework.adapter.JobOnInteractionListener
 import com.netology.nework.adapter.JobsAdapter
-import com.netology.nework.adapter.PostOnInteractionListener
-import com.netology.nework.adapter.PostsAdapter
-import com.netology.nework.databinding.FragmentFeedBinding
 import com.netology.nework.databinding.FragmentJobsBinding
 import com.netology.nework.dto.Job
-import com.netology.nework.dto.Post
 import com.netology.nework.viewmodel.AuthViewModel
 import com.netology.nework.viewmodel.JobViewModel
-import com.netology.nework.viewmodel.PostViewModel
 
 class JobsFragment : Fragment() {
 
@@ -57,7 +52,7 @@ class JobsFragment : Fragment() {
             }
 
             override fun onEdit(job: Job) {
-                showAlertDialog()
+                showAlertDialog(job.name, job.position, job.start, job.finish!!, job.link!!)
                 viewModel.edit(job)
             }
 
@@ -98,10 +93,9 @@ class JobsFragment : Fragment() {
 
         binding.fab.setOnClickListener {
             if(authViewModel.authenticated) {
-//                findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
-                showAlertDialog()
+                findNavController().navigate(R.id.newEventFragment)
             }else{
-                findNavController().navigate(R.id.signInFragment)
+                createDialog()
             }
         }
 
@@ -109,12 +103,20 @@ class JobsFragment : Fragment() {
 
     }
 
-    private fun showAlertDialog() {
+    private fun showAlertDialog(name: String, position: String, start: Long, finish: Long, link: String) {
         val placeFormView =
             LayoutInflater.from(activity).inflate(R.layout.dialog_create_job, null)
 
-//        val editText: EditText = placeFormView.findViewById(R.id.editTextContent)
-//        editText.setText(content)
+        val nameET: EditText = placeFormView.findViewById(R.id.name)
+        nameET.setText(name)
+        val positionET: EditText = placeFormView.findViewById(R.id.position)
+        positionET.setText(position)
+        val startedET: EditText = placeFormView.findViewById(R.id.started)
+        startedET.setText(start.toString())
+        val finishedET: EditText = placeFormView.findViewById(R.id.finished)
+        finishedET.setText(finish.toString())
+        val linkET: EditText = placeFormView.findViewById(R.id.link)
+        linkET.setText(link)
 
         val dialog = AlertDialog.Builder(requireActivity())
             .setTitle(getString(R.string.edit)).setMessage(getString(R.string.enter_new_content))
@@ -126,26 +128,34 @@ class JobsFragment : Fragment() {
         dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
             val name = placeFormView.findViewById<EditText>(R.id.name).text.toString()
             val position  = placeFormView.findViewById<EditText>(R.id.position).text.toString()
-            val started  = placeFormView.findViewById<EditText>(R.id.started).text.toString()
-            val finished  = placeFormView.findViewById<EditText>(R.id.finished).text.toString()
+            val start  = placeFormView.findViewById<EditText>(R.id.started).text.toString()
+            val finish  = placeFormView.findViewById<EditText>(R.id.finished).text.toString()
             val link  = placeFormView.findViewById<EditText>(R.id.link).text.toString()
             if (name.trim().isEmpty()
                 || position.trim().isEmpty()
-                || started.trim().isEmpty()
-                || finished.trim().isEmpty()
+                || start.trim().isEmpty()
+                || finish.trim().isEmpty()
                 || link.trim().isEmpty()){
                 Toast.makeText(activity, "сообщение пустое", Toast.LENGTH_LONG)
                     .show()
                 return@setOnClickListener
             }
-            viewModel.changeContent(name, position, started, finished, link)
+            viewModel.changeContent(name, position, start, finish, link)
             viewModel.save()
             dialog.dismiss()
-
-
         }
 
     }
 
-
+    private fun createDialog(){
+        val builder = AlertDialog.Builder(requireActivity())
+        builder.setTitle("Would you like to sign in?")
+        builder.setNeutralButton("Yes"){dialogInterface, i ->
+            findNavController().navigate(R.id.signInFragment)
+        }
+        builder.setNegativeButton("No"){dialog, i ->
+            findNavController().navigate(R.id.feedFragment)
+        }
+        builder.show()
+    }
 }

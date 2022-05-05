@@ -12,7 +12,6 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -53,7 +52,7 @@ class FeedFragment : Fragment() {
             }
 
             override fun onEdit(post: Post) {
-                showAlertDialog(post.content)
+                showAlertDialog(post.content, post.link!!)
                 viewModel.edit(post)
             }
 
@@ -123,12 +122,14 @@ class FeedFragment : Fragment() {
 
     }
 
-    private fun showAlertDialog(content: String) {
+    private fun showAlertDialog(content: String, link: String) {
         val placeFormView =
             LayoutInflater.from(activity).inflate(R.layout.dialog_change_post, null)
 
-        val editText: EditText = placeFormView.findViewById(R.id.editTextContent)
+        val editText: EditText = placeFormView.findViewById(R.id.editEditText)
         editText.setText(content)
+        val linkEditText: EditText = placeFormView.findViewById(R.id.linkEditText)
+        linkEditText.setText(link)
 
         val dialog = AlertDialog.Builder(requireActivity())
             .setTitle(getString(R.string.edit)).setMessage(getString(R.string.enter_new_content))
@@ -138,8 +139,8 @@ class FeedFragment : Fragment() {
             .show()
 
         dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
-            val content = placeFormView.findViewById<EditText>(R.id.editTextContent).text.toString()
-            val link = placeFormView.findViewById<EditText>(R.id.link).text.toString()
+            val content = placeFormView.findViewById<EditText>(R.id.editEditText).text.toString()
+            val link = placeFormView.findViewById<EditText>(R.id.linkEditText).text.toString()
             if (content.trim().isEmpty()) {
                 Toast.makeText(activity, "сообщение пустое", Toast.LENGTH_LONG)
                     .show()

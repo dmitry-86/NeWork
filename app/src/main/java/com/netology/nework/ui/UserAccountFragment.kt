@@ -1,25 +1,18 @@
 package com.netology.nework.ui
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModel
 import androidx.navigation.fragment.findNavController
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CircleCrop
-import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.netology.nework.BuildConfig
 import com.netology.nework.R
 import com.netology.nework.adapter.MyPagerAdapter
 import com.netology.nework.auth.AppAuth
 import com.netology.nework.databinding.FragmentUserAccountBinding
 import com.netology.nework.viewmodel.AuthViewModel
-import com.netology.nework.viewmodel.PostViewModel
 import com.netology.nework.viewmodel.UserViewModel
 
 

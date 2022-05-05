@@ -1,8 +1,7 @@
 package com.netology.nework.ui
 
-import com.netology.nework.BuildConfig.BASE_URL
-import com.netology.nework.databinding.FragmentImageBinding
 
+import com.netology.nework.databinding.FragmentImageBinding
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater

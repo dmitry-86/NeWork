@@ -3,7 +3,6 @@ package com.netology.nework.ui
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -161,10 +160,8 @@ class NewEventFragment: Fragment() {
             binding.photo.setImageURI(it.uri)
         }
 
-//
-
         binding.ok.setOnClickListener {
-            viewModel.changeContent(binding.edit.text.toString(), binding.editDate.text.toString() + " " + binding.editTime.text.toString(), binding.link.text.toString(), eventType)
+            viewModel.changeContent(binding.edit.text.toString(), binding.editDate.text.toString() + "T" + binding.editTime.text.toString()  + ":00.000000Z", binding.link.text.toString(), eventType)
             viewModel.save()
             AndroidUtils.hideKeyboard(requireView())
         }

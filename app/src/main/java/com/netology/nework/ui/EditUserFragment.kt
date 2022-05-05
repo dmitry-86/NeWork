@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toFile
 import androidx.fragment.app.viewModels
@@ -17,11 +16,8 @@ import com.github.dhaval2404.imagepicker.constant.ImageProvider
 import com.google.android.material.snackbar.Snackbar
 import com.netology.nework.R
 import com.netology.nework.databinding.FragmentEditUserBinding
-import com.netology.nework.databinding.FragmentNewEventBinding
-import com.netology.nework.enumeration.EventType
 import com.netology.nework.utils.AndroidUtils
 import com.netology.nework.utils.StringArg
-import com.netology.nework.viewmodel.EventViewModel
 import com.netology.nework.viewmodel.UserViewModel
 
 
