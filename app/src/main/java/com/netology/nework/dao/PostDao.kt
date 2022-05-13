@@ -30,7 +30,7 @@ interface PostDao {
 
     @Query("""
         UPDATE PostEntity SET
-               likes = likes + 1,
+               likeOwnerIds = likeOwnerIds + 1,
                likedByMe = 1
            WHERE id = :id AND likedByMe = 0;
         """)
@@ -39,7 +39,7 @@ interface PostDao {
     @Query(
         """
            UPDATE PostEntity SET
-               likes = likes - 1,
+               likeOwnerIds = likeOwnerIds - 1,
                likedByMe = 0
            WHERE id = :id AND likedByMe = 1;
         """)

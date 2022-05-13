@@ -25,15 +25,12 @@ import com.google.maps.android.ktx.awaitMap
 import com.google.maps.android.ktx.model.cameraPosition
 import com.netology.nework.R
 import com.netology.nework.databinding.FragmentCreateMapBinding
+import com.netology.nework.viewmodel.EventViewModel
 import com.netology.nework.viewmodel.PostViewModel
 
 class CreateMapFragment : Fragment() {
     private lateinit var googleMap: GoogleMap
     private var markers: MutableList<Marker> = mutableListOf<Marker>()
-
-    private val viewModel: PostViewModel by viewModels(
-        ownerProducer = ::requireParentFragment
-    )
 
     @SuppressLint("MissingPermission")
     private val requestPermissionLauncher =
@@ -47,29 +44,6 @@ class CreateMapFragment : Fragment() {
                 // TODO: show sorry dialog
             }
         }
-
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        setHasOptionsMenu(true)
-//    }
-//
-//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-//        inflater.inflate(R.menu.menu_create_map, menu)
-//    }
-//
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        if (item.itemId == R.id.miSave) {
-//            if (markers.isEmpty()) {
-//                Toast.makeText(activity, "It must be at least one marker", Toast.LENGTH_LONG).show()
-//                return true
-//            }
-//            NavHostFragment.findNavController(this)
-//                .navigate(R.id.action_createMapFragment_to_fragmentLocations)
-//            return true
-//        }
-//
-//        return super.onOptionsItemSelected(item)
-//    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -103,7 +77,6 @@ class CreateMapFragment : Fragment() {
             }
 
             when {
-                // 1. Проверяем есть ли уже права
                 ContextCompat.checkSelfPermission(
                     requireContext(),
                     Manifest.permission.ACCESS_FINE_LOCATION
@@ -120,93 +93,66 @@ class CreateMapFragment : Fragment() {
                         println(it)
                     }
                 }
-                // 2. Должны показать обоснование необходимости прав
+
                 shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) -> {
                     // TODO: show rationale dialog
                 }
-                // 3. Запрашиваем права
+
                 else -> {
                     requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
                 }
             }
 
             val boundsBuilder = LatLngBounds.Builder()
-//            viewModel.data.observe(viewLifecycleOwner) { state ->
-//                val markerManager = MarkerManager(googleMap)
-//                markerManager.newCollection().apply {
-//                    state.posts.forEach() {
-//                        val target = LatLng(it.coords!!.lat, it.coords!!.long)
-//                        boundsBuilder.include(target)
-//                        addMarker {
-//                            position(target)
-//                        }
-//                    }
-//                }
-//            }
 
-
-        try {
-            googleMap.moveCamera(
-                CameraUpdateFactory.newLatLngBounds(
-                    boundsBuilder.build(),
-                    1000,
-                    1000,
-                    0
+            try {
+                googleMap.moveCamera(
+                    CameraUpdateFactory.newLatLngBounds(
+                        boundsBuilder.build(),
+                        1000,
+                        1000,
+                        0
+                    )
                 )
-            )
-        } catch (e: IllegalStateException) {
-            val target = LatLng(56.0153, 92.8932)
-            googleMap.moveCamera(
-                CameraUpdateFactory.newCameraPosition(
-                    cameraPosition {
-                        target(target)
-                    }
+            } catch (e: IllegalStateException) {
+                val target = LatLng(56.0153, 92.8932)
+                googleMap.moveCamera(
+                    CameraUpdateFactory.newCameraPosition(
+                        cameraPosition {
+                            target(target)
+                        }
+                    )
                 )
-            )
+            }
+
+            googleMap.setOnInfoWindowClickListener { markerToDelete ->
+                markers.remove(markerToDelete)
+                markerToDelete.remove()
+            }
+
+            googleMap.setOnMapClickListener { latLng ->
+
+                val marker = googleMap.addMarker(MarkerOptions().position(latLng))
+
+                val bundle = Bundle().apply {
+                    putDouble("lat", marker!!.position.latitude)
+                    putDouble("lng", marker!!.position.latitude)
+                    putString("content", arguments?.getString("content"))
+                    putString("link", arguments?.getString("link"))
+                    putString("date", arguments?.getString("date"))
+                    putString("time", arguments?.getString("time"))
+                }
+
+
+                when (arguments?.getString("fragment")) {
+                    "newPost" -> findNavController().navigate(R.id.newPostFragment, bundle)
+                    "newEvent" -> findNavController().navigate(R.id.newEventFragment, bundle)
+                }
+
+            }
+
         }
 
-        googleMap.setOnInfoWindowClickListener { markerToDelete ->
-            markers.remove(markerToDelete)
-            markerToDelete.remove()
-        }
-
-        googleMap.setOnMapClickListener { latLng ->
-            val marker = googleMap.addMarker(MarkerOptions().position(latLng))
-
-            markers.add(marker!!)
-
-            viewModel.saveMarker(marker)
-        }
 
     }
-
-
-}
-
-//    private fun showAlertDialog(latLng: LatLng) {
-//        val placeFormView =
-//            LayoutInflater.from(activity).inflate(R.layout.dialog_create_place, null)
-//        val dialog = AlertDialog.Builder(requireActivity())
-//            .setTitle(getString(R.string.create_marker)).setMessage(getString(R.string.hello))
-//            .setView(placeFormView)
-//            .setNegativeButton(getString(R.string.cancel), null)
-//            .setPositiveButton(getString(R.string.ok), null)
-//            .show()
-//
-//        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
-//            val title = placeFormView.findViewById<EditText>(R.id.etTitle).text.toString()
-//            if (title.trim().isEmpty()) {
-//                Toast.makeText(activity, getString(R.string.title_is_empty), Toast.LENGTH_LONG)
-//                    .show()
-//                return@setOnClickListener
-//            }
-//            val marker = googleMap.addMarker(MarkerOptions().position(latLng).title(title))
-//            markers.add(marker!!)
-//            //сохранение маркеров
-//            viewModel.saveMarker(marker)
-//            dialog.dismiss()
-//        }
-//    }
-
-
 }

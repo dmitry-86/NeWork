@@ -69,9 +69,10 @@ class PostViewHolder(
             textViewContent.text = post.content
             textViewPublished.text = formatDate(post.published)
             like.isChecked = post.likedByMe
-            like.text = "${post.likes}"
+            like.text = post.likeOwnerIds.count().toString()
             delete.visibility = if (post.ownedByMe) View.VISIBLE else View.INVISIBLE
             edit.visibility = if (post.ownedByMe) View.VISIBLE else View.INVISIBLE
+            location.visibility = if(post.coords!=null) View.VISIBLE else View.INVISIBLE
 
 
             if (attachment != null) {
@@ -117,7 +118,6 @@ class PostViewHolder(
             location.setOnClickListener {
                 onInteractionListener.onLocationClick(post)
             }
-
 
         }
     }

@@ -15,6 +15,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.netology.nework.R
 import com.netology.nework.adapter.*
 import com.netology.nework.databinding.FragmentEventsBinding
+import com.netology.nework.dto.Coordinates
 import com.netology.nework.dto.Event
 import com.netology.nework.enumeration.EventType
 import com.netology.nework.viewmodel.AuthViewModel
@@ -39,7 +40,6 @@ class EventsFragment : Fragment() {
             false
         )
 
-
         val adapter = EventAdapter(object : EventOnInteractionListener {
 
             override fun onRemove(event: Event) {
@@ -47,16 +47,32 @@ class EventsFragment : Fragment() {
             }
 
             override fun onEdit(event: Event) {
-                showAlertDialog(event.content, event.datetime, event.link!!, event.type)
+                showAlertDialog(
+                    event.content,
+                    event.datetime,
+                    event.coords,
+                    event.link!!,
+                    event.type
+                )
                 viewModel.edit(event)
             }
 
             override fun onLike(event: Event) {
-                if(authViewModel.authenticated) {
+                if (authViewModel.authenticated) {
                     viewModel.likeEvent(event)
-                }else {
+                } else {
                     createDialog()
                 }
+            }
+
+            override fun onLocationClick(event: Event) {
+                val bundle = Bundle().apply {
+                    event.coords?.lat?.let { putDouble("lat", it) }
+                    event.coords?.long?.let { putDouble("lng", it) }
+                }
+
+                findNavController().navigate(
+                    R.id.displayMapsFragment, bundle)
             }
 
         })
@@ -72,7 +88,7 @@ class EventsFragment : Fragment() {
             }
         }
 
-        viewModel.data.observe(viewLifecycleOwner){ state ->
+        viewModel.data.observe(viewLifecycleOwner) { state ->
             adapter.submitList(state.events)
             binding.emptyText.isVisible = state.empty
         }
@@ -83,9 +99,9 @@ class EventsFragment : Fragment() {
 
 
         binding.fab.setOnClickListener {
-            if(authViewModel.authenticated) {
+            if (authViewModel.authenticated) {
                 findNavController().navigate(R.id.newEventFragment)
-            }else{
+            } else {
                 createDialog()
             }
         }
@@ -94,7 +110,13 @@ class EventsFragment : Fragment() {
 
     }
 
-    private fun showAlertDialog(content: String, datetime: String, link: String, eventType: EventType) {
+    private fun showAlertDialog(
+        content: String,
+        datetime: String,
+        coords: Coordinates?,
+        link: String,
+        eventType: EventType
+    ) {
         val placeFormView =
             LayoutInflater.from(activity).inflate(R.layout.dialog_change_event, null)
 
@@ -113,27 +135,28 @@ class EventsFragment : Fragment() {
         dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
             val content = placeFormView.findViewById<EditText>(R.id.editTextView).text.toString()
             val datetime = datetime
+            val coords = coords
             val link = placeFormView.findViewById<EditText>(R.id.linkTextView).text.toString()
-            val eventType = eventType
+            val eventType = eventType.toString()
             if (content.trim().isEmpty()) {
                 Toast.makeText(activity, "сообщение пустое", Toast.LENGTH_LONG)
                     .show()
                 return@setOnClickListener
             }
-            viewModel.changeContent(content, datetime, link, eventType)
+            viewModel.changeContent(content, datetime, coords, link, eventType)
             viewModel.save()
             dialog.dismiss()
         }
     }
 
 
-    private fun createDialog(){
+    private fun createDialog() {
         val builder = AlertDialog.Builder(requireActivity())
         builder.setTitle("Would you like to sign in?")
-        builder.setNeutralButton("Yes"){dialogInterface, i ->
+        builder.setNeutralButton("Yes") { dialogInterface, i ->
             findNavController().navigate(R.id.signInFragment)
         }
-        builder.setNegativeButton("No"){dialog, i ->
+        builder.setNegativeButton("No") { dialog, i ->
             findNavController().navigate(R.id.feedFragment)
         }
         builder.show()

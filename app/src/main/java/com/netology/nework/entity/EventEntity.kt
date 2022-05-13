@@ -24,16 +24,13 @@ data class EventEntity(
     val coords: CoordinatesEmbeddable? = null,
     @Embedded
     val type: EventTypeEmbeddable,
+    val likeOwnerIds: Set<Long> = emptySet(),
     val likedByMe: Boolean,
-////    @ElementCollection
-//    val likeOwnerIds: Set<Long> = emptySet(),
-////    @ElementCollection
 //    val speakerIds: Set<Long> = emptySet(),
 //    val participantsIds: MutableSet<Long> = mutableSetOf(),
     @Embedded
     val attachment: AttachmentEmbeddable? = null,
     val link: String? = null,
-    val likes: Long
 ) {
     fun toDto() = Event(
         id = id,
@@ -45,14 +42,13 @@ data class EventEntity(
         published = published,
         coords = coords?.toCoordinates(),
         type = type.toDto(),
-//        likeOwnerIds = likeOwnerIds,
+        likeOwnerIds = likeOwnerIds,
         likedByMe = likedByMe,
 //        speakerIds = speakerIds,
 //        participantsIds = participantsIds,
 //        participatedByMe = participantsIds.contains(myId),
         attachment = attachment?.toDto(),
-        link = link,
-        likes = likes
+        link = link
     )
 
     companion object {
@@ -66,13 +62,12 @@ data class EventEntity(
             dto.published,
             dto.coords?.let(CoordinatesEmbeddable::fromCoordinates),
             EventTypeEmbeddable.fromDto(dto.type),
+            dto.likeOwnerIds,
             dto.likedByMe,
-//            mutableSetOf(),
 //            dto.speakerIds.toMutableSet(),
 //            dto.participantsIds.toMutableSet(),
             AttachmentEmbeddable.fromDto(dto.attachment),
-            dto.link,
-            dto.likes
+            dto.link
         )
     }
 }

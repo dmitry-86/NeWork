@@ -35,8 +35,7 @@ private val empty = Event(
     type = EventType.OFFLINE,
     likedByMe = false,
     attachment = null,
-    link = "",
-    likes = 0,
+    link = ""
 )
 
 private val noPhoto = PhotoModel()
@@ -114,26 +113,18 @@ class EventViewModel(application: Application) : AndroidViewModel(application) {
         _photo.value = noPhoto
     }
 
-    fun saveMarker(marker: Marker){
-        val lat = marker.position.latitude
-        val long = marker.position.longitude
-
-        val coords: Coordinates = Coordinates(lat, long)
-
-        edited.value?.copy(coords = coords)
-    }
-
     fun edit(event: Event) {
         edited.value = event
     }
 
-    fun changeContent(content: String, datetime: String, link: String, eventType: EventType) {
+    fun changeContent(content: String, datetime: String, coords: Coordinates?, link: String, type: String) {
         val content = content.trim()
         val datetime = datetime.trim()
         val link = link.trim()
-        val eventType = eventType
-
-        Log.i("event!!", content + datetime + link + eventType)
+        val eventType = when(type){
+            "online"-> EventType.ONLINE
+            else-> EventType.OFFLINE
+        }
 
         if (edited.value?.content == content
             && edited.value?.datetime == datetime
@@ -141,7 +132,7 @@ class EventViewModel(application: Application) : AndroidViewModel(application) {
             && edited.value?.type == eventType) {
             return
         }
-        edited.value = edited.value?.copy(content = content, datetime = datetime, link = link, type = eventType)
+        edited.value = edited.value?.copy(content = content, datetime = datetime, coords=coords, link = link, type = eventType)
     }
 
 

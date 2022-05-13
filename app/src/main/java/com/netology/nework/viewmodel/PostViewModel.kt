@@ -90,7 +90,6 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         try {
             _dataState.value = FeedModelState(loading = true)
             repository.getAll()
-            Log.i("tag", repository.getAll().toString())
             _dataState.value = FeedModelState()
         } catch (e: Exception) {
             _dataState.value = FeedModelState(error = true)
@@ -128,27 +127,18 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         _photo.value = noPhoto
     }
 
-    fun saveMarker(marker: Marker){
-        val lat = marker.position.latitude
-        val long = marker.position.longitude
-
-        val coords: Coordinates = Coordinates(lat, long)
-
-        edited.value?.copy(coords = coords)
-    }
-
-
     fun edit(post: Post) {
         edited.value = post
     }
 
-    fun changeContent(content: String, link: String) {
+    fun changeContent(content: String, coords: Coordinates, link: String) {
         val text = content.trim()
         val link = link.trim()
         if (edited.value?.content == text) {
             return
         }
-        edited.value = edited.value?.copy(content = text, link = link)
+        Log.i("coords", coords.lat.toString())
+        edited.value = edited.value?.copy(content = text, coords = coords, link = link)
     }
 
     fun changePhoto(uri: Uri?, file: File?) {
@@ -159,9 +149,11 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         try {
             _dataState.value = FeedModelState(loading = true)
             repository.likeById(id)
+            Log.i("like2", repository.likeById(id).toString())
             _dataState.value = FeedModelState()
         } catch (e: Exception) {
             _dataState.value = FeedModelState(error = true)
+            Log.i("like3", e.toString())
         }
     }
 

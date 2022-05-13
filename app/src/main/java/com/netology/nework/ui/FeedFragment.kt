@@ -20,6 +20,7 @@ import com.netology.nework.R
 import com.netology.nework.adapter.PostOnInteractionListener
 import com.netology.nework.adapter.PostsAdapter
 import com.netology.nework.databinding.FragmentFeedBinding
+import com.netology.nework.dto.Coordinates
 import com.netology.nework.dto.Post
 import com.netology.nework.viewmodel.AuthViewModel
 import com.netology.nework.viewmodel.PostViewModel
@@ -52,7 +53,7 @@ class FeedFragment : Fragment() {
             }
 
             override fun onEdit(post: Post) {
-                showAlertDialog(post.content, post.link!!)
+                showAlertDialog(post.content, post.coords!!, post.link!!)
                 viewModel.edit(post)
             }
 
@@ -71,9 +72,13 @@ class FeedFragment : Fragment() {
             }
 
             override fun onLocationClick(post: Post) {
-                bundle.putLong("id", post.id)
+                val bundle = Bundle().apply {
+                    post.coords?.lat?.let { putDouble("lat", it) }
+                    post.coords?.long?.let { putDouble("lng", it) }
+                }
                 findNavController().navigate(
-                    R.id.action_feedFragment_to_displayMapsFragment, bundle)
+                    R.id.displayMapsFragment, bundle
+                )
             }
 
             override fun onLinkClick(post: Post) {
@@ -122,7 +127,7 @@ class FeedFragment : Fragment() {
 
     }
 
-    private fun showAlertDialog(content: String, link: String) {
+    private fun showAlertDialog(content: String, coords: Coordinates, link: String) {
         val placeFormView =
             LayoutInflater.from(activity).inflate(R.layout.dialog_change_post, null)
 
@@ -140,13 +145,14 @@ class FeedFragment : Fragment() {
 
         dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
             val content = placeFormView.findViewById<EditText>(R.id.editEditText).text.toString()
+            val coords = coords
             val link = placeFormView.findViewById<EditText>(R.id.linkEditText).text.toString()
             if (content.trim().isEmpty()) {
                 Toast.makeText(activity, "сообщение пустое", Toast.LENGTH_LONG)
                     .show()
                 return@setOnClickListener
             }
-            viewModel.changeContent(content, link)
+            viewModel.changeContent(content, coords, link)
             viewModel.save()
             dialog.dismiss()
         }

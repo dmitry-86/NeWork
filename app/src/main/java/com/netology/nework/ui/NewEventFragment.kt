@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -23,6 +24,7 @@ import com.github.dhaval2404.imagepicker.constant.ImageProvider
 import com.google.android.material.snackbar.Snackbar
 import com.netology.nework.R
 import com.netology.nework.databinding.FragmentNewEventBinding
+import com.netology.nework.dto.Coordinates
 import com.netology.nework.enumeration.EventType
 import com.netology.nework.utils.*
 import com.netology.nework.viewmodel.EventViewModel
@@ -30,7 +32,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class NewEventFragment: Fragment() {
+class NewEventFragment : Fragment() {
 
     companion object {
         var Bundle.textArg: String? by StringArg
@@ -39,6 +41,9 @@ class NewEventFragment: Fragment() {
     private val viewModel: EventViewModel by viewModels(
         ownerProducer = ::requireParentFragment
     )
+
+    private var latitude: Double? = null
+    private var longitude: Double? = null
 
     private var fragmentBinding: FragmentNewEventBinding? = null
 
@@ -52,31 +57,50 @@ class NewEventFragment: Fragment() {
         val binding = FragmentNewEventBinding.inflate(inflater, container, false)
         fragmentBinding = binding
 
+        latitude = arguments?.getDouble("lat")
+        longitude = arguments?.getDouble("lng")
+
         arguments?.textArg
             ?.let(binding.edit::setText)
         arguments?.textArg
             ?.let(binding.link::setText)
         binding.edit.setText(arguments?.getString("content"))
+        arguments?.textArg
+            ?.let(binding.link::setText)
+        binding.link.setText(arguments?.getString("link"))
+
+
+        arguments?.textArg
+            ?.let(binding.date::setText)
+        binding.editDate.setText(arguments?.getString("date"))
+
+        arguments?.textArg
+            ?.let(binding.time::setText)
+        binding.editTime.setText(arguments?.getString("time"))
 
 
         val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
-            binding.date.setOnClickListener{
-                val now = Calendar.getInstance()
-                val datePicker = DatePickerDialog(binding.getRoot().getContext(), DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
-                    val selectedDate= Calendar.getInstance()
+        binding.date.setOnClickListener {
+            val now = Calendar.getInstance()
+            val datePicker = DatePickerDialog(
+                binding.getRoot().getContext(),
+                DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
+                    val selectedDate = Calendar.getInstance()
                     selectedDate.set(Calendar.YEAR, year)
                     selectedDate.set(Calendar.MONTH, month)
                     selectedDate.set(Calendar.DAY_OF_MONTH, dayOfMonth)
                     val date = format.format(selectedDate.time).toString()
                     binding.editDate.setText(date)
-//                Toast.makeText(binding.getRoot().getContext(), "date: $date", Toast.LENGTH_SHORT).show()
                 },
-                    now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH))
-                datePicker.show()
-            }
+                now.get(Calendar.YEAR),
+                now.get(Calendar.MONTH),
+                now.get(Calendar.DAY_OF_MONTH)
+            )
+            datePicker.show()
+        }
 
-        binding.time.setOnClickListener{
+        binding.time.setOnClickListener {
             val now = Calendar.getInstance()
             val timePicker = TimePickerDialog.OnTimeSetListener { _, hour, minute ->
                 now.set(Calendar.HOUR_OF_DAY, hour)
@@ -84,23 +108,26 @@ class NewEventFragment: Fragment() {
                 val time = SimpleDateFormat("HH:mm").format(now.time)
                 binding.editTime.setText(time)
             }
-            val time = TimePickerDialog(context, timePicker, now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE), true)
+            val time = TimePickerDialog(
+                context,
+                timePicker,
+                now.get(Calendar.HOUR_OF_DAY),
+                now.get(Calendar.MINUTE),
+                true
+            )
 
             time.setTitle("")
             time.show()
         }
 
-
-        val event = binding.spinner
-
-        val adapter = ArrayAdapter.createFromResource(binding.getRoot().getContext(), R.array.eventType, android.R.layout.simple_spinner_dropdown_item)
-        event.adapter = adapter
-        val selectedItem = event.selectedItem.toString()
-        val eventType: EventType
-                when(selectedItem){
-                    "online"-> eventType = EventType.ONLINE
-                    else-> eventType = EventType.OFFLINE
-                }
+        var types = arrayOf("online", "offline")
+        val spinner = binding.spinner
+        val adapter = ArrayAdapter(
+            binding.getRoot().getContext(),
+            android.R.layout.simple_spinner_dropdown_item,
+            types
+        )
+        spinner.adapter = adapter
 
         val pickPhotoLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -145,11 +172,6 @@ class NewEventFragment: Fragment() {
             viewModel.changePhoto(null, null)
         }
 
-        binding.location.setOnClickListener{
-            findNavController().navigate(
-                R.id.action_newPostFragment_to_createMapFragment)
-        }
-
         viewModel.photo.observe(viewLifecycleOwner) {
             if (it.uri == null) {
                 binding.photoContainer.visibility = View.GONE
@@ -160,8 +182,30 @@ class NewEventFragment: Fragment() {
             binding.photo.setImageURI(it.uri)
         }
 
+
+        binding.location.setOnClickListener {
+            val bundle = Bundle().apply {
+                putString("content", binding.edit.text.toString())
+                putString("link", binding.link.text.toString())
+                putString("date", binding.editDate.text.toString())
+                putString("time", binding.editTime.text.toString())
+                latitude?.let { it1 -> putDouble("lat", it1) }
+                longitude?.let { it1 -> putDouble("lng", it1) }
+                putString("fragment", "newEvent")
+            }
+            findNavController().navigate(
+                R.id.createMapFragment, bundle
+            )
+        }
+
         binding.ok.setOnClickListener {
-            viewModel.changeContent(binding.edit.text.toString(), binding.editDate.text.toString() + "T" + binding.editTime.text.toString()  + ":00.000000Z", binding.link.text.toString(), eventType)
+            viewModel.changeContent(
+                binding.edit.text.toString(),
+                binding.editDate.text.toString() + "T" + binding.editTime.text.toString() + ":00.000000Z",
+                Coordinates(latitude!!, longitude!!),
+                binding.link.text.toString(),
+                spinner.selectedItem.toString()
+            )
             viewModel.save()
             AndroidUtils.hideKeyboard(requireView())
         }

@@ -18,11 +18,13 @@ import com.github.dhaval2404.imagepicker.ImagePicker
 import com.github.dhaval2404.imagepicker.constant.ImageProvider
 import com.google.android.material.snackbar.Snackbar
 import com.netology.nework.R
+import com.netology.nework.dto.Coordinates
+import com.netology.nework.ui.NewEventFragment.Companion.textArg
 import com.netology.nework.utils.AndroidUtils
 import com.netology.nework.utils.StringArg
 
 
-class NewPostFragment: Fragment() {
+class NewPostFragment : Fragment() {
 
     companion object {
         var Bundle.textArg: String? by StringArg
@@ -31,6 +33,9 @@ class NewPostFragment: Fragment() {
     private val viewModel: PostViewModel by viewModels(
         ownerProducer = ::requireParentFragment
     )
+
+    private var latitude: Double? = null
+    private var longitude: Double? = null
 
     private var fragmentBinding: FragmentNewPostBinding? = null
 
@@ -43,13 +48,19 @@ class NewPostFragment: Fragment() {
         val binding = FragmentNewPostBinding.inflate(inflater, container, false)
         fragmentBinding = binding
 
+        latitude = arguments?.getDouble("lat")
+        longitude = arguments?.getDouble("lng")
+
         arguments?.textArg
             ?.let(binding.edit::setText)
         arguments?.textArg
             ?.let(binding.link::setText)
+        binding.edit.setText(arguments?.getString("content"))
+        arguments?.textArg
+            ?.let(binding.link::setText)
+        binding.link.setText(arguments?.getString("link"))
 
         binding.edit.requestFocus()
-
 
         val pickPhotoLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -94,10 +105,20 @@ class NewPostFragment: Fragment() {
             viewModel.changePhoto(null, null)
         }
 
-        binding.location.setOnClickListener{
+
+        binding.location.setOnClickListener {
+            val bundle = Bundle().apply {
+                putString("content", binding.edit.text.toString())
+                putString("link", binding.link.text.toString())
+                latitude?.let { it1 -> putDouble("lat", it1) }
+                longitude?.let { it1 -> putDouble("lng", it1) }
+                putString("fragment", "newPost")
+            }
             findNavController().navigate(
-                R.id.action_newPostFragment_to_createMapFragment)
+                R.id.createMapFragment, bundle
+            )
         }
+
 
         viewModel.photo.observe(viewLifecycleOwner) {
             if (it.uri == null) {
@@ -110,7 +131,11 @@ class NewPostFragment: Fragment() {
         }
 
         binding.ok.setOnClickListener {
-            viewModel.changeContent(binding.edit.text.toString(), binding.link.text.toString())
+            viewModel.changeContent(
+                binding.edit.text.toString(),
+                Coordinates(latitude!!, longitude!!),
+                binding.link.text.toString()
+            )
             viewModel.save()
             AndroidUtils.hideKeyboard(requireView())
         }

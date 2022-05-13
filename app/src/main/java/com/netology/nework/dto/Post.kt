@@ -10,7 +10,7 @@ data class Post(
     val coords: Coordinates?,
     val link: String? = null,
     val likedByMe: Boolean = false,
-    val likes: Int = 0,
+    val likeOwnerIds: Set<Long> = emptySet(),
     val ownedByMe: Boolean = false,
     val attachment: Attachment? = null,
 )

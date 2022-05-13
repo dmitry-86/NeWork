@@ -105,56 +105,33 @@ class DisplayMapsFragment : Fragment() {
 
             val boundsBuilder = LatLngBounds.Builder()
 
-            val position = arguments?.getLong("id")
+            val lat = arguments?.getDouble("lat")
+            val lng = arguments?.getDouble("lng")
 
-            Log.i("tag", position.toString())
 
-            viewModel.data.observe(viewLifecycleOwner) { state ->
-
-                if (position != null) {
-                    if (state.posts.get(position.toInt()).coords == null) {
-                        try {
-                            googleMap?.apply {
-                                val sydney = LatLng(-33.852, 151.211)
-                                addMarker(
-                                    MarkerOptions()
-                                        .position(sydney)
-                                        .title("Marker in Sydney")
-                                )
-                                // [START_EXCLUDE silent]
-                                moveCamera(
-                                    CameraUpdateFactory.newLatLng(
-                                        sydney
-                                    )
-                                )
-                            }
-                        } catch (e: IllegalStateException) {
-                            val target = LatLng(56.0153, 92.8932)
-                            googleMap.moveCamera(
-                                CameraUpdateFactory.newCameraPosition(
-                                    cameraPosition {
-                                        target(target)
-                                    }
-                                )
-                            )
-                        }
-                    } else {
-                        val currentTarget = LatLng(
-                            state.posts.get(position!!.toInt()).coords!!.lat,
-                            state.posts.get(position.toInt()).coords!!.long
+            if (lat != null && lng != null) {
+                googleMap?.apply {
+                    val marker = LatLng(lat, lng)
+                    addMarker(
+                        MarkerOptions()
+                            .position(marker)
+                    )
+                    moveCamera(
+                        CameraUpdateFactory.newLatLng(
+                            marker
                         )
-                        googleMap.moveCamera(
-                            CameraUpdateFactory.newCameraPosition(
-                                cameraPosition {
-                                    target(currentTarget)
-                                    zoom(5F)
-                                }
-                            ))
-                    }
+                    )
                 }
-
+            } else {
+                val target = LatLng(56.0153, 92.8932)
+                googleMap.moveCamera(
+                    CameraUpdateFactory.newCameraPosition(
+                        cameraPosition {
+                            target(target)
+                        }
+                    )
+                )
             }
-
 
         }
     }

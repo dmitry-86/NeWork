@@ -4,16 +4,17 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.netology.nework.dao.EventDao
-import com.netology.nework.dao.JobDao
-import com.netology.nework.dao.PostDao
-import com.netology.nework.dao.UserDao
 import com.netology.nework.entity.EventEntity
 import com.netology.nework.entity.JobEntity
 import com.netology.nework.entity.PostEntity
 import com.netology.nework.entity.UserEntity
+import androidx.room.TypeConverters
+import com.netology.nework.dao.*
+import com.netology.nework.dto.Converters
 
-@Database(entities = [PostEntity::class, JobEntity::class, EventEntity::class, UserEntity::class], version = 10)
+@Database(entities = [PostEntity::class, JobEntity::class, EventEntity::class, UserEntity::class], version = 12)
+
+@TypeConverters(Converters::class)
 abstract class AppDb : RoomDatabase() {
     abstract fun postDao(): PostDao
     abstract fun jobDao(): JobDao

@@ -1,5 +1,6 @@
 package com.netology.nework.repository
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.netology.nework.api.*
 import com.netology.nework.auth.AppAuth
@@ -113,13 +114,13 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
         try {
             dao.likeById(id)
             val response = PostsApi.service.likeById(id)
+            Log.i("like", response.toString())
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }
 
             val data = response.body() ?: throw ApiError(response.code(), response.message())
             dao.insert(PostEntity.fromDto(data))
-
         } catch (e: IOException) {
             throw NetworkError
         } catch (e: Exception) {

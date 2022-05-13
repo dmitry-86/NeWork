@@ -19,6 +19,8 @@ import com.netology.nework.R
 import com.netology.nework.adapter.PostOnInteractionListener
 import com.netology.nework.adapter.PostsAdapter
 import com.netology.nework.databinding.FragmentPostsBinding
+import com.netology.nework.dto.Coordinates
+import com.netology.nework.dto.Event
 import com.netology.nework.dto.Post
 import com.netology.nework.viewmodel.AuthViewModel
 import com.netology.nework.viewmodel.PostViewModel
@@ -49,36 +51,40 @@ class PostsFragment : Fragment() {
             }
 
             override fun onEdit(post: Post) {
-                showAlertDialog(post.content, post.link!!)
+                showAlertDialog(post.content, post.coords!!, post.link!!)
                 viewModel.edit(post)
             }
 
             override fun onLike(post: Post) {
-                if(authViewModel.authenticated) {
+                if (authViewModel.authenticated) {
                     viewModel.likePost(post)
-                }else {
+                } else {
                     createDialog()
                 }
             }
 
-//            override fun onImageClick(post: Post) {
+            //            override fun onImageClick(post: Post) {
 //                bundle.putString("url", post.attachment?.url.toString())
 //                findNavController().navigate(
 //                    R.id.action_feedFragment_to_imageFragment, bundle)
 //            }
 //
-//            override fun onLocationClick(post: Post) {
-//                bundle.putLong("id", post.id)
-//                findNavController().navigate(
-//                    R.id.action_feedFragment_to_displayMapsFragment, bundle)
-//            }
+            override fun onLocationClick(post: Post) {
+                val bundle = Bundle().apply {
+                    post.coords?.lat?.let { putDouble("lat", it) }
+                    post.coords?.long?.let { putDouble("lng", it) }
+                }
+                findNavController().navigate(
+                    R.id.displayMapsFragment, bundle
+                )
+            }
 
             override fun onLinkClick(post: Post) {
                 val intent = Intent(Intent.ACTION_VIEW)
                 val url = post.link
                 if (!url?.startsWith("http://")!! && !url.startsWith("https://")) {
                     intent.data = Uri.parse("http://" + url)
-                }else{
+                } else {
                     intent.data = Uri.parse(url)
                 }
                 startActivity(intent)
@@ -87,7 +93,8 @@ class PostsFragment : Fragment() {
         })
 
         binding.list.adapter = adapter
-        viewModel.dataState.observe(viewLifecycleOwner) { state ->
+        viewModel.dataState.observe(viewLifecycleOwner)
+        { state ->
             binding.progress.isVisible = state.loading
             binding.swiperefresh.isRefreshing = state.refreshing
             if (state.error) {
@@ -97,7 +104,8 @@ class PostsFragment : Fragment() {
             }
         }
 
-        viewModel.userData.observe(viewLifecycleOwner){ state ->
+        viewModel.userData.observe(viewLifecycleOwner)
+        { state ->
             adapter.submitList(state.posts)
             binding.emptyText.isVisible = state.empty
         }
@@ -108,9 +116,9 @@ class PostsFragment : Fragment() {
 
 
         binding.fab.setOnClickListener {
-            if(authViewModel.authenticated) {
+            if (authViewModel.authenticated) {
                 findNavController().navigate(R.id.newPostFragment)
-            }else{
+            } else {
                 createDialog()
             }
         }
@@ -119,7 +127,7 @@ class PostsFragment : Fragment() {
 
     }
 
-    private fun showAlertDialog(content: String, link: String) {
+    private fun showAlertDialog(content: String, coords: Coordinates, link: String) {
         val placeFormView =
             LayoutInflater.from(activity).inflate(R.layout.dialog_change_post, null)
 
@@ -129,33 +137,36 @@ class PostsFragment : Fragment() {
         linkEditText.setText(link)
 
         val dialog = AlertDialog.Builder(requireActivity())
-            .setTitle(getString(R.string.edit)).setMessage(getString(R.string.enter_new_content))
+            .setTitle(getString(R.string.edit))
+            .setMessage(getString(R.string.enter_new_content))
             .setView(placeFormView)
             .setNegativeButton(getString(R.string.cancel), null)
             .setPositiveButton(getString(R.string.ok), null)
             .show()
 
         dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
-            val content = placeFormView.findViewById<EditText>(R.id.editEditText).text.toString()
+            val content =
+                placeFormView.findViewById<EditText>(R.id.editEditText).text.toString()
+            val coords = coords
             val link = placeFormView.findViewById<EditText>(R.id.linkEditText).text.toString()
             if (content.trim().isEmpty()) {
                 Toast.makeText(activity, "сообщение пустое", Toast.LENGTH_LONG)
                     .show()
                 return@setOnClickListener
             }
-            viewModel.changeContent(content, link)
+            viewModel.changeContent(content, coords, link)
             viewModel.save()
             dialog.dismiss()
         }
     }
 
-    private fun createDialog(){
+    private fun createDialog() {
         val builder = AlertDialog.Builder(requireActivity())
         builder.setTitle("Would you like to sign in?")
-        builder.setNeutralButton("Yes"){dialogInterface, i ->
+        builder.setNeutralButton("Yes") { dialogInterface, i ->
             findNavController().navigate(R.id.action_feedFragment_to_signInFragment)
         }
-        builder.setNegativeButton("No"){dialog, i ->
+        builder.setNegativeButton("No") { dialog, i ->
             findNavController().navigate(R.id.feedFragment)
         }
         builder.show()

@@ -19,7 +19,8 @@ data class PostEntity(
     var coords: CoordinatesEmbeddable? = null,
     var link: String? = null,
     var likedByMe: Boolean = false,
-    var likes: Int,
+//    var likes: Int,
+    val likeOwnerIds: Set<Long> = emptySet(),
     var ownedByMe: Boolean,
     @Embedded
     var attachment: AttachmentEmbeddable? = null,
@@ -34,7 +35,8 @@ data class PostEntity(
         coords = coords?.toCoordinates(),
         link = link,
         likedByMe = likedByMe,
-        likes = likes,
+//        likes = likes,
+        likeOwnerIds = likeOwnerIds,
         ownedByMe = ownedByMe,
         attachment = attachment?.toDto()
     )
@@ -52,7 +54,7 @@ data class PostEntity(
             dto.coords?.let(CoordinatesEmbeddable::fromCoordinates),
             dto.link,
             dto.likedByMe,
-            dto.likes,
+            dto.likeOwnerIds,
             dto.ownedByMe,
             AttachmentEmbeddable.fromDto(dto.attachment),
         )

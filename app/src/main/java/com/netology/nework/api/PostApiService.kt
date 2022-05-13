@@ -54,10 +54,10 @@ interface PostApiService {
     @DELETE("posts/{id}")
     suspend fun removeById(@Path("id") id: Long): Response<Unit>
 
-    @POST("posts/{post_id}/likes")
+    @POST("posts/{id}/likes")
     suspend fun likeById(@Path("id") id: Long): Response<Post>
 
-    @DELETE("posts/{post_id}/likes")
+    @DELETE("posts/{id}/likes")
     suspend fun dislikeById(@Path("id") id: Long): Response<Post>
 
     @Multipart
