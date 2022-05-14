@@ -1,9 +1,7 @@
 package com.netology.nework.repository
 
-import com.netology.nework.api.PostsApi
 import com.netology.nework.api.UserApi
 import com.netology.nework.dto.Token
-import com.netology.nework.dto.User
 import com.netology.nework.error.ApiError
 import com.netology.nework.error.NetworkError
 import com.netology.nework.error.UnknownError

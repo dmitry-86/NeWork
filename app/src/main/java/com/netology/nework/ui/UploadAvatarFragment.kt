@@ -1,13 +1,21 @@
 package com.netology.nework.ui
 
 import android.app.Activity
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.core.net.toFile
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -15,24 +23,26 @@ import com.github.dhaval2404.imagepicker.ImagePicker
 import com.github.dhaval2404.imagepicker.constant.ImageProvider
 import com.google.android.material.snackbar.Snackbar
 import com.netology.nework.R
-import com.netology.nework.databinding.FragmentEditUserBinding
-import com.netology.nework.utils.AndroidUtils
-import com.netology.nework.utils.StringArg
+import com.netology.nework.databinding.FragmentNewEventBinding
+import com.netology.nework.databinding.FragmentUploadAvatarBinding
+import com.netology.nework.dto.Coordinates
+import com.netology.nework.enumeration.AttachmentType
+import com.netology.nework.enumeration.EventType
+import com.netology.nework.utils.*
+import com.netology.nework.viewmodel.EventViewModel
+import com.netology.nework.viewmodel.PostViewModel
 import com.netology.nework.viewmodel.UserViewModel
+import java.text.SimpleDateFormat
+import java.util.*
 
 
-class EditUserFragment : Fragment() {
-
-
-    companion object {
-        var Bundle.textArg: String? by StringArg
-    }
+class UploadAvatarFragment : Fragment() {
 
     private val viewModel: UserViewModel by viewModels(
         ownerProducer = ::requireParentFragment
     )
 
-    private var fragmentBinding: FragmentEditUserBinding? = null
+    private var fragmentBinding: FragmentUploadAvatarBinding? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,13 +50,8 @@ class EditUserFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        val binding = FragmentEditUserBinding.inflate(inflater, container, false)
+        val binding = FragmentUploadAvatarBinding.inflate(inflater, container, false)
         fragmentBinding = binding
-
-        arguments?.textArg
-            ?.let(binding.name::setText)
-
-        binding.name.requestFocus()
 
         val pickPhotoLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -91,20 +96,24 @@ class EditUserFragment : Fragment() {
             viewModel.changePhoto(null, null)
         }
 
-
         viewModel.photo.observe(viewLifecycleOwner) {
             if (it.uri == null) {
-                binding.photoContainer.visibility = View.GONE
+                binding.mediaContainer.visibility = View.GONE
                 return@observe
             }
 
-            binding.photoContainer.visibility = View.VISIBLE
+            binding.mediaContainer.visibility = View.VISIBLE
             binding.photo.setImageURI(it.uri)
         }
 
+
         binding.ok.setOnClickListener {
-            viewModel.changeContent(binding.name.text.toString())
-//            viewModel.save()
+//            viewModel.changeContent(
+//                binding.edit.text.toString(),
+//                Coordinates(latitude, longitude),
+//                binding.link.text.toString()
+//            )
+            viewModel.save()
             AndroidUtils.hideKeyboard(requireView())
         }
 
@@ -119,4 +128,5 @@ class EditUserFragment : Fragment() {
         fragmentBinding = null
         super.onDestroyView()
     }
+
 }

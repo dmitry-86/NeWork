@@ -3,11 +3,9 @@ package com.netology.nework.api
 import com.netology.nework.BuildConfig
 import com.netology.nework.auth.AppAuth
 import com.netology.nework.dto.*
-import okhttp3.Interceptor
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

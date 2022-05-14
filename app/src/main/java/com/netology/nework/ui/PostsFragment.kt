@@ -117,8 +117,13 @@ class PostsFragment : Fragment() {
         })
 
         binding.list.adapter = adapter
-        viewModel.dataState.observe(viewLifecycleOwner)
-        { state ->
+
+        viewModel.userData.observe(viewLifecycleOwner, { state ->
+            adapter.submitList(state.posts)
+            binding.emptyText.isVisible = state.empty
+        })
+
+        viewModel.dataState.observe(viewLifecycleOwner, { state ->
             binding.progress.isVisible = state.loading
             binding.swiperefresh.isRefreshing = state.refreshing
             if (state.error) {
@@ -126,13 +131,7 @@ class PostsFragment : Fragment() {
                     .setAction(R.string.retry_loading) { viewModel.loadPosts() }
                     .show()
             }
-        }
-
-        viewModel.userData.observe(viewLifecycleOwner)
-        { state ->
-            adapter.submitList(state.posts)
-            binding.emptyText.isVisible = state.empty
-        }
+        })
 
         binding.swiperefresh.setOnRefreshListener {
             viewModel.refreshPosts()

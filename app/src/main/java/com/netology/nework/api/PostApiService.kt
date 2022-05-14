@@ -2,7 +2,6 @@ package com.netology.nework.api
 
 import com.netology.nework.BuildConfig
 import com.netology.nework.auth.AppAuth
-import com.netology.nework.dto.Token
 import com.netology.nework.dto.Media
 import com.netology.nework.dto.Post
 import okhttp3.MultipartBody

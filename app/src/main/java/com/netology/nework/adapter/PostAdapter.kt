@@ -1,33 +1,23 @@
 package com.netology.nework.adapter
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
-import android.content.Intent
 import android.graphics.Color
-import android.net.Uri
 import android.os.Build
 import android.text.method.LinkMovementMethod
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat.startActivity
-import androidx.navigation.Navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.netology.nework.BuildConfig
 import com.netology.nework.R
 import com.netology.nework.databinding.CardPostBinding
 import com.netology.nework.dto.Post
 import com.netology.nework.enumeration.AttachmentType
 import com.netology.nework.utils.AndroidUtils.formatDate
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 interface PostOnInteractionListener {
     fun onEdit(post: Post) {}
@@ -35,8 +25,8 @@ interface PostOnInteractionListener {
     fun onLike(post: Post) {}
     fun onLocationClick(post: Post) {}
     fun onImageClick(post: Post) {}
-    fun onPlayAudio(post: Post){}
-    fun onPlayVideo(post: Post){}
+    fun onPlayAudio(post: Post) {}
+    fun onPlayVideo(post: Post) {}
     fun onLinkClick(post: Post) {}
 }
 
@@ -51,9 +41,6 @@ class PostsAdapter(
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         val post = getItem(position)
-//        holder.itemView.setOnClickListener{
-//            onInteractionListener.onItemClick(position)
-//        }
         holder.bind(post)
     }
 }
@@ -70,23 +57,24 @@ class PostViewHolder(
             textViewUserName.text = post.author
             textViewContent.text = post.content
             textViewPublished.text = formatDate(post.published)
+//            imageViewAvatar.loadCircleCrop("${BuildConfig.BASE_URL}/avatars/${post.authorAvatar}")
             like.isChecked = post.likedByMe
             like.text = post.likeOwnerIds.count().toString()
             delete.visibility = if (post.ownedByMe) View.VISIBLE else View.INVISIBLE
             edit.visibility = if (post.ownedByMe) View.VISIBLE else View.INVISIBLE
-            location.visibility = if(post.coords!=null) View.VISIBLE else View.INVISIBLE
+            location.visibility = if (post.coords != null) View.VISIBLE else View.INVISIBLE
 
 
-            if (attachment != null) {
-                when (post.attachment?.type) {
-                    AttachmentType.IMAGE -> {
-                        Glide.with(attachment)
-                            .load("${post.attachment?.url}")
-                            .into(attachment)
-                        attachment.visibility = View.VISIBLE
-                    }
+            when (post.attachment?.type) {
+                AttachmentType.IMAGE -> {
+                    Glide.with(attachment)
+                        .load("${post.attachment?.url}")
+                        .into(attachment)
                 }
             }
+
+
+            attachment.visibility = if (post.attachment != null) View.VISIBLE else View.GONE
 
             imageViewAvatar.setImageResource(R.drawable.avatar)
 

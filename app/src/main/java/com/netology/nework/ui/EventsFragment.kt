@@ -111,7 +111,14 @@ class EventsFragment : Fragment() {
         })
 
         binding.list.adapter = adapter
-        viewModel.dataState.observe(viewLifecycleOwner) { state ->
+
+        viewModel.data.observe(viewLifecycleOwner, { state ->
+            adapter.submitList(state.events)
+            binding.emptyText.isVisible = state.empty
+        })
+
+
+        viewModel.dataState.observe(viewLifecycleOwner, { state ->
             binding.progress.isVisible = state.loading
             binding.swiperefresh.isRefreshing = state.refreshing
             if (state.error) {
@@ -119,12 +126,7 @@ class EventsFragment : Fragment() {
                     .setAction(R.string.retry_loading) { viewModel.loadEvents() }
                     .show()
             }
-        }
-
-        viewModel.data.observe(viewLifecycleOwner) { state ->
-            adapter.submitList(state.events)
-            binding.emptyText.isVisible = state.empty
-        }
+        })
 
         binding.swiperefresh.setOnRefreshListener {
             viewModel.refreshEvents()
@@ -181,7 +183,6 @@ class EventsFragment : Fragment() {
             dialog.dismiss()
         }
     }
-
 
     private fun createDialog() {
         val builder = AlertDialog.Builder(requireActivity())

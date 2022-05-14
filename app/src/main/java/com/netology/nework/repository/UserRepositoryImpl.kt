@@ -3,14 +3,11 @@ package com.netology.nework.repository
 import com.netology.nework.api.PostsApi
 import com.netology.nework.api.UserApi
 import com.netology.nework.auth.AppAuth
-import com.netology.nework.dao.PostDao
 import com.netology.nework.dao.UserDao
 import com.netology.nework.dto.*
-import com.netology.nework.entity.PostEntity
 import com.netology.nework.entity.UserEntity
 import com.netology.nework.entity.toDto
 import com.netology.nework.entity.toEntity
-import com.netology.nework.enumeration.AttachmentType
 import com.netology.nework.error.ApiError
 import com.netology.nework.error.AppError
 import com.netology.nework.error.NetworkError
@@ -64,52 +61,51 @@ class UserRepositoryImpl(private val dao: UserDao) : UserRepository {
         }
     }
 
-//    override suspend fun save(user: User) {
-//        try {
-//            val response = UserApi.service.save(user)
-//            if (!response.isSuccessful) {
-//                throw ApiError(response.code(), response.message())
-//            }
-//            val body = response.body() ?: throw ApiError(response.code(), response.message())
-//            dao.insert(UserEntity.fromDto(body))
-//        } catch (e: IOException) {
-//            throw NetworkError
-//        } catch (e: Exception) {
-//            throw UnknownError
-//        }
-//    }
+    override suspend fun save(user: User) {
+        try {
+            val response = UserApi.service.save(user)
+            if (!response.isSuccessful) {
+                throw ApiError(response.code(), response.message())
+            }
+            val body = response.body() ?: throw ApiError(response.code(), response.message())
+            dao.insert(UserEntity.fromDto(body))
+        } catch (e: IOException) {
+            throw NetworkError
+        } catch (e: Exception) {
+            throw UnknownError
+        }
+    }
 
-//    override suspend fun saveWithAttachment(user: User, upload: MediaUpload) {
-//        try {
-//            val media = upload(upload)
-//            val userWithAvatar =
-//                user.copy(avatar = media.url)
-//            save(userWithAvatar)
-//        } catch (e: AppError) {
-//            throw e
-//        } catch (e: IOException) {
-//            throw NetworkError
-//        } catch (e: Exception) {
-//            throw UnknownError
-//        }
-//    }
+    override suspend fun saveWithAttachment(user: User, upload: PhotoUpload) {
+        try {
+            val media = upload(upload)
+            val userWithAvatar =
+                user.copy(avatar = media.url)
+            save(userWithAvatar)
+        } catch (e: AppError) {
+            throw e
+        } catch (e: IOException) {
+            throw NetworkError
+        } catch (e: Exception) {
+            throw UnknownError
+        }
+    }
 
-//    override suspend fun upload(upload: MediaUpload): Media {
-//        try {
-//            val media = MultipartBody.Part.createFormData(
-//                "file", upload.file.name, upload.file.asRequestBody()
-//            )
-//            val response = PostsApi.service.upload(media)
-//            if (!response.isSuccessful) {
-//                throw ApiError(response.code(), response.message())
-//            }
-//            return response.body() ?: throw ApiError(response.code(), response.message())
-//        } catch (e: IOException) {
-//            throw NetworkError
-//        } catch (e: Exception) {
-//            throw UnknownError
-//        }
-//    }
-
+    override suspend fun upload(upload: PhotoUpload): Media {
+        try {
+            val media = MultipartBody.Part.createFormData(
+                "file", upload.file.name, upload.file.asRequestBody()
+            )
+            val response = PostsApi.service.upload(media)
+            if (!response.isSuccessful) {
+                throw ApiError(response.code(), response.message())
+            }
+            return response.body() ?: throw ApiError(response.code(), response.message())
+        } catch (e: IOException) {
+            throw NetworkError
+        } catch (e: Exception) {
+            throw UnknownError
+        }
+    }
 
 }

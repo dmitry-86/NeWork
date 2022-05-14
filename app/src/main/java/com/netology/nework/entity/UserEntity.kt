@@ -2,7 +2,6 @@ package com.netology.nework.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.netology.nework.dto.Coordinates
 import com.netology.nework.dto.User
 
 @Entity

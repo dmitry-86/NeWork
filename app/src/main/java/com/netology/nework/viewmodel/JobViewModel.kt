@@ -1,7 +1,6 @@
 package com.netology.nework.viewmodel
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.*
 import com.netology.nework.auth.AppAuth
 import kotlinx.coroutines.Dispatchers
@@ -15,14 +14,9 @@ import com.netology.nework.model.FeedModelState
 import com.netology.nework.model.JobFeedModel
 import com.netology.nework.repository.JobRepository
 import com.netology.nework.repository.JobRepositoryImpl
-import com.netology.nework.repository.PostRepository
-import com.netology.nework.repository.PostRepositoryImpl
 import com.netology.nework.util.SingleLiveEvent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flatMapLatest
-import java.text.SimpleDateFormat
-import java.time.Instant
-import java.util.Calendar
 
 
 private val empty = Job(
@@ -65,7 +59,7 @@ class JobViewModel(application: Application) : AndroidViewModel(application) {
 
     private val edited = MutableLiveData(empty)
     private val _jobCreated = SingleLiveEvent<Unit>()
-    val postCreated: LiveData<Unit>
+    val jobCreated: LiveData<Unit>
         get() = _jobCreated
 
     init {

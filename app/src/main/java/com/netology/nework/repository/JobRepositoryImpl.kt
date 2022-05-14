@@ -5,15 +5,11 @@ import androidx.lifecycle.*
 import com.netology.nework.api.*
 import com.netology.nework.auth.AppAuth
 import com.netology.nework.dao.JobDao
-import com.netology.nework.dao.PostDao
 import com.netology.nework.dto.Job
-import com.netology.nework.dto.Post
 import com.netology.nework.entity.JobEntity
-import com.netology.nework.entity.PostEntity
 import com.netology.nework.entity.toDto
 import com.netology.nework.entity.toEntity
 import com.netology.nework.error.ApiError
-import com.netology.nework.error.AppError
 import com.netology.nework.error.NetworkError
 import com.netology.nework.error.UnknownError
 import kotlinx.coroutines.Dispatchers
@@ -77,8 +73,4 @@ class JobRepositoryImpl(private val dao: JobDao) : JobRepository {
             throw UnknownError
         }
     }
-
-//    override suspend fun likeById(id: Long) {
-//        TODO("Not yet implemented")
-//    }
 }

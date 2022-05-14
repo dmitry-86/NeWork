@@ -7,14 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.google.android.material.tabs.TabLayoutMediator
+import com.netology.nework.BuildConfig
 import com.netology.nework.R
 import com.netology.nework.adapter.MyPagerAdapter
 import com.netology.nework.auth.AppAuth
 import com.netology.nework.databinding.FragmentUserAccountBinding
-import com.netology.nework.viewmodel.AuthViewModel
 import com.netology.nework.viewmodel.UserViewModel
-
 
 class UserAccountFragment : Fragment() {
 
@@ -24,8 +25,6 @@ class UserAccountFragment : Fragment() {
 
     private val userId = AppAuth.getInstance().authStateFlow.value.id
 
-    private val authViewModel: AuthViewModel by viewModels()
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -34,18 +33,8 @@ class UserAccountFragment : Fragment() {
         val binding = FragmentUserAccountBinding.inflate(inflater, container, false)
 
         binding.buttonEdit.setOnClickListener {
-            findNavController().navigate(R.id.editUserFragment)
+            findNavController().navigate(R.id.uploadAvatarFragment)
         }
-
-
-//        val name = arguments?.getString("name")
-//        val login = arguments?.getString("login")
-//
-//        with(binding) {
-//            textViewName.text = name
-//            textViewLogin.text = login
-//        }
-
 
         userViewModel.getUserById(userId)
 
@@ -53,23 +42,21 @@ class UserAccountFragment : Fragment() {
             with(binding) {
                 textViewName.text = it.name
                 textViewLogin.text = it.login
+
+                if (it.avatar != null) {
+                    val avatar = "${BuildConfig.BASE_URL}/avatars/"
+                    with(binding) {
+                        Glide.with(imageViewAvatar)
+                            .load("$avatar/${it.avatar}")
+                            .transform(CircleCrop())
+                            .placeholder(R.drawable.avatar)
+                            .into(imageViewAvatar)
+                    }
+                } else {
+                    binding.imageViewAvatar.setImageResource(R.drawable.avatar)
+                }
             }
         }
-
-
-//                    binding.textViewLogin.text = it.get(userId.toInt()+1).login
-//                    val avatar = "${BuildConfig.BASE_URL}/avatars/${
-//                        it.get(userId.toInt()).avatar
-//                    }"
-//                    with(binding) {
-//                        Glide.with(imageViewAvatar)
-//                            .load("$avatar")
-//                            .transform(CircleCrop())
-//                            .placeholder(R.drawable.avatar)
-//                            .into(imageViewAvatar)
-//                    }
-
-        binding.imageViewAvatar.setImageResource(R.drawable.avatar)
 
         binding?.viewpager?.adapter = MyPagerAdapter(this)
         binding?.tabs?.tabIconTint = null

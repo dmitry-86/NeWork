@@ -1,6 +1,5 @@
 package com.netology.nework.adapter
 
-import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Build
 import android.text.method.LinkMovementMethod
@@ -13,9 +12,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.netology.nework.databinding.CardJobBinding
 import com.netology.nework.dto.Job
-import com.netology.nework.dto.Post
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 interface JobOnInteractionListener {
     fun onEdit(job: Job) {}

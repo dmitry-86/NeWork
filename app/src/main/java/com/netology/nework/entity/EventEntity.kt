@@ -1,14 +1,9 @@
 package com.netology.nework.entity
 
-import androidx.annotation.InspectableProperty
-import androidx.navigation.NavType
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.google.gson.internal.bind.TypeAdapters.STRING
 import com.netology.nework.dto.Event
-import com.netology.nework.enumeration.EventType
-import javax.xml.xpath.XPathConstants.STRING
 
 @Entity
 data class EventEntity(

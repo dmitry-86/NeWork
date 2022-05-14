@@ -2,9 +2,7 @@ package com.netology.nework.viewmodel
 
 import android.app.Application
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.*
-import com.google.android.gms.maps.model.Marker
 import com.netology.nework.auth.AppAuth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
@@ -18,11 +16,7 @@ import com.netology.nework.repository.*
 import com.netology.nework.util.SingleLiveEvent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flatMapLatest
-import java.io.File
 import java.io.InputStream
-import java.text.SimpleDateFormat
-import java.time.Instant
-import java.util.Calendar
 
 
 private val empty = Event(

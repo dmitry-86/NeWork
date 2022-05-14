@@ -18,10 +18,6 @@ import com.netology.nework.ui.NewPostFragment.Companion.textArg
 import com.netology.nework.viewmodel.AuthViewModel
 
 class AppActivity : AppCompatActivity(R.layout.activity_app) {
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        setContentView(R.layout.activity_main)
-
 
     private val viewModel: AuthViewModel by viewModels()
 
@@ -52,7 +48,7 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
             invalidateOptionsMenu()
         }
 
-//        checkGoogleApiAvailability()
+        checkGoogleApiAvailability()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -75,12 +71,10 @@ class AppActivity : AppCompatActivity(R.layout.activity_app) {
         return when (item.itemId) {
             R.id.signin -> {
                 findNavController(R.id.nav_host_fragment).navigate(R.id.signInFragment)
-                //AppAuth.getInstance().setAuth(5, "x-token")
                 true
             }
             R.id.signup -> {
                 findNavController(R.id.nav_host_fragment).navigate(R.id.signUpFragment)
-                //AppAuth.getInstance().setAuth(5, "x-token")
                 true
             }
             R.id.signout -> {

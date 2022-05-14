@@ -4,7 +4,6 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -57,18 +56,19 @@ class FeedFragment : Fragment() {
                 viewModel.edit(post)
             }
 
+
+            override fun onImageClick(post: Post) {
+                bundle.putString("url", post.attachment?.url.toString())
+                findNavController().navigate(
+                    R.id.action_feedFragment_to_imageFragment, bundle)
+            }
+
             override fun onLike(post: Post) {
                 if(authViewModel.authenticated) {
                     viewModel.likePost(post)
                 }else {
                     createDialog()
                 }
-            }
-
-            override fun onImageClick(post: Post) {
-                bundle.putString("url", post.attachment?.url.toString())
-                findNavController().navigate(
-                    R.id.action_feedFragment_to_imageFragment, bundle)
             }
 
             override fun onPlayAudio(post: Post) {
@@ -117,7 +117,15 @@ class FeedFragment : Fragment() {
         })
 
         binding.list.adapter = adapter
-        viewModel.dataState.observe(viewLifecycleOwner) { state ->
+
+
+        viewModel.data.observe(viewLifecycleOwner, { state ->
+                adapter.submitList(state.posts)
+                binding.emptyText.isVisible = state.empty
+        })
+
+
+        viewModel.dataState.observe(viewLifecycleOwner, { state ->
             binding.progress.isVisible = state.loading
             binding.swiperefresh.isRefreshing = state.refreshing
             if (state.error) {
@@ -125,13 +133,7 @@ class FeedFragment : Fragment() {
                     .setAction(R.string.retry_loading) { viewModel.loadPosts() }
                     .show()
             }
-        }
-
-        viewModel.data.observe(viewLifecycleOwner){ state ->
-                adapter.submitList(state.posts)
-                binding.emptyText.isVisible = state.empty
-            Log.i("tag", state.posts.toString())
-        }
+        })
 
         binding.swiperefresh.setOnRefreshListener {
             viewModel.refreshPosts()

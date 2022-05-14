@@ -26,9 +26,6 @@ class UserAdapter(
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
         val user = getItem(position)
-//        holder.itemView.setOnClickListener{
-//            onInteractionListener.onItemClick(position)
-//        }
         holder.bind(user)
     }
 }

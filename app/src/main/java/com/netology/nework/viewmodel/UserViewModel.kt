@@ -3,28 +3,18 @@ package com.netology.nework.viewmodel
 import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.*
-import com.netology.nework.api.PostsApi
-import com.netology.nework.api.UserApi
-import com.netology.nework.api.UserApiService
 import com.netology.nework.auth.AppAuth
 import com.netology.nework.db.AppDb
-import com.netology.nework.dto.Job
-import com.netology.nework.dto.MediaUpload
-import com.netology.nework.dto.Post
-import com.netology.nework.dto.User
+import com.netology.nework.dto.*
 import com.netology.nework.model.*
-import com.netology.nework.repository.JobRepository
-import com.netology.nework.repository.JobRepositoryImpl
 import com.netology.nework.repository.UserRepository
 import com.netology.nework.repository.UserRepositoryImpl
 import com.netology.nework.util.SingleLiveEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.io.File
-import java.io.IOException
 
 private val empty = User(
     id = 0,
@@ -79,26 +69,26 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
     }
 
 
-//    fun save() {
-//        edited.value?.let {
-//            _userCreated.value = Unit
-//            viewModelScope.launch {
-//                try {
-//                    when (_photo.value) {
-//                        noPhoto -> repository.save(it)
-//                        else -> _photo.value?.file?.let { file ->
-//                            repository.saveWithAttachment(it, MediaUpload(file))
-//                        }
-//                    }
-//                    _dataState.value = FeedModelState()
-//                } catch (e: Exception) {
-//                    _dataState.value = FeedModelState(error = true)
-//                }
-//            }
-//        }
-//        edited.value = empty
-//        _photo.value = noPhoto
-//    }
+    fun save() {
+        edited.value?.let {
+            _userCreated.value = Unit
+            viewModelScope.launch {
+                try {
+                    when (_photo.value) {
+                        noPhoto -> repository.save(it)
+                        else -> _photo.value?.file?.let { file ->
+                            repository.saveWithAttachment(it, PhotoUpload(file))
+                        }
+                    }
+                    _dataState.value = FeedModelState()
+                } catch (e: Exception) {
+                    _dataState.value = FeedModelState(error = true)
+                }
+            }
+        }
+        edited.value = empty
+        _photo.value = noPhoto
+    }
 
 
     fun edit(user: User) {

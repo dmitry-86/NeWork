@@ -1,9 +1,6 @@
 package com.netology.nework.dto
 
-import androidx.navigation.NavType
 import com.netology.nework.enumeration.EventType
-import java.time.Instant
-import javax.xml.xpath.XPathConstants.STRING
 
 data class Event(
     val id: Long,

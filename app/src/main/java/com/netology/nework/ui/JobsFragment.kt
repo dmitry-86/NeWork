@@ -93,7 +93,7 @@ class JobsFragment : Fragment() {
 
         binding.fab.setOnClickListener {
             if(authViewModel.authenticated) {
-                findNavController().navigate(R.id.newEventFragment)
+                findNavController().navigate(R.id.newJobFragment)
             }else{
                 createDialog()
             }

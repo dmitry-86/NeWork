@@ -80,4 +80,13 @@
         android:name="com.netology.nework.ui.UsersFragment"
         android:label="fragment_users"
         tools:layout="@layout/fragment_users" />
+    <fragment
+        android:id="@+id/uploadAvatarFragment"
+        android:name="com.netology.nework.ui.UploadAvatarFragment"
+        android:label="fragment_upload_avatar"
+        tools:layout="@layout/fragment_upload_avatar" />
+    <fragment
+        android:id="@+id/newJobFragment"
+        android:name="com.netology.nework.ui.NewJobFragment"
+        android:label="NewJobFragment" />
 </navigation>

@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.netology.nework.dto.Token
-import com.netology.nework.dto.User
 import com.netology.nework.model.FeedModelState
 import com.netology.nework.repository.AuthRepository
 import kotlinx.coroutines.launch

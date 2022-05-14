@@ -4,7 +4,6 @@ import android.app.Application
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.*
-import com.google.android.gms.maps.model.Marker
 import com.netology.nework.auth.AppAuth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
@@ -17,13 +16,11 @@ import com.netology.nework.enumeration.AttachmentType
 import com.netology.nework.model.FeedModel
 import com.netology.nework.model.FeedModelState
 import com.netology.nework.model.MediaModel
-import com.netology.nework.model.PhotoModel
 import com.netology.nework.repository.PostRepository
 import com.netology.nework.repository.PostRepositoryImpl
 import com.netology.nework.util.SingleLiveEvent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flatMapLatest
-import java.io.File
 import java.io.InputStream
 
 
@@ -54,8 +51,10 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             repository.data
                 .map { posts ->
                     FeedModel(
-                        posts.map { it.copy(ownedByMe = it.authorId == myId) },
-//                        posts.isEmpty()
+                        posts.map { it.copy(ownedByMe = it.authorId == myId,
+                        likedByMe = it.likeOwnerIds.contains(myId))
+                        },
+                        posts.isEmpty()
                     )
                 }
         }.asLiveData(Dispatchers.Default)
@@ -66,8 +65,10 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             repository.userData
                 .map { posts ->
                     FeedModel(
-                        posts.map { it.copy(ownedByMe = it.authorId == myId) },
-//                        posts.isEmpty()
+                        posts.map { it.copy(ownedByMe = it.authorId == myId,
+                            likedByMe = it.likeOwnerIds.contains(myId))
+                        },
+                        posts.isEmpty()
                     )
                 }
         }.asLiveData(Dispatchers.Default)
@@ -80,10 +81,6 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     private val _postCreated = SingleLiveEvent<Unit>()
     val postCreated: LiveData<Unit>
         get() = _postCreated
-
-//    private val _photo = MutableLiveData(noPhoto)
-//    val photo: LiveData<PhotoModel>
-//        get() = _photo
 
     private val _media = MutableLiveData(noMedia)
     val media: LiveData<MediaModel>
@@ -146,10 +143,6 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         Log.i("coords", coords.lat.toString())
         edited.value = edited.value?.copy(content = text, coords = coords, link = link)
     }
-
-//    fun changePhoto(uri: Uri?, file: File?) {
-//        _photo.value = PhotoModel(uri, file)
-//    }
 
     fun changeMedia(uri: Uri?, inputStream: InputStream?, type: AttachmentType?) {
         _media.value = MediaModel(uri, inputStream, type)
