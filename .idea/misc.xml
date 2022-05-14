@@ -66,6 +66,10 @@
         <entry key="..\:/md/netology/NeWork2/app/src/main/res/menu/options_post.xml" value="0.25" />
         <entry key="..\:/md/netology/NeWork2/app/src/main/res/menu/posts_button.xml" value="0.12708333333333333" />
         <entry key="..\:/md/netology/NeWork2/app/src/main/res/menu/users_button.xml" value="0.25" />
+        <entry key="..\:/md/netology/NeWork3/app/src/main/res/layout/card_event.xml" value="0.1" />
+        <entry key="..\:/md/netology/NeWork3/app/src/main/res/layout/card_post.xml" value="0.264" />
+        <entry key="..\:/md/netology/NeWork3/app/src/main/res/layout/fragment_new_event.xml" value="0.1" />
+        <entry key="..\:/md/netology/NeWork3/app/src/main/res/layout/fragment_new_post.xml" value="0.25" />
       </map>
     </option>
   </component>

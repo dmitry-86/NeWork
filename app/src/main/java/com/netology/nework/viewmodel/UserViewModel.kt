@@ -79,26 +79,26 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
     }
 
 
-    fun save() {
-        edited.value?.let {
-            _userCreated.value = Unit
-            viewModelScope.launch {
-                try {
-                    when (_photo.value) {
-                        noPhoto -> repository.save(it)
-                        else -> _photo.value?.file?.let { file ->
-                            repository.saveWithAttachment(it, MediaUpload(file))
-                        }
-                    }
-                    _dataState.value = FeedModelState()
-                } catch (e: Exception) {
-                    _dataState.value = FeedModelState(error = true)
-                }
-            }
-        }
-        edited.value = empty
-        _photo.value = noPhoto
-    }
+//    fun save() {
+//        edited.value?.let {
+//            _userCreated.value = Unit
+//            viewModelScope.launch {
+//                try {
+//                    when (_photo.value) {
+//                        noPhoto -> repository.save(it)
+//                        else -> _photo.value?.file?.let { file ->
+//                            repository.saveWithAttachment(it, MediaUpload(file))
+//                        }
+//                    }
+//                    _dataState.value = FeedModelState()
+//                } catch (e: Exception) {
+//                    _dataState.value = FeedModelState(error = true)
+//                }
+//            }
+//        }
+//        edited.value = empty
+//        _photo.value = noPhoto
+//    }
 
 
     fun edit(user: User) {

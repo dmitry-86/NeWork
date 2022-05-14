@@ -63,12 +63,36 @@ class PostsFragment : Fragment() {
                 }
             }
 
-            //            override fun onImageClick(post: Post) {
-//                bundle.putString("url", post.attachment?.url.toString())
-//                findNavController().navigate(
-//                    R.id.action_feedFragment_to_imageFragment, bundle)
-//            }
-//
+            val bundle = Bundle()
+
+            override fun onImageClick(post: Post) {
+                bundle.putString("url", post.attachment?.url.toString())
+                findNavController().navigate(
+                    R.id.imageFragment, bundle)
+            }
+
+            override fun onPlayAudio(post: Post) {
+                try {
+                    val uri = Uri.parse(post.attachment?.url)
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    intent.setDataAndType(uri, "audio/*")
+                    startActivity(intent)
+                } catch (e: Exception) {
+                    Toast.makeText(context, R.string.error_play, Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onPlayVideo(post: Post) {
+                try {
+                    val uri = Uri.parse(post.attachment?.url)
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    intent.setDataAndType(uri, "video/*")
+                    startActivity(intent)
+                } catch (e: Exception) {
+                    Toast.makeText(context, R.string.error_play, Toast.LENGTH_SHORT).show()
+                }
+            }
+
             override fun onLocationClick(post: Post) {
                 val bundle = Bundle().apply {
                     post.coords?.lat?.let { putDouble("lat", it) }

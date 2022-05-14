@@ -33,6 +33,8 @@
     <string name="channel_remote_name">Уведомления с сервера</string>
     <string name="channel_remote_description">Уведомления с удалённого сервера</string>
     <string name="google_play_unavailable">Google Api Недоступно</string>
+    <string name="audio">Аудио</string>
+    <string name="error_play">Mo media to play</string>
     <string-array name="eventType">
         <item>online</item>
         <item>offline</item>

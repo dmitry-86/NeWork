@@ -104,7 +104,7 @@ class EditUserFragment : Fragment() {
 
         binding.ok.setOnClickListener {
             viewModel.changeContent(binding.name.text.toString())
-            viewModel.save()
+//            viewModel.save()
             AndroidUtils.hideKeyboard(requireView())
         }
 

@@ -1,6 +1,8 @@
 package com.netology.nework.ui
 
 import android.content.DialogInterface
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -17,6 +19,7 @@ import com.netology.nework.adapter.*
 import com.netology.nework.databinding.FragmentEventsBinding
 import com.netology.nework.dto.Coordinates
 import com.netology.nework.dto.Event
+import com.netology.nework.dto.Post
 import com.netology.nework.enumeration.EventType
 import com.netology.nework.viewmodel.AuthViewModel
 import com.netology.nework.viewmodel.EventViewModel
@@ -62,6 +65,36 @@ class EventsFragment : Fragment() {
                     viewModel.likeEvent(event)
                 } else {
                     createDialog()
+                }
+            }
+
+            val bundle = Bundle()
+
+            override fun onImageClick(event: Event) {
+                bundle.putString("url", event.attachment?.url.toString())
+                findNavController().navigate(
+                    R.id.imageFragment, bundle)
+            }
+
+            override fun onPlayAudio(event: Event) {
+                try {
+                    val uri = Uri.parse(event.attachment?.url)
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    intent.setDataAndType(uri, "audio/*")
+                    startActivity(intent)
+                } catch (e: Exception) {
+                    Toast.makeText(context, R.string.error_play, Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onPlayVideo(event: Event) {
+                try {
+                    val uri = Uri.parse(event.attachment?.url)
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    intent.setDataAndType(uri, "video/*")
+                    startActivity(intent)
+                } catch (e: Exception) {
+                    Toast.makeText(context, R.string.error_play, Toast.LENGTH_SHORT).show()
                 }
             }
 

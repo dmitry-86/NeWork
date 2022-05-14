@@ -96,16 +96,6 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-
-                <!--                <EditText-->
-<!--                    android:id="@+id/datetime"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:background="@android:color/transparent"-->
-<!--                    android:inputType="textMultiLine"-->
-<!--                    android:hint="date"-->
-<!--                    android:padding="@dimen/common_spacing" />-->
-
                 <View
                     android:id="@+id/view2"
                     android:layout_width="wrap_content"
@@ -187,6 +177,24 @@
                 android:contentDescription="@string/description_take_photo"
                 android:padding="@dimen/common_spacing"
                 app:icon="@drawable/ic_camera_24dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/takeAudio"
+                style="@style/Widget.AppTheme.IconButton"
+                android:layout_width="62dp"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                app:icon="@drawable/ic_baseline_audio_file_24"
+                tools:ignore="SpeakableTextPresentCheck" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/takeVideo"
+                style="@style/Widget.AppTheme.IconButton"
+                android:layout_width="62dp"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                app:icon="@drawable/ic_baseline_movie_24"
+                tools:ignore="SpeakableTextPresentCheck" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/location"

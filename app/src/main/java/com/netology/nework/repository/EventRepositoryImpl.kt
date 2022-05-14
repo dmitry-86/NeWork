@@ -15,8 +15,10 @@ import com.netology.nework.error.UnknownError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 
 class EventRepositoryImpl(private val dao: EventDao) : EventRepository {
@@ -62,11 +64,11 @@ class EventRepositoryImpl(private val dao: EventDao) : EventRepository {
         }
     }
 
-    override suspend fun saveWithAttachment(event: Event, upload: MediaUpload) {
+    override suspend fun saveWithAttachment(event: Event, upload: MediaUpload, type: AttachmentType) {
         try {
             val media = upload(upload)
             val eventWithAttachment =
-                event.copy(attachment = Attachment(media.url, AttachmentType.IMAGE))
+                event.copy(attachment = Attachment(media.url, type))
             save(eventWithAttachment)
         } catch (e: AppError) {
             throw e
@@ -80,7 +82,10 @@ class EventRepositoryImpl(private val dao: EventDao) : EventRepository {
     override suspend fun upload(upload: MediaUpload): Media {
         try {
             val media = MultipartBody.Part.createFormData(
-                "file", upload.file.name, upload.file.asRequestBody()
+                "file", "name", upload.inputStream.readBytes()
+                    .toRequestBody(
+                        "*/*".toMediaType()
+                    )
             )
             val response = EventsApi.service.upload(media)
             if (!response.isSuccessful) {

@@ -32,6 +32,8 @@ interface EventOnInteractionListener {
     fun onLike(event: Event) {}
     fun onLocationClick(event: Event) {}
     fun onImageClick(event: Event) {}
+    fun onPlayAudio(event: Event){}
+    fun onPlayVideo(event: Event){}
     fun onLinkClick(event: Event) {}
 }
 
@@ -115,10 +117,21 @@ class EventViewHolder(
                 onInteractionListener.onLike(event)
             }
 
+            attachment.setOnClickListener {
+                onInteractionListener.onImageClick(event)
+            }
+
+            playAudio.setOnClickListener {
+                onInteractionListener.onPlayAudio(event)
+            }
+
+            playVideo.setOnClickListener {
+                onInteractionListener.onPlayVideo(event)
+            }
+
             location.setOnClickListener {
                 onInteractionListener.onLocationClick(event)
             }
-
 
         }
     }

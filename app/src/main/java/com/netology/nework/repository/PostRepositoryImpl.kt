@@ -17,8 +17,10 @@ import com.netology.nework.error.UnknownError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 
 class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
@@ -63,11 +65,11 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
         }
     }
 
-    override suspend fun saveWithAttachment(post: Post, upload: MediaUpload) {
+    override suspend fun saveWithAttachment(post: Post, upload: MediaUpload, type: AttachmentType) {
         try {
             val media = upload(upload)
             val postWithAttachment =
-                post.copy(attachment = Attachment(media.url, AttachmentType.IMAGE))
+                post.copy(attachment = Attachment(media.url, type))
             save(postWithAttachment)
         } catch (e: AppError) {
             throw e
@@ -81,7 +83,10 @@ class PostRepositoryImpl(private val dao: PostDao) : PostRepository {
     override suspend fun upload(upload: MediaUpload): Media {
         try {
             val media = MultipartBody.Part.createFormData(
-                "file", upload.file.name, upload.file.asRequestBody()
+                "file", "name", upload.inputStream.readBytes()
+                    .toRequestBody(
+                        "*/*".toMediaType()
+                    )
             )
             val response = PostsApi.service.upload(media)
             if (!response.isSuccessful) {

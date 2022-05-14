@@ -19,7 +19,6 @@ data class PostEntity(
     var coords: CoordinatesEmbeddable? = null,
     var link: String? = null,
     var likedByMe: Boolean = false,
-//    var likes: Int,
     val likeOwnerIds: Set<Long> = emptySet(),
     var ownedByMe: Boolean,
     @Embedded

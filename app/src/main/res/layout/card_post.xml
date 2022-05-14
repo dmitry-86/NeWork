@@ -76,6 +76,26 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textViewLink" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/playAudio"
+            style="@style/Widget.AppTheme.LikeCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/audio"
+            app:icon="@drawable/ic_baseline_play_arrow_24"
+            app:layout_constraintTop_toBottomOf="@id/attachment"
+            app:layout_constraintStart_toEndOf="@id/like"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/playVideo"
+            style="@style/Widget.AppTheme.LikeCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/video"
+            app:icon="@drawable/ic_baseline_play_arrow_24"
+            app:layout_constraintTop_toBottomOf="@id/attachment"
+            app:layout_constraintStart_toEndOf="@id/playAudio"/>
+
         <ImageView
             android:id="@+id/edit"
             android:layout_width="wrap_content"
@@ -118,6 +138,7 @@
             android:layout_height="wrap_content"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/playVideo"
             app:layout_constraintTop_toBottomOf="@id/footer"
             app:srcCompat="@drawable/ic_baseline_location_on_24" />
 

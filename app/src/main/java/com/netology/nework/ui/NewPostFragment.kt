@@ -19,6 +19,7 @@ import com.github.dhaval2404.imagepicker.constant.ImageProvider
 import com.google.android.material.snackbar.Snackbar
 import com.netology.nework.R
 import com.netology.nework.dto.Coordinates
+import com.netology.nework.enumeration.AttachmentType
 import com.netology.nework.ui.NewEventFragment.Companion.textArg
 import com.netology.nework.utils.AndroidUtils
 import com.netology.nework.utils.StringArg
@@ -34,9 +35,9 @@ class NewPostFragment : Fragment() {
         ownerProducer = ::requireParentFragment
     )
 
+    private var type: AttachmentType? = null
     private var latitude: Double? = null
     private var longitude: Double? = null
-
     private var fragmentBinding: FragmentNewPostBinding? = null
 
     override fun onCreateView(
@@ -64,20 +65,12 @@ class NewPostFragment : Fragment() {
 
         val pickPhotoLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                when (it.resultCode) {
-                    ImagePicker.RESULT_ERROR -> {
-                        Snackbar.make(
-                            binding.root,
-                            ImagePicker.getError(it.data),
-                            Snackbar.LENGTH_LONG
-                        ).show()
-                    }
-                    Activity.RESULT_OK -> {
-                        val uri: Uri? = it.data?.data
-                        viewModel.changePhoto(uri, uri?.toFile())
-                    }
+                it.data?.data.let { uri ->
+                    val stream = uri?.let { context?.contentResolver?.openInputStream(it) }
+                    viewModel.changeMedia(uri, stream, type)
                 }
             }
+
 
         binding.pickPhoto.setOnClickListener {
             ImagePicker.with(this)
@@ -99,10 +92,29 @@ class NewPostFragment : Fragment() {
                 .compress(2048)
                 .provider(ImageProvider.CAMERA)
                 .createIntent(pickPhotoLauncher::launch)
+            type = AttachmentType.IMAGE
         }
 
         binding.removePhoto.setOnClickListener {
-            viewModel.changePhoto(null, null)
+            viewModel.changeMedia(null, null, null)
+        }
+
+        val pickMediaLauncher =
+            registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+                uri?.let {
+                    val stream = context?.contentResolver?.openInputStream(it)
+                    viewModel.changeMedia(it, stream, type)
+                }
+            }
+
+        binding.takeAudio.setOnClickListener {
+            pickMediaLauncher.launch("audio/*")
+            type = AttachmentType.AUDIO
+        }
+
+        binding.takeVideo.setOnClickListener {
+            pickMediaLauncher.launch("video/*")
+            type = AttachmentType.VIDEO
         }
 
 
@@ -120,20 +132,20 @@ class NewPostFragment : Fragment() {
         }
 
 
-        viewModel.photo.observe(viewLifecycleOwner) {
+        viewModel.media.observe(viewLifecycleOwner) {
             if (it.uri == null) {
-                binding.photoContainer.visibility = View.GONE
+                binding.mediaContainer.visibility = View.GONE
                 return@observe
             }
 
-            binding.photoContainer.visibility = View.VISIBLE
+            binding.mediaContainer.visibility = View.VISIBLE
             binding.photo.setImageURI(it.uri)
         }
 
         binding.ok.setOnClickListener {
             viewModel.changeContent(
                 binding.edit.text.toString(),
-                Coordinates(latitude!!, longitude!!),
+                Coordinates(latitude, longitude),
                 binding.link.text.toString()
             )
             viewModel.save()

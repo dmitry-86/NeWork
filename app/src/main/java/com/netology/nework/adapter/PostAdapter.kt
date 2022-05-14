@@ -35,6 +35,8 @@ interface PostOnInteractionListener {
     fun onLike(post: Post) {}
     fun onLocationClick(post: Post) {}
     fun onImageClick(post: Post) {}
+    fun onPlayAudio(post: Post){}
+    fun onPlayVideo(post: Post){}
     fun onLinkClick(post: Post) {}
 }
 
@@ -113,6 +115,14 @@ class PostViewHolder(
 
             attachment.setOnClickListener {
                 onInteractionListener.onImageClick(post)
+            }
+
+            playAudio.setOnClickListener {
+                onInteractionListener.onPlayAudio(post)
+            }
+
+            playVideo.setOnClickListener {
+                onInteractionListener.onPlayVideo(post)
             }
 
             location.setOnClickListener {

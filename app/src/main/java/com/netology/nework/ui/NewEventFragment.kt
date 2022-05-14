@@ -25,6 +25,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.netology.nework.R
 import com.netology.nework.databinding.FragmentNewEventBinding
 import com.netology.nework.dto.Coordinates
+import com.netology.nework.enumeration.AttachmentType
 import com.netology.nework.enumeration.EventType
 import com.netology.nework.utils.*
 import com.netology.nework.viewmodel.EventViewModel
@@ -42,9 +43,9 @@ class NewEventFragment : Fragment() {
         ownerProducer = ::requireParentFragment
     )
 
+    private var type: AttachmentType? = null
     private var latitude: Double? = null
     private var longitude: Double? = null
-
     private var fragmentBinding: FragmentNewEventBinding? = null
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -131,18 +132,9 @@ class NewEventFragment : Fragment() {
 
         val pickPhotoLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                when (it.resultCode) {
-                    ImagePicker.RESULT_ERROR -> {
-                        Snackbar.make(
-                            binding.root,
-                            ImagePicker.getError(it.data),
-                            Snackbar.LENGTH_LONG
-                        ).show()
-                    }
-                    Activity.RESULT_OK -> {
-                        val uri: Uri? = it.data?.data
-                        viewModel.changePhoto(uri, uri?.toFile())
-                    }
+                it.data?.data.let { uri ->
+                    val stream = uri?.let { context?.contentResolver?.openInputStream(it) }
+                    viewModel.changeMedia(uri, stream, type)
                 }
             }
 
@@ -169,10 +161,10 @@ class NewEventFragment : Fragment() {
         }
 
         binding.removePhoto.setOnClickListener {
-            viewModel.changePhoto(null, null)
+            viewModel.changeMedia(null, null, null)
         }
 
-        viewModel.photo.observe(viewLifecycleOwner) {
+        viewModel.media.observe(viewLifecycleOwner) {
             if (it.uri == null) {
                 binding.photoContainer.visibility = View.GONE
                 return@observe
@@ -180,6 +172,25 @@ class NewEventFragment : Fragment() {
 
             binding.photoContainer.visibility = View.VISIBLE
             binding.photo.setImageURI(it.uri)
+        }
+
+
+        val pickMediaLauncher =
+            registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+                uri?.let {
+                    val stream = context?.contentResolver?.openInputStream(it)
+                    viewModel.changeMedia(it, stream, type)
+                }
+            }
+
+        binding.takeAudio.setOnClickListener {
+            pickMediaLauncher.launch("audio/*")
+            type = AttachmentType.AUDIO
+        }
+
+        binding.takeVideo.setOnClickListener {
+            pickMediaLauncher.launch("video/*")
+            type = AttachmentType.VIDEO
         }
 
 

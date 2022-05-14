@@ -13,8 +13,10 @@ import com.netology.nework.db.AppDb
 import com.netology.nework.dto.Coordinates
 import com.netology.nework.dto.MediaUpload
 import com.netology.nework.dto.Post
+import com.netology.nework.enumeration.AttachmentType
 import com.netology.nework.model.FeedModel
 import com.netology.nework.model.FeedModelState
+import com.netology.nework.model.MediaModel
 import com.netology.nework.model.PhotoModel
 import com.netology.nework.repository.PostRepository
 import com.netology.nework.repository.PostRepositoryImpl
@@ -22,6 +24,7 @@ import com.netology.nework.util.SingleLiveEvent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flatMapLatest
 import java.io.File
+import java.io.InputStream
 
 
 private val empty = Post(
@@ -37,7 +40,7 @@ private val empty = Post(
     attachment = null
 )
 
-private val noPhoto = PhotoModel()
+private val noMedia = MediaModel()
 
 @ExperimentalCoroutinesApi
 class PostViewModel(application: Application) : AndroidViewModel(application) {
@@ -78,9 +81,13 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     val postCreated: LiveData<Unit>
         get() = _postCreated
 
-    private val _photo = MutableLiveData(noPhoto)
-    val photo: LiveData<PhotoModel>
-        get() = _photo
+//    private val _photo = MutableLiveData(noPhoto)
+//    val photo: LiveData<PhotoModel>
+//        get() = _photo
+
+    private val _media = MutableLiveData(noMedia)
+    val media: LiveData<MediaModel>
+        get() = _media
 
     init {
         loadPosts()
@@ -107,15 +114,14 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun save() {
-        edited.value?.let {
+        edited.value?.let { post ->
             _postCreated.value = Unit
             viewModelScope.launch {
                 try {
-                    when (_photo.value) {
-                        noPhoto -> repository.save(it)
-                        else -> _photo.value?.file?.let { file ->
-                            repository.saveWithAttachment(it, MediaUpload(file))
-                        }
+                    when (_media.value) {
+                        noMedia -> repository.save(post)
+                        else -> _media.value?.inputStream?.let { MediaUpload(it) }
+                            ?.let { repository.saveWithAttachment(post, it, _media.value?.type!!) }
                     }
                     _dataState.value = FeedModelState()
                 } catch (e: Exception) {
@@ -124,7 +130,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
         edited.value = empty
-        _photo.value = noPhoto
+        _media.value = noMedia
     }
 
     fun edit(post: Post) {
@@ -141,8 +147,12 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         edited.value = edited.value?.copy(content = text, coords = coords, link = link)
     }
 
-    fun changePhoto(uri: Uri?, file: File?) {
-        _photo.value = PhotoModel(uri, file)
+//    fun changePhoto(uri: Uri?, file: File?) {
+//        _photo.value = PhotoModel(uri, file)
+//    }
+
+    fun changeMedia(uri: Uri?, inputStream: InputStream?, type: AttachmentType?) {
+        _media.value = MediaModel(uri, inputStream, type)
     }
 
     fun likeById(id: Long) = viewModelScope.launch {
