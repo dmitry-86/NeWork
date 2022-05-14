@@ -3,7 +3,6 @@ package com.netology.nework.ui
 
 import com.netology.nework.databinding.FragmentImageBinding
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

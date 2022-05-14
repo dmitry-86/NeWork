@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -63,37 +62,14 @@ class UsersFragment : Fragment() {
 
         viewModel.data.observe(viewLifecycleOwner){ state ->
             adapter.submitList(state.users)
-//            binding.emptyText.isVisible = state.empty
         }
 
         binding.swiperefresh.setOnRefreshListener {
             viewModel.refreshUsers()
         }
 
-
-        binding.fab.setOnClickListener {
-            if(authViewModel.authenticated) {
-//                findNavController().navigate(R.id.action_feedFragment_to_newPostFragment)
-            }else{
-                createDialog()
-            }
-        }
-
         return binding.root
 
     }
-
-    private fun createDialog(){
-        val builder = AlertDialog.Builder(requireActivity())
-        builder.setTitle("Would you like to sign in?")
-        builder.setNeutralButton("Yes"){dialogInterface, i ->
-            findNavController().navigate(R.id.action_feedFragment_to_signInFragment)
-        }
-        builder.setNegativeButton("No"){dialog, i ->
-            findNavController().navigate(R.id.feedFragment)
-        }
-        builder.show()
-    }
-
 
 }

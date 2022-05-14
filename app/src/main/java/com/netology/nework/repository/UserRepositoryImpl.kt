@@ -21,16 +21,9 @@ import java.io.IOException
 
 class UserRepositoryImpl(private val dao: UserDao) : UserRepository {
 
-    private val userId = AppAuth.getInstance().authStateFlow.value.id
-
     override val data = dao.getAll()
         .map(List<UserEntity>::toDto)
         .flowOn(Dispatchers.Default)
-
-
-//    override val userData = dao.getUserById(id = userId)
-//        .map(List<UserEntity>::toDto)
-//        .flowOn(Dispatchers.Default)
 
     override suspend fun getAll() {
         try {

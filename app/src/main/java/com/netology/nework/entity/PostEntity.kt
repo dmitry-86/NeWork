@@ -19,7 +19,7 @@ data class PostEntity(
     var link: String? = null,
     var likedByMe: Boolean = false,
     val likeOwnerIds: Set<Long> = emptySet(),
-    var ownedByMe: Boolean,
+    var ownedByMe: Boolean = false,
     @Embedded
     var attachment: AttachmentEmbeddable? = null,
 ) {
@@ -37,7 +37,6 @@ data class PostEntity(
         ownedByMe = ownedByMe,
         attachment = attachment?.toDto()
     )
-
 
     companion object {
         fun fromDto(dto: Post) =

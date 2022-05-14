@@ -51,7 +51,7 @@ class PostsFragment : Fragment() {
             }
 
             override fun onEdit(post: Post) {
-                showAlertDialog(post.content, post.coords!!, post.link!!)
+                showAlertDialog(post.content, post.coords, post.link)
                 viewModel.edit(post)
             }
 
@@ -150,7 +150,7 @@ class PostsFragment : Fragment() {
 
     }
 
-    private fun showAlertDialog(content: String, coords: Coordinates, link: String) {
+    private fun showAlertDialog(content: String, coords: Coordinates?, link: String?) {
         val placeFormView =
             LayoutInflater.from(activity).inflate(R.layout.dialog_change_post, null)
 

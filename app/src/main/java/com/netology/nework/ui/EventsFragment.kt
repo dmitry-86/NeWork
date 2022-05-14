@@ -54,7 +54,7 @@ class EventsFragment : Fragment() {
                     event.content,
                     event.datetime,
                     event.coords,
-                    event.link!!,
+                    event.link,
                     event.type
                 )
                 viewModel.edit(event)
@@ -149,7 +149,7 @@ class EventsFragment : Fragment() {
         content: String,
         datetime: String,
         coords: Coordinates?,
-        link: String,
+        link: String?,
         eventType: EventType
     ) {
         val placeFormView =

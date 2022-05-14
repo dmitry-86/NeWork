@@ -134,13 +134,13 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         edited.value = post
     }
 
-    fun changeContent(content: String, coords: Coordinates, link: String) {
+    fun changeContent(content: String, coords: Coordinates?, link: String?) {
         val text = content.trim()
-        val link = link.trim()
+        val link = link?.trim()
         if (edited.value?.content == text) {
             return
         }
-        Log.i("coords", coords.lat.toString())
+        Log.i("coords", coords?.lat.toString())
         edited.value = edited.value?.copy(content = text, coords = coords, link = link)
     }
 

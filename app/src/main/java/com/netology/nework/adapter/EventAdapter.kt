@@ -1,15 +1,11 @@
 package com.netology.nework.adapter
 
-import android.content.Context
 import android.graphics.Color
 import android.os.Build
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -18,13 +14,8 @@ import com.bumptech.glide.Glide
 import com.netology.nework.R
 import com.netology.nework.databinding.CardEventBinding
 import com.netology.nework.dto.Event
-import com.netology.nework.dto.Job
-import com.netology.nework.dto.Post
-import com.netology.nework.enumeration.AttachmentType
 import com.netology.nework.enumeration.EventType
 import com.netology.nework.utils.AndroidUtils.formatDate
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 interface EventOnInteractionListener {
     fun onEdit(event: Event) {}
@@ -32,8 +23,8 @@ interface EventOnInteractionListener {
     fun onLike(event: Event) {}
     fun onLocationClick(event: Event) {}
     fun onImageClick(event: Event) {}
-    fun onPlayAudio(event: Event){}
-    fun onPlayVideo(event: Event){}
+    fun onPlayAudio(event: Event) {}
+    fun onPlayVideo(event: Event) {}
     fun onLinkClick(event: Event) {}
 }
 
@@ -62,7 +53,7 @@ class EventViewHolder(
         binding.apply {
             textViewUserName.text = event.author
             textViewContent.text = event.content
-            eventType.text = when(event.type){
+            eventType.text = when (event.type) {
                 EventType.ONLINE -> "online"
                 else -> "offline"
             }
@@ -74,26 +65,21 @@ class EventViewHolder(
 //            delete.visibility = if (event.ownedByMe) View.VISIBLE else View.INVISIBLE
 //            edit.visibility = if (event.ownedByMe) View.VISIBLE else View.INVISIBLE
 
-            location.visibility = if(event.coords!=null) View.VISIBLE else View.INVISIBLE
+            location.visibility = if (event.coords != null) View.VISIBLE else View.INVISIBLE
+            textViewLink.visibility = if (event.link != null) View.VISIBLE else View.INVISIBLE
+            attachment.visibility = if (event.attachment != null) View.VISIBLE else View.GONE
 
-            if (attachment != null) {
-                when (event.attachment?.type) {
-                    AttachmentType.IMAGE -> {
-                        Glide.with(attachment)
-                            .load("${event.attachment?.url}")
-                            .into(attachment)
-                        attachment.visibility = View.VISIBLE
-                    }
-                }
-            }
+            Glide.with(attachment)
+                .load("${event.attachment?.url}")
+                .timeout(10_000)
+                .into(attachment)
 
             imageViewAvatar.setImageResource(R.drawable.avatar)
 
-            if (event.link != null) {
-                textViewLink.text = event.link
-                textViewLink.movementMethod = LinkMovementMethod.getInstance()
-                textViewLink.setTextColor(Color.BLUE)
-                textViewLink.visibility = View.VISIBLE
+            textViewLink.apply {
+                this.text = event.link
+                this.movementMethod = LinkMovementMethod.getInstance()
+                this.setTextColor(Color.BLUE)
             }
 
             textViewLink.setOnClickListener {

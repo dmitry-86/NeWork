@@ -22,15 +22,9 @@ import java.io.IOException
 
 class EventRepositoryImpl(private val dao: EventDao) : EventRepository {
 
-    private val authorId = AppAuth.getInstance().authStateFlow.value.id
-
     override val data = dao.getAll()
         .map(List<EventEntity>::toDto)
         .flowOn(Dispatchers.Default)
-
-//    override val userData = dao.getUserEventsById(id = authorId)
-//        .map(List<EventEntity>::toDto)
-//        .flowOn(Dispatchers.Default)
 
     override suspend fun getAll() {
         try {

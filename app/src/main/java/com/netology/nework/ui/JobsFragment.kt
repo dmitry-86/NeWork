@@ -30,8 +30,6 @@ class JobsFragment : Fragment() {
         ownerProducer = ::requireParentFragment
     )
 
-
-
     private val authViewModel: AuthViewModel by viewModels()
 
     override fun onCreateView(

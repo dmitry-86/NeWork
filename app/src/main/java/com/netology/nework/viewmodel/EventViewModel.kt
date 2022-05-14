@@ -112,10 +112,10 @@ class EventViewModel(application: Application) : AndroidViewModel(application) {
         edited.value = event
     }
 
-    fun changeContent(content: String, datetime: String, coords: Coordinates?, link: String, type: String) {
+    fun changeContent(content: String, datetime: String, coords: Coordinates?, link: String?, type: String) {
         val content = content.trim()
         val datetime = datetime.trim()
-        val link = link.trim()
+        val link = link?.trim()
         val eventType = when(type){
             "online"-> EventType.ONLINE
             else-> EventType.OFFLINE

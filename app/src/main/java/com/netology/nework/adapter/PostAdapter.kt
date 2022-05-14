@@ -12,11 +12,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.netology.nework.BuildConfig
 import com.netology.nework.R
 import com.netology.nework.databinding.CardPostBinding
 import com.netology.nework.dto.Post
-import com.netology.nework.enumeration.AttachmentType
 import com.netology.nework.utils.AndroidUtils.formatDate
 
 interface PostOnInteractionListener {
@@ -53,7 +51,7 @@ class PostViewHolder(
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("SimpleDateFormat")
     fun bind(post: Post) {
-        binding.apply {
+        with(binding) {
             textViewUserName.text = post.author
             textViewContent.text = post.content
             textViewPublished.text = formatDate(post.published)
@@ -63,26 +61,21 @@ class PostViewHolder(
             delete.visibility = if (post.ownedByMe) View.VISIBLE else View.INVISIBLE
             edit.visibility = if (post.ownedByMe) View.VISIBLE else View.INVISIBLE
             location.visibility = if (post.coords != null) View.VISIBLE else View.INVISIBLE
-
-
-            when (post.attachment?.type) {
-                AttachmentType.IMAGE -> {
-                    Glide.with(attachment)
-                        .load("${post.attachment?.url}")
-                        .into(attachment)
-                }
-            }
-
-
+            textViewLink.visibility = if (post.link != null) View.VISIBLE else View.INVISIBLE
             attachment.visibility = if (post.attachment != null) View.VISIBLE else View.GONE
+
+            Glide.with(attachment)
+                .load("${post.attachment?.url}")
+                .timeout(10_000)
+                .into(attachment)
+
 
             imageViewAvatar.setImageResource(R.drawable.avatar)
 
-            if (post.link != null) {
-                textViewLink.text = post.link
-                textViewLink.movementMethod = LinkMovementMethod.getInstance()
-                textViewLink.setTextColor(Color.BLUE)
-                textViewLink.visibility = View.VISIBLE
+            textViewLink.apply {
+                this.text = post.link
+                this.movementMethod = LinkMovementMethod.getInstance()
+                this.setTextColor(Color.BLUE)
             }
 
             textViewLink.setOnClickListener {

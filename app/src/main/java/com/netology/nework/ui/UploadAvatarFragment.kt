@@ -1,21 +1,13 @@
 package com.netology.nework.ui
 
 import android.app.Activity
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.core.net.toFile
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -23,18 +15,10 @@ import com.github.dhaval2404.imagepicker.ImagePicker
 import com.github.dhaval2404.imagepicker.constant.ImageProvider
 import com.google.android.material.snackbar.Snackbar
 import com.netology.nework.R
-import com.netology.nework.databinding.FragmentNewEventBinding
 import com.netology.nework.databinding.FragmentUploadAvatarBinding
-import com.netology.nework.dto.Coordinates
-import com.netology.nework.enumeration.AttachmentType
-import com.netology.nework.enumeration.EventType
 import com.netology.nework.utils.*
-import com.netology.nework.viewmodel.EventViewModel
-import com.netology.nework.viewmodel.PostViewModel
 import com.netology.nework.viewmodel.UserViewModel
-import java.text.SimpleDateFormat
 import java.util.*
-
 
 class UploadAvatarFragment : Fragment() {
 
@@ -108,11 +92,6 @@ class UploadAvatarFragment : Fragment() {
 
 
         binding.ok.setOnClickListener {
-//            viewModel.changeContent(
-//                binding.edit.text.toString(),
-//                Coordinates(latitude, longitude),
-//                binding.link.text.toString()
-//            )
             viewModel.save()
             AndroidUtils.hideKeyboard(requireView())
         }
