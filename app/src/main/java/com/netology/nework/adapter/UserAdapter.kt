@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.netology.nework.R
 import com.netology.nework.databinding.CardUserBinding
 import com.netology.nework.dto.User
@@ -41,7 +42,14 @@ class UserViewHolder(
         binding.apply {
             textViewUserName.text = user.name
             textViewLogin.text  = user.login
-            imageViewAvatar.setImageResource(R.drawable.avatar)
+
+            Glide.with(imageViewAvatar)
+                .load("${user.avatar}")
+                .circleCrop()
+                .placeholder(R.drawable.avatar)
+                .timeout(10_000)
+                .into(imageViewAvatar)
+
         }
     }
 }

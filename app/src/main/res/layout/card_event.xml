@@ -101,7 +101,7 @@
     <ImageView
         android:id="@+id/attachment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="160dp"
         android:layout_marginTop="4dp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
@@ -114,6 +114,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/audio"
+        android:visibility="gone"
         app:icon="@drawable/ic_baseline_play_arrow_24"
         app:layout_constraintTop_toBottomOf="@id/attachment"
         app:layout_constraintStart_toEndOf="@id/like"/>
@@ -124,6 +125,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/video"
+        android:visibility="gone"
         app:icon="@drawable/ic_baseline_play_arrow_24"
         app:layout_constraintTop_toBottomOf="@id/attachment"
         app:layout_constraintStart_toEndOf="@id/playAudio"/>

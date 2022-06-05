@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide
 import com.netology.nework.R
 import com.netology.nework.databinding.CardEventBinding
 import com.netology.nework.dto.Event
+import com.netology.nework.enumeration.AttachmentType
 import com.netology.nework.enumeration.EventType
 import com.netology.nework.utils.AndroidUtils.formatDate
 
@@ -62,19 +63,33 @@ class EventViewHolder(
             like.isChecked = event.likedByMe
             like.text = event.likeOwnerIds.count().toString()
 
-//            delete.visibility = if (event.ownedByMe) View.VISIBLE else View.INVISIBLE
-//            edit.visibility = if (event.ownedByMe) View.VISIBLE else View.INVISIBLE
-
             location.visibility = if (event.coords != null) View.VISIBLE else View.INVISIBLE
             textViewLink.visibility = if (event.link != null) View.VISIBLE else View.INVISIBLE
-            attachment.visibility = if (event.attachment != null) View.VISIBLE else View.GONE
 
-            Glide.with(attachment)
-                .load("${event.attachment?.url}")
+            Glide.with(imageViewAvatar)
+                .load("${event.authorAvatar}")
+                .circleCrop()
+                .placeholder(R.drawable.avatar)
                 .timeout(10_000)
-                .into(attachment)
+                .into(imageViewAvatar)
 
-            imageViewAvatar.setImageResource(R.drawable.avatar)
+            when (event.attachment?.type) {
+                AttachmentType.IMAGE -> {
+                    Glide.with(attachment)
+                        .load("${event.attachment?.url}")
+                        .timeout(10_000)
+                        .into(attachment)
+                    attachment.visibility =
+                        if (event.attachment != null) View.VISIBLE else View.GONE
+                }
+            }
+
+            when (event.attachment?.type) {
+                AttachmentType.VIDEO ->
+                    playVideo.visibility = if (event.attachment != null) View.VISIBLE else View.GONE
+                AttachmentType.AUDIO ->
+                    playAudio.visibility = if (event.attachment != null) View.VISIBLE else View.GONE
+            }
 
             textViewLink.apply {
                 this.text = event.link

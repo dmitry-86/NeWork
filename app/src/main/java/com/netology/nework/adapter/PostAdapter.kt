@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide
 import com.netology.nework.R
 import com.netology.nework.databinding.CardPostBinding
 import com.netology.nework.dto.Post
+import com.netology.nework.enumeration.AttachmentType
 import com.netology.nework.utils.AndroidUtils.formatDate
 
 interface PostOnInteractionListener {
@@ -55,22 +56,37 @@ class PostViewHolder(
             textViewUserName.text = post.author
             textViewContent.text = post.content
             textViewPublished.text = formatDate(post.published)
-//            imageViewAvatar.loadCircleCrop("${BuildConfig.BASE_URL}/avatars/${post.authorAvatar}")
             like.isChecked = post.likedByMe
             like.text = post.likeOwnerIds.count().toString()
             delete.visibility = if (post.ownedByMe) View.VISIBLE else View.INVISIBLE
             edit.visibility = if (post.ownedByMe) View.VISIBLE else View.INVISIBLE
             location.visibility = if (post.coords != null) View.VISIBLE else View.INVISIBLE
             textViewLink.visibility = if (post.link != null) View.VISIBLE else View.INVISIBLE
-            attachment.visibility = if (post.attachment != null) View.VISIBLE else View.GONE
 
-            Glide.with(attachment)
-                .load("${post.attachment?.url}")
+            Glide.with(imageViewAvatar)
+                .load("${post.authorAvatar}")
+                .circleCrop()
+                .placeholder(R.drawable.avatar)
                 .timeout(10_000)
-                .into(attachment)
+                .into(imageViewAvatar)
 
 
-            imageViewAvatar.setImageResource(R.drawable.avatar)
+            when (post.attachment?.type) {
+                AttachmentType.IMAGE -> {
+                    Glide.with(attachment)
+                        .load("${post.attachment?.url}")
+                        .timeout(10_000)
+                        .into(attachment)
+                    attachment.visibility = if (post.attachment != null) View.VISIBLE else View.GONE
+                }
+            }
+
+            when (post.attachment?.type) {
+                AttachmentType.VIDEO ->
+                    playVideo.visibility = if (post.attachment != null) View.VISIBLE else View.GONE
+                AttachmentType.AUDIO ->
+                    playAudio.visibility = if (post.attachment != null) View.VISIBLE else View.GONE
+            }
 
             textViewLink.apply {
                 this.text = post.link
