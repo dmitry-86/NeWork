@@ -60,14 +60,14 @@ interface UserApiService {
     @POST("users/authentication")
     suspend fun authUser(@Field("login") login: String, @Field("pass") pass: String): Response<Token>
 
-    @FormUrlEncoded
+    @Multipart
     @POST("users/registration")
     suspend fun registerUser(
         @Field("login") login: String,
         @Field("pass") pass: String,
-        @Field("name") name: String
+        @Field("name") name: String,
+        @Part media: MultipartBody.Part?
     ): Response<Token>
-
 }
 
 object UserApi {
