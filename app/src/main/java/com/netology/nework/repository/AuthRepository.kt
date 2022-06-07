@@ -25,12 +25,26 @@ class AuthRepository {
         }
     }
 
-    suspend fun registerUser(login: String, pass: String, name: String, upload: PhotoUpload): Token {
+    suspend fun registerUser(login: String, password: String, name: String): Token {
         try {
-            val media = MultipartBody.Part.createFormData(
-                "file", upload.file.name, upload.file.asRequestBody()
+            val response = UserApi.service.registerUser(login, password, name)
+            if (!response.isSuccessful) {
+                throw ApiError(response.code(), response.message())
+            }
+            return response.body() ?: throw ApiError(response.code(), response.message())
+        } catch (e: java.io.IOException) {
+            throw NetworkError
+        } catch (e: Exception) {
+            throw UnknownError
+        }
+    }
+
+    suspend fun registerUserWithAvatar(login: String, pass: String, name: String, upload: PhotoUpload?): Token {
+        try {
+            val avatar = MultipartBody.Part.createFormData(
+                "file", upload?.file?.name, upload?.file?.asRequestBody()!!
             )
-            val response = UserApi.service.registerUser(login, pass, name, media)
+            val response = UserApi.service.registerUserWithAvatar(login, pass, name, avatar)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }

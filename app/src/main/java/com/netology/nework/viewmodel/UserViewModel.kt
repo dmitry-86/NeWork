@@ -47,14 +47,6 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
     val dataState: LiveData<FeedModelState>
         get() = _dataState
 
-//    private val _user = MutableLiveData<User>()
-//    val user: LiveData<User>
-//        get() = _user
-
-//    private val _usersIds = MutableLiveData<Set<Long>>()
-//    val userIds: LiveData<Set<Long>>
-//        get() = _usersIds
-
     private val edited = MutableLiveData(empty)
     private val _userCreated = SingleLiveEvent<Unit>()
     val userCreated: LiveData<Unit>
@@ -68,29 +60,6 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
         loadUsers()
     }
 
-
-    fun save() {
-        edited.value?.let {
-            _userCreated.value = Unit
-            viewModelScope.launch {
-                try {
-                    when (_photo.value) {
-                        noPhoto -> repository.save(it)
-                        else -> _photo.value?.file?.let { file ->
-                            repository.saveWithAttachment(it, PhotoUpload(file))
-                        }
-                    }
-                    _dataState.value = FeedModelState()
-                } catch (e: Exception) {
-                    _dataState.value = FeedModelState(error = true)
-                }
-            }
-        }
-        edited.value = empty
-        _photo.value = noPhoto
-    }
-
-
     fun edit(user: User) {
         edited.value = user
     }
@@ -101,10 +70,6 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
             return
         }
         edited.value = edited.value?.copy(name = name)
-    }
-
-    fun changePhoto(uri: Uri?, file: File?) {
-        _photo.value = PhotoModel(uri, file)
     }
 
 

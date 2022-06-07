@@ -32,10 +32,6 @@ class UserAccountFragment : Fragment() {
     ): View {
         val binding = FragmentUserAccountBinding.inflate(inflater, container, false)
 
-        binding.buttonEdit.setOnClickListener {
-            findNavController().navigate(R.id.uploadAvatarFragment)
-        }
-
         userViewModel.getUserById(userId)
 
         userViewModel.user.observe(viewLifecycleOwner) {

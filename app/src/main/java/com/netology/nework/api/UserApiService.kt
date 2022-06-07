@@ -53,16 +53,24 @@ interface UserApiService {
     suspend fun save(@Body pushToken: PushToken): Response<Unit>
 
     @Multipart
-    @POST("media")
+    @POST("avatars")
     suspend fun upload(@Part media: MultipartBody.Part): Response<Media>
 
     @FormUrlEncoded
     @POST("users/authentication")
     suspend fun authUser(@Field("login") login: String, @Field("pass") pass: String): Response<Token>
 
-    @Multipart
+    @FormUrlEncoded
     @POST("users/registration")
     suspend fun registerUser(
+        @Field("login") login: String,
+        @Field("pass") pass: String,
+        @Field("name") name: String,
+    ): Response<Token>
+
+    @Multipart
+    @POST("users/registration")
+    suspend fun registerUserWithAvatar(
         @Field("login") login: String,
         @Field("pass") pass: String,
         @Field("name") name: String,
