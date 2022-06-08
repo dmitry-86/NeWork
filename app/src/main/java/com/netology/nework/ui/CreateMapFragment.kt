@@ -2,7 +2,6 @@ package com.netology.nework.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.DialogInterface
 import android.content.pm.PackageManager
 import androidx.fragment.app.Fragment
 
@@ -10,7 +9,6 @@ import android.os.Bundle
 import android.view.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.coroutineScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.location.LocationServices
@@ -25,8 +23,6 @@ import com.google.maps.android.ktx.awaitMap
 import com.google.maps.android.ktx.model.cameraPosition
 import com.netology.nework.R
 import com.netology.nework.databinding.FragmentCreateMapBinding
-import com.netology.nework.viewmodel.EventViewModel
-import com.netology.nework.viewmodel.PostViewModel
 
 class CreateMapFragment : Fragment() {
     private lateinit var googleMap: GoogleMap

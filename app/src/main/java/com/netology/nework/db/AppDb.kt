@@ -12,7 +12,7 @@ import androidx.room.TypeConverters
 import com.netology.nework.dao.*
 import com.netology.nework.dto.Converters
 
-@Database(entities = [PostEntity::class, JobEntity::class, EventEntity::class, UserEntity::class], version = 13)
+@Database(entities = [PostEntity::class, JobEntity::class, EventEntity::class, UserEntity::class], version = 14)
 
 @TypeConverters(Converters::class)
 abstract class AppDb : RoomDatabase() {

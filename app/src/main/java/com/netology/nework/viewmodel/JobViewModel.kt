@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import com.netology.nework.db.AppDb
 import com.netology.nework.dto.Job
-import com.netology.nework.dto.Post
 import com.netology.nework.model.FeedModel
 import com.netology.nework.model.FeedModelState
 import com.netology.nework.model.JobFeedModel
@@ -120,10 +119,6 @@ class JobViewModel(application: Application) : AndroidViewModel(application) {
         }
         edited.value = edited.value?.copy(name = name, position = position, start = started.toLong(), finish = finished.toLong(), link = link)
     }
-
-//    fun likeById(id: Long) {
-//        TODO()
-//    }
 
     fun removeById(id: Long)  = viewModelScope.launch {
         try {

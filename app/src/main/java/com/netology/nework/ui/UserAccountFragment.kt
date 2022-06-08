@@ -6,11 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.google.android.material.tabs.TabLayoutMediator
-import com.netology.nework.BuildConfig
 import com.netology.nework.R
 import com.netology.nework.adapter.MyPagerAdapter
 import com.netology.nework.auth.AppAuth
@@ -39,17 +37,12 @@ class UserAccountFragment : Fragment() {
                 textViewName.text = it.name
                 textViewLogin.text = it.login
 
-                if (it.avatar != null) {
-                    val avatar = "${BuildConfig.BASE_URL}/avatars/"
-                    with(binding) {
-                        Glide.with(imageViewAvatar)
-                            .load("$avatar/${it.avatar}")
-                            .transform(CircleCrop())
-                            .placeholder(R.drawable.avatar)
-                            .into(imageViewAvatar)
-                    }
-                } else {
-                    binding.imageViewAvatar.setImageResource(R.drawable.avatar)
+                with(binding) {
+                    Glide.with(imageViewAvatar)
+                        .load("${it.avatar}")
+                        .transform(CircleCrop())
+                        .placeholder(R.drawable.avatar)
+                        .into(imageViewAvatar)
                 }
             }
         }

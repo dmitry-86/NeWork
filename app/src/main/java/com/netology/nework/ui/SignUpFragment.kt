@@ -17,7 +17,6 @@ import com.github.dhaval2404.imagepicker.constant.ImageProvider
 import com.google.android.material.snackbar.Snackbar
 import com.netology.nework.R
 import com.netology.nework.auth.AppAuth
-import com.netology.nework.databinding.FragmentNewPostBinding
 import com.netology.nework.databinding.FragmentSignUpBinding
 import com.netology.nework.viewmodel.SignUpViewModel
 
@@ -37,8 +36,6 @@ class SignUpFragment : Fragment() {
         val login = binding.logInField.text
         val pass = binding.passwordField.text
         val passwordRepeat = binding.passwordRepeatField.text
-
-        //set avatar
 
         val pickPhotoLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {

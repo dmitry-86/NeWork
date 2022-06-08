@@ -20,7 +20,6 @@ import com.netology.nework.adapter.PostOnInteractionListener
 import com.netology.nework.adapter.PostsAdapter
 import com.netology.nework.databinding.FragmentPostsBinding
 import com.netology.nework.dto.Coordinates
-import com.netology.nework.dto.Event
 import com.netology.nework.dto.Post
 import com.netology.nework.viewmodel.AuthViewModel
 import com.netology.nework.viewmodel.PostViewModel

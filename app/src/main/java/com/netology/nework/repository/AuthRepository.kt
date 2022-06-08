@@ -6,8 +6,10 @@ import com.netology.nework.dto.Token
 import com.netology.nework.error.ApiError
 import com.netology.nework.error.NetworkError
 import com.netology.nework.error.UnknownError
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 
 class AuthRepository {
 
@@ -44,7 +46,11 @@ class AuthRepository {
             val avatar = MultipartBody.Part.createFormData(
                 "file", upload?.file?.name, upload?.file?.asRequestBody()!!
             )
-            val response = UserApi.service.registerUserWithAvatar(login, pass, name, avatar)
+            val response = UserApi.service.registerUserWithAvatar(
+                login.toRequestBody("text/plain".toMediaType()),
+                pass.toRequestBody("text/plain".toMediaType()),
+                name.toRequestBody("text/plain".toMediaType()),
+                avatar)
             if (!response.isSuccessful) {
                 throw ApiError(response.code(), response.message())
             }

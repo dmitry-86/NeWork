@@ -1,8 +1,6 @@
 package com.netology.nework.viewmodel
 
 import android.net.Uri
-import android.util.Log
-import androidx.core.net.toFile
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,8 +11,6 @@ import com.netology.nework.model.FeedModelState
 import com.netology.nework.model.PhotoModel
 import com.netology.nework.repository.AuthRepository
 import kotlinx.coroutines.launch
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 
 class SignUpViewModel : ViewModel() {
@@ -32,22 +28,22 @@ class SignUpViewModel : ViewModel() {
     val dataState: LiveData<FeedModelState>
         get() = _dataState
 
-
     fun registerUser(login: String, pass: String, name: String) {
         viewModelScope.launch {
             try {
-                when(_photo.value) {
-                    noPhoto -> repository.registerUser(login, pass, name)
-                    else -> _photo.value?.file?.let {
-                        repository.registerUserWithAvatar(login, pass, name, PhotoUpload(it))
-                    }
+                when (_photo.value) {
+                    noPhoto -> data.value = repository.registerUser(login, pass, name)
+                    else -> data.value = repository.registerUserWithAvatar(login, pass, name,
+                        _photo.value?.file?.let {
+                            PhotoUpload(it)
+                        })
                 }
                 _dataState.value = FeedModelState()
             } catch (e: Exception) {
                 _dataState.value = FeedModelState(errorLogin = true)
             }
+            _photo.value = noPhoto
         }
-        _photo.value = noPhoto
     }
 
     fun changePhoto(uri: Uri?, file: File?) {

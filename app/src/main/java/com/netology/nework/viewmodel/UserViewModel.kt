@@ -1,7 +1,6 @@
 package com.netology.nework.viewmodel
 
 import android.app.Application
-import android.net.Uri
 import androidx.lifecycle.*
 import com.netology.nework.auth.AppAuth
 import com.netology.nework.db.AppDb
@@ -14,7 +13,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import java.io.File
 
 private val empty = User(
     id = 0,
@@ -71,7 +69,6 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
         }
         edited.value = edited.value?.copy(name = name)
     }
-
 
     fun loadUsers() = viewModelScope.launch {
         try {

@@ -3,7 +3,6 @@ package com.netology.nework.repository
 import android.util.Log
 import androidx.lifecycle.*
 import com.netology.nework.api.*
-import com.netology.nework.auth.AppAuth
 import com.netology.nework.dao.EventDao
 import com.netology.nework.dto.*
 import com.netology.nework.entity.*

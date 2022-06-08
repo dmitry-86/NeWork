@@ -23,7 +23,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flatMapLatest
 import java.io.InputStream
 
-
 private val empty = Post(
     id = 0,
     authorId = 0,
